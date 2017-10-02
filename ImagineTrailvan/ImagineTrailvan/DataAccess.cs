@@ -240,7 +240,7 @@ namespace ImagineTrailvan
              {
                  DataTable result = new DataTable();
                //  DataSet getds;
-                 cmd = new SqlCommand("SELECT I.InventoryID,I.InvCode,I.InvItem,I.InvDescription,SI.SSIDateReceived,SI.SSIStockLeft,SI.SSIPrice FROM Inventory I INNER JOIN SubStockIN SI ON I.InventoryID=SI.InventoryID WHERE SI.SSIStockLeft !=0 ORDER BY SSIDateReceived DESC", conn);
+                 cmd = new SqlCommand("SELECT I.InventoryID,I.InvCode,I.InvItem,I.InvDescription,SI.SSIStockLeft,SI.SSIPrice FROM Inventory I INNER JOIN SubStockIN SI ON I.InventoryID=SI.InventoryID WHERE SI.SSIStockLeft !=0", conn);
                  adapter = new SqlDataAdapter(cmd);
                  SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
                  conn.Open();

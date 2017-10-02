@@ -21,6 +21,8 @@ namespace ImagineTrailvan
         public string[] fieldInv = { "InventoryID", "InvCode", "InvItem", "InvDescription", "InvCategory","InvReorderLevel", "InvMarkup"};
         public string[] fieldSup = { "SupplierID", "SupName", "SupContactPerson", "SupREP", "SupBusinessNr", "SupCellNr","SupEmail", "SupAddress", "SupCity", "SupProv","SupPrefix","SupReorderTime"};
         public string[] fieldStockOut = { "SubStockOUTID", "InventoryID", "SSOQuantityOut" };
+        public string[] fieldStockIN = { "SubStockINID", "InventoryID", "SSIQuantityIN", "SSIPrice", "SSIPrice", "SSIStockLeft" };
+        public string[] fieldInvoiceStockIN = { "ISIID", "ISIInvoiceNo", "ISIDateReceived", "SupplierID", "ISIInvoiceTotalIncl" };
         public string[] fieldTotalStock = { "InventoryStockID", "InventoryID", "ISTotalStock" };
 
         public frmInventory()
@@ -61,7 +63,7 @@ namespace ImagineTrailvan
 
                 for (int i = 0; i < dtgInventoryValue.Rows.Count - 1; i++)
                 {
-                    totalStockValue += (int.Parse(dtgInventoryValue.Rows[i].Cells[5].Value.ToString())*double.Parse(dtgInventoryValue.Rows[i].Cells[6].Value.ToString()));
+                    totalStockValue += (int.Parse(dtgInventoryValue.Rows[i].Cells[4].Value.ToString())*double.Parse(dtgInventoryValue.Rows[i].Cells[5].Value.ToString()));
                 }//end of for (int i = 0; i < fieldInv.Length; i++)
                 txtStockValue.Text = totalStockValue.ToString();
 
@@ -153,7 +155,7 @@ namespace ImagineTrailvan
                     values.Add(txtInvCat.Text.ToUpper());
                     dtgInventory.DataSource = datac.getRecord("Inventory", searchField, values);
              //       dtgInventory.DataSource = datac.SearchStockCategory(invCat);
-                    txtInvCat.Clear();
+                  //  txtInvCat.Clear();
                 }//end of if (txtInvDesc.Text!=null)
                 else //if all is still empty, then do this. 
                 {
@@ -225,14 +227,30 @@ namespace ImagineTrailvan
    dt.Rows.Add(new object[] { "Ravi", 500 }); */
 
                 DataAccess datac = new DataAccess();
-               
+                //****************Get the stock total quantity from InventoryStock table, relevant to the InventoryID******************
+                DataTable dtTotalStock = new DataTable();               
+                string [] fieldTotal={"InventoryID"};
+                ArrayList getIDValue=new ArrayList();
+                getIDValue.Add("="+txtInvID.Text);
+
+                dtTotalStock = datac.getMathRecord("InventoryStock", fieldTotal, getIDValue);
+                if (dtTotalStock.Rows[0] != null)
+                {
+                    txtInvTotalStock.Text = dtTotalStock.Rows[0][2].ToString();
+                }//end of if (dtStockIn.Rows[0] != null)
+                else
+                {
+                    MessageBox.Show("no rows in datatable: ");
+                } //end of else      
+
+                //**************Get the oldest date's stock price via the InvoiceStockIN table's date and the InventoryID found in the SubStockIN table*********
+                //consider a stored procedure?
+
                 DataTable dtStockIn = new DataTable();
-                string[] fieldStockIN = { "InventoryID", "SSIStockLeft"};//,"SSIDateReceived"
+                string[] fieldStockIN = { "InventoryID", "SSIStockLeft"};
                 ArrayList getValues=new ArrayList();
                 getValues.Add("="+txtInvID.Text);
                 getValues.Add(">0");
-               // getValues.Add(" = (SELECT MIN(SSIDateReceived) FROM SubStockIN)");
-             //   dtStockIn.Rows.Add(new object[] { datac.getMathRecord("SubStockIN", fieldStockIN, getValues) });
                 dtStockIn = datac.getMathRecord("SubStockIN", fieldStockIN, getValues);
                 if (dtStockIn.Rows[0] != null)
                 {
@@ -242,25 +260,9 @@ namespace ImagineTrailvan
                 {
                     MessageBox.Show("no rows in datatable: "); 
                 } //end of else              
-
-                DataTable dtTotalStock = new DataTable();               
-                string [] fieldTotal={"InventoryID"};
-                ArrayList getIDValue=new ArrayList();
-                getIDValue.Add("="+txtInvID.Text);
-              //  dtTotalStock.Rows.Add(new object[] { datac.getRecord("InventoryStock", fieldTotal, getIDValue) });
-                dtTotalStock = datac.getMathRecord("InventoryStock", fieldTotal, getIDValue);
-                if (dtStockIn.Rows[0] != null)
-                {
-                    txtInvTotalStock.Text = dtTotalStock.Rows[0][2].ToString();//.Columns[4].ToString();
-                }//end of if (dtStockIn.Rows[0] != null)
-                else
-                {
-                    MessageBox.Show("no rows in datatable: ");
-                } //end of else 
-
-             //   txtSellPrice.Text = (double.Parse(txtInvPrice.Text) * ((100 + (int.Parse(cmbInvMarkup.ValueMember))) / 100)).ToString();
-
+             
                 //to calculate the selling price (price + markup excl VAT)***
+                //   txtSellPrice.Text = (double.Parse(txtInvPrice.Text) * ((100 + (int.Parse(cmbInvMarkup.ValueMember))) / 100)).ToString(); //tried but failed
                 double price = 0;
                 double markup = 0;
                 double sellPrice = 0;
@@ -296,28 +298,44 @@ namespace ImagineTrailvan
                 dtgInventory.DataSource = datac.getTable("Inventory");
 
                 //*********SEND INSERT TO STOCK OUT TABLE**************
-                DataTable dtStockOut = new DataTable();               
-                ArrayList stockOutValues = new ArrayList();
-                stockOutValues.Add(0);
-                stockOutValues.Add(txtInvID.Text);
-                stockOutValues.Add(txtInvStockOut.Text);
-  
-              //  dtStockOut.Rows.Add(new object[] { datac.insertCmd("SubStockOUT", fieldStockOut, stockOutValues) });
-                datac.insertCmd("SubStockOUT", fieldStockOut, stockOutValues);
-                
-                //*********SEND update TO TOTALSTOCK TABLE**************
-                DataTable dtTotalStock = new DataTable();
-                ArrayList totalValues = new ArrayList();
-                txtInvTotalStock.Text = (int.Parse(txtInvTotalStock.Text) - int.Parse(txtInvStockOut.Text)).ToString();
-                totalValues.Add(txtInvID.Text);
-                totalValues.Add(txtInvID.Text);
-                totalValues.Add(txtInvTotalStock.Text);
-                string idStockField = "InventoryID";
-                datac.updateRecCmd("InventoryStock", idStockField, txtInvID.Text, fieldTotalStock, totalValues);
+                if (txtInvStockOut.Text!="")
+                {
+                    DataTable dtStockOut = new DataTable();
+                    ArrayList stockOutValues = new ArrayList();
+                    stockOutValues.Add(0);
+                    stockOutValues.Add(txtInvID.Text);
+                    stockOutValues.Add(txtInvStockOut.Text);
 
-                txtSellPrice.Text = (double.Parse(txtInvPrice.Text) * (1 + (double.Parse(cmbInvMarkup.ValueMember)))).ToString();
+                    datac.insertCmd("SubStockOUT", fieldStockOut, stockOutValues);
+
+                    //*********SEND update TO TOTALSTOCK TABLE**************
+                    DataTable dtTotalStock = new DataTable();
+                    ArrayList totalValues = new ArrayList();
+                    txtInvTotalStock.Text = (int.Parse(txtInvTotalStock.Text) - int.Parse(txtInvStockOut.Text)).ToString();
+                    totalValues.Add(txtInvID.Text);
+                    totalValues.Add(txtInvID.Text);
+                    totalValues.Add(txtInvTotalStock.Text);
+                    string idStockField = "InventoryID";
+                    datac.updateRecCmd("InventoryStock", idStockField, txtInvID.Text, fieldTotalStock, totalValues);
+
+                    txtSellPrice.Text = (double.Parse(txtInvPrice.Text) * (1 + (double.Parse(cmbInvMarkup.ValueMember)))).ToString();
+
+                    //*******Minus quantity-out from First stock in LEFT from table SubStockIN, while using oldest date in InvoiceStockIN********                    
+                    // #1) lookup oldest date in the InvoiceStockIN table, with get query.
+
+                    //   DataTable dtSubStockIN = new DataTable();
+                 //   ArrayList subStockIN = new ArrayList();
+                    //subStockIN.Add();
+                    //subStockIN.Add();
+                    //subStockIN.Add();
+                    //subStockIN.Add();
+
+                }//end of if((txtInvStockOut.Text!="")
+                
 
                 dtgInventory.DataSource = datac.getTable("Inventory");
+
+
             }//end of try
             catch (Exception ex)
             {
