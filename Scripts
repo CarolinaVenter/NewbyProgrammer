@@ -24,14 +24,21 @@ InvCategory TEXT NULL,
 InvReorderLevel INT NULL,
 InvMarkup INT DEFAULT 25 NULL
 )
+CREATE TABLE InvoiceStockIN
+(
+ISIID INT PRIMARY KEY IDENTITY (1,1) NOT NULL,
+ISIInvoiceNo TEXT NOT NULL,
+ISIDateReceived DATETIME NOT NULL,
+SupplierID INT NOT NULL,
+ISIInvoiceTotalIncl	MONEY NULL
+)
 CREATE TABLE SubStockIN
 (
 SubStockINID INT PRIMARY KEY IDENTITY (1,1) NOT NULL,
 InventoryID INT NOT NULL,
 SSIQuantityIN INT NOT NULL,
 SSIPrice smallmoney NULL,
-SSIDateReceived DATETIME NOT NULL,
-SupplierID INT NOT NULL,
+ISIID INT NULL,
 SSIStockLeft INT NOT NULL
 )
 CREATE TABLE SubStockOUT
@@ -61,6 +68,7 @@ OrdersID INT NOT NULL,
 SOLength INT NULL
 )
 
+USE ImagineTrailvanDB
 INSERT INTO Inventory
 (InvCode,InvItem,InvDescription,InvCategory,InvReorderLevel,InvMarkup)
 VALUES ('16A3P220V','MENNEKES CARACONTAC CEE','220 INLET','ELECTRICAL',4,25)
@@ -106,16 +114,36 @@ INSERT INTO InventoryStock
 VALUES (3,4)
 
 INSERT INTO SubStockIN
-(InventoryID,SSIQuantityIN,SSIPrice,SSIDateReceived,SupplierID,SSIStockLeft)
-VALUES(1,9,'494.73','2017-09-21 09:38',1,9)
+(InventoryID,SSIQuantityIN,SSIPrice,ISIID,SSIStockLeft)
+VALUES(1,9,'494.73',1,9)
 
 INSERT INTO SubStockIN
-(InventoryID,SSIQuantityIN,SSIPrice,SSIDateReceived,SupplierID,SSIStockLeft)
-VALUES(2,16,'333.33','2017-09-21 09:43',5,16)
+(InventoryID,SSIQuantityIN,SSIPrice,ISIID,SSIStockLeft)
+VALUES(2,16,'333.33',5,16)
 
 INSERT INTO SubStockIN
-(InventoryID,SSIQuantityIN,SSIPrice,SSIDateReceived,SupplierID,SSIStockLeft)
-VALUES(3,5,'66.46','2017-09-21 09:47',4,5)
+(InventoryID,SSIQuantityIN,SSIPrice,ISIID,SSIStockLeft)
+VALUES(3,5,'66.46',4,5)
+
+INSERT INTO InvoiceStockIN
+(ISIInvoiceNo,ISIDateReceived,SupplierID,ISIInvoiceTotalIncl)
+VALUES('','2017-09-21 09:38',1,'')
+
+INSERT INTO InvoiceStockIN
+(ISIInvoiceNo,ISIDateReceived,SupplierID,ISIInvoiceTotalIncl)
+VALUES('','2017-09-21 09:43',2,'')
+
+INSERT INTO InvoiceStockIN
+(ISIInvoiceNo,ISIDateReceived,SupplierID,ISIInvoiceTotalIncl)
+VALUES('','2017-09-21 09:47',3,'')
+
+INSERT INTO InvoiceStockIN
+(ISIInvoiceNo,ISIDateReceived,SupplierID,ISIInvoiceTotalIncl)
+VALUES('','2017-09-23 09:50',4,'')
+
+INSERT INTO InvoiceStockIN
+(ISIInvoiceNo,ISIDateReceived,SupplierID,ISIInvoiceTotalIncl)
+VALUES('','2017-10-02 12:30',5,'')
 
 INSERT INTO Orders
 (OrderNumber,SupplierID)
