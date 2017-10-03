@@ -19,7 +19,7 @@ namespace ImagineTrailvan
     public partial class frmInventory : Form
     {
         public string[] fieldInv = { "InventoryID", "InvCode", "InvItem", "InvDescription", "InvCategory","InvReorderLevel", "InvMarkup"};
-        public string[] fieldSup = { "SupplierID", "SupName", "SupContactPerson", "SupREP", "SupBusinessNr", "SupCellNr","SupEmail", "SupAddress", "SupCity", "SupProv","SupPrefix","SupReorderTime"};
+        public string[] fieldSup = { "SupplierID", "SupName", "SupContactPerson", "SupREP", "SupBusinessNr", "SupCellNr", "SupEmail", "SupAddress", "SupCity", "SupProvince", "SupPrefix", "SupReorderTime" };
         public string[] fieldStockOut = { "SubStockOUTID", "InventoryID", "SSOQuantityOut" };
         public string[] fieldStockIN = { "SubStockINID", "InventoryID", "SSIQuantityIN", "SSIPrice", "SSIPrice", "SSIStockLeft" };
         public string[] fieldInvoiceStockIN = { "ISIID", "ISIInvoiceNo", "ISIDateReceived", "SupplierID", "ISIInvoiceTotalIncl" };
@@ -441,9 +441,10 @@ namespace ImagineTrailvan
                 values.Add(txtSProv.Text);
                 values.Add(txtSupPrefix.Text);
                 values.Add(txtSupReTime.Text);
-                string fieldID = txtSID.Text;
+                string fieldID = "SupplierID";
                 DataAccess datac = new DataAccess();
                 datac.updateRecCmd("Supplier", fieldID, txtSID.Text, fieldSup, values);        //Send values in fieldSup string format from textBox/ comboBox through updateCmd query to database table using InvID as key
+                dtgSuppliers.DataSource = datac.getTable("Supplier");
             }//end of try
             catch (Exception ex)
             {

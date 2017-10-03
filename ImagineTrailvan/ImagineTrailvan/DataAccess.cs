@@ -205,28 +205,25 @@ namespace ImagineTrailvan
                  statement += tblName;
                  statement += " SET ";
                  
-                 for (int i = 0; i <= fields.Length - 1; i++)
+                 for (int i = 0; i <= fields.Length - 2; i++)
                  {
-                     if (i < fields.Length - 1)
+                     if (i < fields.Length - 2)
                      {
-                         statement += fields[i] + " =" + values[i] + ", ";
-                     }//end of if (i <= fields.Length - 1)
+                         statement += fields[i+1] + " = '" + values[i+1] + "', ";
+                     }//end of if (i <= fields.Length - 2)
                      else
                      {
-                         statement += fields[i] + " =" + values[i];
-                     }//end of else (i < fields.Length - 1)
-                 }//end of for (int i = 0; i <= fields.Length - 1; i++)
+                         statement += fields[i+1] + " = '" + values[i+1]+"'";
+                     }//end of else (i < fields.Length - 2)
+                 }//end of for (int i = 0; i <= fields.Length - 2; i++)
                  statement += " WHERE ";
                  statement += idField + " = " + ID;
-                 DataSet getds;               
+                // DataSet getds;               
                  cmd = new SqlCommand(statement, conn);
-                 adapter = new SqlDataAdapter(cmd);                
+               //  adapter = new SqlDataAdapter(cmd);                
                  SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
                  conn.Open();
                  cmd.ExecuteNonQuery();
-                 getds = new DataSet();
-               //  adapter.Fill(getds, tblName);
-                 adapter.Update(ds.Tables[tblName]);
                  conn.Close();
                 
              }//end of using (SqlConnection conn = new SqlConnection(connstring))
