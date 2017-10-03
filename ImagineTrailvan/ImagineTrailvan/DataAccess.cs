@@ -240,7 +240,23 @@ namespace ImagineTrailvan
              {
                  DataTable result = new DataTable();
                //  DataSet getds;
-                 cmd = new SqlCommand("SELECT I.InventoryID,I.InvCode,I.InvItem,I.InvDescription,SI.SSIStockLeft,SI.SSIPrice FROM Inventory I INNER JOIN SubStockIN SI ON I.InventoryID=SI.InventoryID WHERE SI.SSIStockLeft !=0", conn);
+                 cmd = new SqlCommand("SELECT I.InventoryID,I.InvCode,I.InvItem,I.InvDescription,SI.SSIStockLeft,SI.SSIPrice FROM Inventory I INNER JOIN SubStockIN SI ON I.InventoryID=SI.InventoryID WHERE SI.SSIStockLeft >0", conn);
+                 adapter = new SqlDataAdapter(cmd);
+                 SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                 conn.Open();
+                 adapter.Fill(result);
+                 conn.Close();
+                 return result;
+             }//end of using (SqlConnection conn = new SqlConnection(connString))
+         }//end of public DataTable getInventoryValue()
+
+         public DataTable getFIFODatedPrice(int invID)
+         {
+             using (SqlConnection conn = new SqlConnection(connString))
+             {
+                 DataTable result = new DataTable();
+                 //  DataSet getds;
+                 cmd = new SqlCommand("SELECT inv.InvItem,ssi.SSIPrice,ssi.SSIStockLeft,isi.ISIInvoiceNo,isi.ISIDateReceived FROM InvoiceStockIN isi, SubStockIN ssi,Inventory inv WHERE isi.ISIID=ssi.ISIID AND ssi.InventoryID='" + invID + "' AND ssi.SSIStockLeft>0 AND inv.InventoryID='" + invID + "' order by (SELECT Min(ISIDateReceived) FROM InvoiceStockIN)", conn);
                  adapter = new SqlDataAdapter(cmd);
                  SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
                  conn.Open();
@@ -249,6 +265,7 @@ namespace ImagineTrailvan
                  return result;
              }//end of using (SqlConnection conn = new SqlConnection(connString))
          }//end of public DataTable getTable()
+
 
     }//end of public class DataAccess
  }//end of namespace ImagineTrailvan
