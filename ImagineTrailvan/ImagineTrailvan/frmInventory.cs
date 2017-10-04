@@ -21,7 +21,7 @@ namespace ImagineTrailvan
         public string[] fieldInv = { "InventoryID", "InvCode", "InvItem", "InvDescription", "InvCategory","InvReorderLevel", "InvMarkup"};
         public string[] fieldSup = { "SupplierID", "SupName", "SupContactPerson", "SupREP", "SupBusinessNr", "SupCellNr", "SupEmail", "SupAddress", "SupCity", "SupProvince", "SupPrefix", "SupReorderTime" };
         public string[] fieldStockOut = { "SubStockOUTID", "InventoryID", "SSOQuantityOut" };
-        public string[] fieldStockIN = { "SubStockINID", "InventoryID", "SSIQuantityIN", "SSIPrice", "SSIPrice", "SSIStockLeft" };
+        public string[] fieldStockIN = { "SubStockINID", "InventoryID", "SSIQuantityIN", "SSIPrice", "ISIID", "SSIStockLeft" };
         public string[] fieldInvoiceStockIN = { "ISIID", "ISIInvoiceNo", "ISIDateReceived", "SupplierID", "ISIInvoiceTotalIncl" };
         public string[] fieldTotalStock = { "InventoryStockID", "InventoryID", "ISTotalStock" };
 
@@ -244,21 +244,15 @@ namespace ImagineTrailvan
                 } //end of else      
 
                 //**************Get the oldest date's stock price via the InvoiceStockIN table's date and the InventoryID found in the SubStockIN table*********
-                //consider a stored procedure?
-
                 DataTable dtStockIn = new DataTable();
-                string[] fieldStockIN = { "InventoryID", "SSIStockLeft"};
-                ArrayList getValues=new ArrayList();
-                getValues.Add("="+txtInvID.Text);
-                getValues.Add(">0");
-                dtStockIn = datac.getMathRecord("SubStockIN", fieldStockIN, getValues);
+                dtStockIn = datac.getFIFODatedPrice(txtInvID.Text);
                 if (dtStockIn.Rows[0] != null)
                 {
                     txtInvPrice.Text = dtStockIn.Rows[0][3].ToString();//.Columns[4].ToString();
                 }//end of if (dtStockIn.Rows[0] != null)
                 else
                 {
-                    MessageBox.Show("no rows in datatable: "); 
+                    MessageBox.Show("No rows in datatable: "); 
                 } //end of else              
              
                 //to calculate the selling price (price + markup excl VAT)***
@@ -278,7 +272,6 @@ namespace ImagineTrailvan
             }//end of catch (Exception ex)
         }//end of private void dtgInventory_Click(object sender, EventArgs e)
 
-
         private void btnInvUpdate_Click(object sender, EventArgs e)
         {
             try
@@ -293,8 +286,8 @@ namespace ImagineTrailvan
                 invValues.Add(txtInvCat.Text.ToUpper());
                 invValues.Add(txtInvReLevel.Text);
                 invValues.Add(cmbInvMarkup.Text);
-                string idField = "InventoryID";
-                datac.updateRecCmd("Inventory", idField, txtInvID.Text, fieldInv, invValues);        //Send values in fieldInv string format from textBox/ comboBox through updateCmd query to database table using InvID as key            
+             //   string idField = "InventoryID";
+                datac.updateRecCmd("Inventory", fieldInv[0], txtInvID.Text, fieldInv, invValues);        //Send values in fieldInv string format from textBox/ comboBox through updateCmd query to database table using InvID as key            
                 dtgInventory.DataSource = datac.getTable("Inventory");
 
                 //*********SEND INSERT TO STOCK OUT TABLE**************
@@ -315,20 +308,43 @@ namespace ImagineTrailvan
                     totalValues.Add(txtInvID.Text);
                     totalValues.Add(txtInvID.Text);
                     totalValues.Add(txtInvTotalStock.Text);
-                    string idStockField = "InventoryID";
-                    datac.updateRecCmd("InventoryStock", idStockField, txtInvID.Text, fieldTotalStock, totalValues);
-
-                    txtSellPrice.Text = (double.Parse(txtInvPrice.Text) * (1 + (double.Parse(cmbInvMarkup.ValueMember)))).ToString();
+                   // string idStockField = "InventoryID";
+                    datac.updateRecCmd("InventoryStock", fieldTotalStock[2], txtInvID.Text, fieldTotalStock, totalValues);
 
                     //*******Minus quantity-out from First stock in LEFT from table SubStockIN, while using oldest date in InvoiceStockIN********                    
                     // #1) lookup oldest date in the InvoiceStockIN table, with get query.
+                    //#2) minus left until counter (stockOUT quantity is used for counter) is 0
+                    //#3) if left is smaller than counter (thus make if statement), jump to next date and left
+                    //#4) keep minussing until counter is 0 and then update to SubStockIN
 
-                    //   DataTable dtSubStockIN = new DataTable();
-                 //   ArrayList subStockIN = new ArrayList();
-                    //subStockIN.Add();
-                    //subStockIN.Add();
-                    //subStockIN.Add();
-                    //subStockIN.Add();
+                       DataTable dtSubStockIN = new DataTable();
+                       dtSubStockIN = datac.getFIFODatedPrice(txtInvID.Text);
+                       ArrayList subStockIN = new ArrayList();
+
+                    for (int i = 0; i < int.Parse(txtInvStockOut.Text)-1; i++)
+                    {
+                        if (int.Parse(dtSubStockIN.Rows[0][5].ToString())>0)
+                        {
+                            //string SSIidField="SubStockINID";
+                            subStockIN.Add(int.Parse(dtSubStockIN.Rows[0][0].ToString()));
+                            subStockIN.Add(int.Parse(dtSubStockIN.Rows[0][1].ToString()));
+                            subStockIN.Add(int.Parse(dtSubStockIN.Rows[0][2].ToString()));
+                            subStockIN.Add(int.Parse(dtSubStockIN.Rows[0][3].ToString()));
+                            subStockIN.Add(int.Parse(dtSubStockIN.Rows[0][4].ToString()));
+                            subStockIN.Add(int.Parse(dtSubStockIN.Rows[0][5].ToString())-1);
+                            datac.updateRecCmd("SubStockIN", fieldStockIN[0],dtSubStockIN.Rows[0][0].ToString(),fieldStockIN,subStockIN);
+                        }//end of if (int.Parse(dtSubStockIN.Rows[0][2].ToString())>0)
+                        else
+                        {
+                            dtSubStockIN = datac.getFIFODatedPrice(txtInvID.Text);
+                            //not very sure how to continue from here
+                        }//end of else
+
+                    }//end of for (int i = 0; i < int.Parse(txtInvStockOut.Text); i++)
+
+
+                    
+
 
                 }//end of if((txtInvStockOut.Text!="")
                 
