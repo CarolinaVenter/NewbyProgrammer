@@ -247,13 +247,13 @@ namespace ImagineTrailvan
              }//end of using (SqlConnection conn = new SqlConnection(connString))
          }//end of public DataTable getInventoryValue()
 
-         public DataTable getFIFODatedPrice(int invID)
+         public DataTable getFIFODatedPrice(string invID)
          {
              using (SqlConnection conn = new SqlConnection(connString))
              {
                  DataTable result = new DataTable();
                  //  DataSet getds;
-                 cmd = new SqlCommand("SELECT inv.InvItem,ssi.SSIPrice,ssi.SSIStockLeft,isi.ISIInvoiceNo,isi.ISIDateReceived FROM InvoiceStockIN isi, SubStockIN ssi,Inventory inv WHERE isi.ISIID=ssi.ISIID AND ssi.InventoryID='" + invID + "' AND ssi.SSIStockLeft>0 AND inv.InventoryID='" + invID + "' order by (SELECT Min(ISIDateReceived) FROM InvoiceStockIN)", conn);
+                 cmd = new SqlCommand("SELECT ssi.SubStockINID,inv.InvItem,ssi.SSIQuantityIN,ssi.SSIPrice,isi.ISIID,ssi.SSIStockLeft,isi.ISIInvoiceNo,isi.ISIDateReceived FROM InvoiceStockIN isi, SubStockIN ssi,Inventory inv WHERE isi.ISIID=ssi.ISIID AND ssi.InventoryID='" + invID + "' AND ssi.SSIStockLeft>0 AND inv.InventoryID='" + invID + "' order by (SELECT Min(ISIDateReceived) FROM InvoiceStockIN)", conn);
                  adapter = new SqlDataAdapter(cmd);
                  SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
                  conn.Open();
