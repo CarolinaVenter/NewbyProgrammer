@@ -47,7 +47,7 @@ namespace ImagineTrailvan
                // dtgInventorySummary.DataSource = datac.InventoryValue();
                 dtgOrderSupSearch.DataSource = datac.getTable("Supplier");
 
-                tabStock.Controls.Add(dtgInventory);
+                tabStockOUT.Controls.Add(dtgInventory);
                 tabSuppliers.Controls.Add(dtgSuppliers);
                 tabInventoryValue.Controls.Add(dtgInventoryValue);
                 tabInventoryValue.Controls.Add(txtStockValue);
@@ -324,8 +324,7 @@ namespace ImagineTrailvan
                     for (int i = 0; i < int.Parse(txtInvStockOut.Text)-1; i++)
                     {
                         if (int.Parse(dtSubStockIN.Rows[0][5].ToString())>0)
-                        {
-                            //string SSIidField="SubStockINID";
+                        {//string SSIidField="SubStockINID";
                             subStockIN.Add(int.Parse(dtSubStockIN.Rows[0][0].ToString()));
                             subStockIN.Add(int.Parse(dtSubStockIN.Rows[0][1].ToString()));
                             subStockIN.Add(int.Parse(dtSubStockIN.Rows[0][2].ToString()));
@@ -335,23 +334,20 @@ namespace ImagineTrailvan
                             datac.updateRecCmd("SubStockIN", fieldStockIN[0],dtSubStockIN.Rows[0][0].ToString(),fieldStockIN,subStockIN);
                         }//end of if (int.Parse(dtSubStockIN.Rows[0][2].ToString())>0)
                         else
-                        {
-                            dtSubStockIN = datac.getFIFODatedPrice(txtInvID.Text);
+                        {//assuming when it jumps to the else, it should probably minus again before it exits the else and runs the next counter which then continues to the next if
+                                dtSubStockIN = datac.getFIFODatedPrice(txtInvID.Text);
+                                subStockIN.Add(int.Parse(dtSubStockIN.Rows[0][0].ToString()));
+                                subStockIN.Add(int.Parse(dtSubStockIN.Rows[0][1].ToString()));
+                                subStockIN.Add(int.Parse(dtSubStockIN.Rows[0][2].ToString()));
+                                subStockIN.Add(int.Parse(dtSubStockIN.Rows[0][3].ToString()));
+                                subStockIN.Add(int.Parse(dtSubStockIN.Rows[0][4].ToString()));
+                                subStockIN.Add(int.Parse(dtSubStockIN.Rows[0][5].ToString()) - 1);
+                                datac.updateRecCmd("SubStockIN", fieldStockIN[0], dtSubStockIN.Rows[0][0].ToString(), fieldStockIN, subStockIN);                          
                             //not very sure how to continue from here
                         }//end of else
-
                     }//end of for (int i = 0; i < int.Parse(txtInvStockOut.Text); i++)
-
-
-                    
-
-
                 }//end of if((txtInvStockOut.Text!="")
-                
-
-                dtgInventory.DataSource = datac.getTable("Inventory");
-
-
+              dtgInventory.DataSource = datac.getTable("Inventory");
             }//end of try
             catch (Exception ex)
             {
