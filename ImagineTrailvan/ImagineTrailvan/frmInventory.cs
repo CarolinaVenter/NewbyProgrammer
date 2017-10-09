@@ -32,6 +32,8 @@ namespace ImagineTrailvan
 
         private void frmInventory_Load(object sender, EventArgs e)
         {
+            // TODO: This line of code loads data into the 'supplierDataSet.Supplier' table. You can move, or remove it, as needed.
+            this.supplierTableAdapter.Fill(this.supplierDataSet.Supplier);
             try
             {
                 // TODO: This line of code loads data into the 'supplierNameDataSet.Supplier' table. You can move, or remove it, as needed.
@@ -42,6 +44,7 @@ namespace ImagineTrailvan
                // dtgInventory.DataSource = datac.Inventory();
                 dtgInventory.DataSource = datac.getTable("Inventory");
                 dtgSuppliers.DataSource = datac.getTable("Supplier");
+                dtgStockIN.DataSource = datac.getTable("InvoiceStockIN");
                 dtgInventoryValue.DataSource = datac.getInventoryValue();
                 dtgSupplierSearch.DataSource = datac.getTable("Supplier");
                // dtgInventorySummary.DataSource = datac.InventoryValue();
@@ -49,6 +52,8 @@ namespace ImagineTrailvan
 
                 tabStockOUT.Controls.Add(dtgInventory);
                 tabSuppliers.Controls.Add(dtgSuppliers);
+                
+
                 tabInventoryValue.Controls.Add(dtgInventoryValue);
                 tabInventoryValue.Controls.Add(txtStockValue);
                 tabSupplierSummary.Controls.Add(dtgSupplierSearch);
@@ -311,7 +316,9 @@ namespace ImagineTrailvan
                    // string idStockField = "InventoryID";
                     datac.updateRecCmd("InventoryStock", fieldTotalStock[2], txtInvID.Text, fieldTotalStock, totalValues);
 
-                    //*******Minus quantity-out from First stock in LEFT from table SubStockIN, while using oldest date in InvoiceStockIN********                    
+                    //*******Minus quantity-out from First stock in LEFT from table SubStockIN, while using oldest date in InvoiceStockIN********    
+                
+
                     // #1) lookup oldest date in the InvoiceStockIN table, with get query.
                     //#2) minus left until counter (stockOUT quantity is used for counter) is 0
                     //#3) if left is smaller than counter (thus make if statement), jump to next date and left
@@ -525,6 +532,105 @@ namespace ImagineTrailvan
             }//end of catch (Exception ex)
         }//end of private void btnDeleteSup_Click(object sender, EventArgs e)
         #endregion
+
+        #region tabStockIN Controls
+        private void btnISIsearchInventory_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (txtISIinvCode.Text != "")
+                {
+                    DataAccess datac = new DataAccess();
+                    ArrayList values = new ArrayList(); //make arrayList to store all values of current record    
+                    string[] searchField = { "InvCode" };
+                    values.Add(txtInvCode.Text);
+
+                    dtgStockIN.DataSource = datac.getRecord("Inventory", searchField, values);
+                }//end of if (txtInvCode.Text!=null)
+                else if (txtISIinvItem.Text != "")
+                {
+
+                    DataAccess datac = new DataAccess();
+                    ArrayList values = new ArrayList(); //make arrayList to store all values of current record    
+                    string[] searchField = { "InvItem" };
+
+                    values.Add(txtInvItem.Text.ToUpper());
+                    dtgStockIN.DataSource = datac.getRecord("Inventory", searchField, values);
+
+                }//end of if (txtInvItem.Text!=null)
+                else if (txtISIinvDesc.Text != "")
+                {
+                    DataAccess datac = new DataAccess();
+                    ArrayList values = new ArrayList(); //make arrayList to store all values of current record    
+                    string[] searchField = { "InvDescription" };
+
+                    values.Add(txtInvDesc.Text.ToUpper());
+                    dtgStockIN.DataSource = datac.getRecord("Inventory", searchField, values);
+                }//end of if (txtInvDesc.Text!=null)
+                else if (txtISIinvCat.Text != "")
+                {
+                    DataAccess datac = new DataAccess();
+                    ArrayList values = new ArrayList(); //make arrayList to store all values of current record    
+                    string[] searchField = { "InvCategory" };
+
+                    values.Add(txtInvCat.Text.ToUpper());
+                    dtgStockIN.DataSource = datac.getRecord("Inventory", searchField, values);
+                }//end of if (txtInvDesc.Text!=null)
+                else //if all is still empty, then do this. 
+                {
+                    MessageBox.Show("Please enter value to search for", "Search failed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //clear all textboxes 
+                    txtISIinvID.Clear();
+                    txtISIinvCode.Clear();
+                    txtISIinvItem.Clear();
+                    txtISIinvDesc.Clear();
+                    txtISIinvCat.Clear();
+                    txtISIpriceIN.Clear();
+                    txtISIquantityIn.Clear();
+                    txtISItotalStock.Clear();
+                    txtISIsupBus.Clear();
+                    txtISIsupEmail.Clear();
+
+                }//end of else
+            }//end of try
+            catch (Exception ex)
+            {
+                MessageBox.Show("Search Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //  throw;
+            }//end of catch (Exception ex)
+        }//end of private void btnISIsearchInventory_Click(object sender, EventArgs e)
+
+        private void dtgStockIN_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                txtISIinvID.Text = dtgStockIN.SelectedRows[0].Cells[0].Value.ToString();
+                txtISIinvCode.Text = dtgStockIN.SelectedRows[0].Cells[1].Value.ToString();
+                txtISIinvItem.Text = dtgStockIN.SelectedRows[0].Cells[2].Value.ToString().ToUpper();
+                txtISIinvDesc.Text = dtgStockIN.SelectedRows[0].Cells[3].Value.ToString().ToUpper();
+                txtISIinvCat.Text = dtgStockIN.SelectedRows[0].Cells[4].Value.ToString().ToUpper();
+
+                DataAccess datac = new DataAccess();
+                //****************Get the stock total quantity from InventoryStock table, relevant to the InventoryID******************
+                DataTable dtStockIN = new DataTable();
+                string[] fieldTotal = { "InventoryID" };
+                ArrayList getIDValue = new ArrayList();
+                getIDValue.Add("=" + txtISIinvID.Text);
+
+                dtStockIN = datac.getMathRecord("InventoryStock", fieldTotal, getIDValue);
+                txtISItotalStock.Text = dtStockIN.Rows[0][2].ToString();
+            }//end of try
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading data from datagrid to textBoxes : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //throw;
+            }//end of catch (Exception ex)
+        }//end of private void dtgStockIN_Click(object sender, EventArgs e)
+
+
+        #endregion
+       
+
 
        
 
