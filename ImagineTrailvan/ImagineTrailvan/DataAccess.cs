@@ -21,7 +21,7 @@ namespace ImagineTrailvan
          {
 
          }//end of public DataAccess()
-         #region GetQueries
+         #region Dynamic GetQueries
          public DataTable getTable(string tblName)
          {
              using (SqlConnection conn = new SqlConnection(connString))
@@ -230,7 +230,7 @@ namespace ImagineTrailvan
          }//end of public DataTable updateRecCmd(string tblName, string idField, string ID, string[] fields, ArrayList values)
 
          #endregion
-
+         #region Inventory GetQueries
          public DataTable getInventoryValue()
          {
              using (SqlConnection conn = new SqlConnection(connString))
@@ -253,7 +253,7 @@ namespace ImagineTrailvan
              {
                  DataTable result = new DataTable();
                  //  DataSet getds;
-                 cmd = new SqlCommand("SELECT ssi.SubStockINID,inv.InvItem,ssi.SSIQuantityIN,ssi.SSIPrice,isi.ISIID,ssi.SSIStockLeft,isi.ISIInvoiceNo,isi.ISIDateReceived FROM InvoiceStockIN isi, SubStockIN ssi,Inventory inv WHERE isi.ISIID=ssi.ISIID AND ssi.InventoryID='" + invID + "' AND ssi.SSIStockLeft>0 AND inv.InventoryID='" + invID + "' order by (SELECT Min(ISIDateReceived) FROM InvoiceStockIN)", conn);
+                 cmd = new SqlCommand("SELECT ssi.SubStockINID,inv.InventoryID,inv.InvItem,ssi.SSIQuantityIN,ssi.SSIPrice,isi.ISIID,ssi.SSIStockLeft,isi.ISIInvoiceNo,isi.ISIDateReceived FROM InvoiceStockIN isi, SubStockIN ssi,Inventory inv WHERE ssi.InventoryID='" + invID + "' AND ssi.SSIStockLeft>0 AND inv.InventoryID='" + invID + "' AND isi.ISIDateReceived=(SELECT min(ISIDateReceived) FROM InvoiceStockIN WHERE isi.ISIID=ssi.ISIID )", conn);
                  adapter = new SqlDataAdapter(cmd);
                  SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
                  conn.Open();
@@ -261,8 +261,104 @@ namespace ImagineTrailvan
                  conn.Close();
                  return result;
              }//end of using (SqlConnection conn = new SqlConnection(connString))
-         }//end of public DataTable getTable()
+         }//end of public DataTable getFIFODatedPrice(string invID)
+
+         public DataTable getAllInvoice()
+         {
+             using (SqlConnection conn = new SqlConnection(connString))
+             {
+                 DataTable result = new DataTable();
+                 //  DataSet getds; "ISIID", "ISIInvoiceNo", "ISIDateReceived", "SupplierID", "ISIInvoiceTotalIncl" 
+                 cmd = new SqlCommand("SELECT isi.ISIID, isi.ISIInvoiceNo, isi.ISIDateReceived, sup.SupName, isi.ISIInvoiceTotalIncl FROM InvoiceStockIN isi, Supplier sup WHERE isi.SupplierID=sup.SupplierID", conn);
+                 adapter = new SqlDataAdapter(cmd);
+                 SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                 conn.Open();
+                 adapter.Fill(result);
+                 conn.Close();
+                 return result;
+             }//end of using (SqlConnection conn = new SqlConnection(connString))
+         }//end of public DataTable getCurrentInvoice(string isiID)        
 
 
+         public DataTable getStockInInvoice(string isiID)
+         {
+             using (SqlConnection conn = new SqlConnection(connString))
+             {
+                 DataTable result = new DataTable();
+                 // "SubStockINID", "InventoryID", "SSIQuantityIN", "SSIPrice", "ISIID", "SSIStockLeft"
+                 cmd = new SqlCommand("SELECT inv.InventoryID, inv.InvCode, inv.InvItem, ssi.SSIQuantityIN, ssi.SSIPrice, inv.InvReorderLevel, ssi.SubStockINID, isi.ISIID FROM InvoiceStockIN isi, SubStockIN ssi, Inventory inv  WHERE ssi.ISIID='" + isiID + "' AND isi.ISIID='" + isiID + "' AND ssi.InventoryID=inv.InventoryID", conn);
+                 adapter = new SqlDataAdapter(cmd);
+                 SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                 conn.Open();
+                 adapter.Fill(result);
+                 conn.Close();
+                 return result;
+             }//end of using (SqlConnection conn = new SqlConnection(connString))
+         }//end of public DataTable getStockInInvoice(string isiID)
+
+         public DataTable getMaxDatedPrice(string invID)
+         {
+             using (SqlConnection conn = new SqlConnection(connString))
+             {
+                 DataTable result = new DataTable();
+                 //  DataSet getds;
+                 cmd = new SqlCommand("SELECT ssi.SubStockINID,inv.InventoryID,inv.InvItem,ssi.SSIQuantityIN,ssi.SSIPrice,isi.ISIID,ssi.SSIStockLeft,isi.ISIInvoiceNo,isi.ISIDateReceived FROM InvoiceStockIN isi, SubStockIN ssi,Inventory inv WHERE ssi.InventoryID='" + invID + "' AND ssi.SSIStockLeft>0 AND inv.InventoryID='" + invID + "' AND isi.ISIDateReceived=(SELECT min(ISIDateReceived) FROM InvoiceStockIN WHERE isi.ISIID=ssi.ISIID )", conn);
+                 adapter = new SqlDataAdapter(cmd);
+                 SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                 conn.Open();
+                 adapter.Fill(result);
+                 conn.Close();
+                 return result;
+             }//end of using (SqlConnection conn = new SqlConnection(connString))
+         }//end of public DataTable getMaxDatedPrice(string invID)
+
+         public DataTable getLowStock()
+         {
+             using (SqlConnection conn = new SqlConnection(connString))
+             {
+                 DataTable result = new DataTable();
+                 //  DataSet getds;
+                 cmd = new SqlCommand("SELECT inv.InventoryID,inv.InvCode,inv.InvItem,inv.InvDescription,inv.InvSupplierDescription, inv.InvReorderLevel, tot.ISTotalStock FROM Inventory inv, InventoryStock tot WHERE inv.InventoryID= tot.InventoryID AND inv.InvReorderLevel>=tot.ISTotalStock", conn);
+                 adapter = new SqlDataAdapter(cmd);
+                 SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                 conn.Open();
+                 adapter.Fill(result);
+                 conn.Close();
+                 return result;
+             }//end of using (SqlConnection conn = new SqlConnection(connString))
+         }//end of public DataTable getLowStock()
+
+         public DataTable getAllOrderHistory()
+         {
+             using (SqlConnection conn = new SqlConnection(connString))
+             {
+                 DataTable result = new DataTable();
+                 //  DataSet getds;
+                 cmd = new SqlCommand("SELECT cast(sup.SupPrefix AS varchar(10)) +'-'+ cast(ord.OrderNumber AS varchar(10)) AS OrderNum, sup.SupName,ord.OrdersDate, ord.OrderEstimateTotal FROM Orders ord,Supplier sup WHERE sup.SupplierID=ord.SupplierID ORDER BY ord.OrdersDate DESC", conn);
+                 adapter = new SqlDataAdapter(cmd);
+                 SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                 conn.Open();
+                 adapter.Fill(result);
+                 conn.Close();
+                 return result;
+             }//end of using (SqlConnection conn = new SqlConnection(connString))
+         }//end of public DataTable getAllOrderHistory()
+
+         public DataTable getSupplierOrderHistory(int supID)
+         {
+             using (SqlConnection conn = new SqlConnection(connString))
+             {
+                 DataTable result = new DataTable();
+                 //  DataSet getds;
+                 cmd = new SqlCommand("SELECT cast(sup.SupPrefix AS varchar(10)) +'-'+ cast(ord.OrderNumber AS varchar(10)) AS OrderNum, sup.SupName,ord.OrdersDate, ord.OrderEstimateTotal FROM Orders ord,Supplier sup WHERE sup.SupplierID=ord.SupplierID ORDER BY ord.OrdersDate DESC", conn);
+                 adapter = new SqlDataAdapter(cmd);
+                 SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                 conn.Open();
+                 adapter.Fill(result);
+                 conn.Close();
+                 return result;
+             }//end of using (SqlConnection conn = new SqlConnection(connString))
+         }//end of public DataTable getAllOrderHistory()
+         #endregion
     }//end of public class DataAccess
  }//end of namespace ImagineTrailvan
