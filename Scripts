@@ -12,7 +12,9 @@ SupAddress TEXT NULL,
 SupCity TEXT NULL,
 SupProvince TEXT NULL,
 SupPrefix TEXT NOT NULL,
-SupReorderTime INT NULL
+SupReorderTime INT NULL,
+SupPaymentTerm TEXT NULL,
+SupIsDeleted BIT DEFAULT 0 NOT NULL
 )
 CREATE TABLE Inventory
 (
@@ -20,9 +22,13 @@ InventoryID	INT PRIMARY KEY IDENTITY (1,1) NOT NULL,
 InvCode TEXT NULL,
 InvItem TEXT NOT NULL,
 InvDescription TEXT NULL,
+InvSupplierDescription TEXT NULL,
+InvLength TEXT NULL,
 InvCategory TEXT NULL,
 InvReorderLevel INT NULL,
-InvMarkup INT DEFAULT 25 NULL
+InvMarkup INT DEFAULT 25 NULL,
+InvIsDeleted BIT DEFAULT 0 NOT NULL
+
 )
 CREATE TABLE InvoiceStockIN
 (
@@ -46,7 +52,8 @@ CREATE TABLE SubStockOUT
 SubStockOUTID INT PRIMARY KEY IDENTITY (1,1) NOT NULL,
 InventoryID INT NOT NULL,
 SSOQuantityOut INT NOT NULL,
-SSODateOut DATETIME NOT NULL
+SSODateOut DATETIME NOT NULL,
+InvIsAccountedFor BIT DEFAULT 0 NOT NULL
 )
 CREATE TABLE InventoryStock
 (
@@ -58,61 +65,70 @@ CREATE TABLE Orders
 (
 OrdersID INT PRIMARY KEY IDENTITY(1,1),
 OrderNumber INT NOT NULL,
-SupplierID INT NOT NULL
+SupplierID INT NOT NULL,
+OrdersDate DATETIME NOT NULL,
+OrderEstimateTotal MONEY NULL
 )
 CREATE TABLE SubOrders
 (
 SubOrdersID INT PRIMARY KEY IDENTITY (1,1) NOT NULL,
 InventoryID INT NOT NULL,
 SOOrderedQuantity INT NOT NULL,
-OrdersID INT NOT NULL,
-SOLength INT NULL
+SOPrice MONEY NULL,
+OrdersID INT NOT NULL
 )
 
 USE ImagineTrailvanDB
 INSERT INTO Inventory
-(InvCode,InvItem,InvDescription,InvCategory,InvReorderLevel,InvMarkup)
-VALUES ('16A3P220V','MENNEKES CARACONTAC CEE','220 INLET','ELECTRICAL',4,25)
+(InvCode,InvItem,InvDescription,InvSupplierDescription,InvCategory,InvReorderLevel,InvMarkup,InvIsDeleted)
+VALUES ('16A3P220V','MENNEKES CARACONTAC CEE','220 INLET','','ELECTRICAL',4,25,0)
 
 INSERT INTO Inventory
-(InvCode,InvItem,InvDescription,InvCategory,InvReorderLevel,InvMarkup)
-VALUES ('','RED LENS LIGHT 12VOLT/11WATT','KITCHEN RED LIGHT','ELECTRICAL',5,25)
+(InvCode,InvItem,InvDescription,InvSupplierDescription,InvCategory,InvReorderLevel,InvMarkup,InvIsDeleted)
+VALUES ('','RED LENS LIGHT 12VOLT/11WATT','KITCHEN RED LIGHT','','ELECTRICAL',5,25,1)
 
 INSERT INTO Inventory
-(InvCode,InvItem,InvDescription,InvCategory,InvReorderLevel,InvMarkup)
-VALUES ('','10.0MM DRILL BIT','','TOOLS',4,25)
+(InvCode,InvItem,InvDescription,InvSupplierDescription,InvCategory,InvReorderLevel,InvMarkup,InvIsDeleted)
+VALUES ('','10.0MM DRILL BIT','','BOX','TOOLS',4,25,0)
+
 
 INSERT INTO Supplier
-(SupName,SupContactPerson,SupREP,SupCellNr,SupBusinessNr,SupEmail,SupAddress,SupCity,SupProvince,SupPrefix,SupReorderTime)
-VALUES ('VOLTEX/ ATLAS GROUP','YVONNE','','082 070 7855','011 864 5255','','','','','EE',7)
+(SupName,SupContactPerson,SupREP,SupCellNr,SupBusinessNr,SupEmail,SupAddress,SupCity,SupProvince,SupPrefix,SupReorderTime,SupPaymentTerm,SupIsDeleted)
+VALUES ('SUPPLIER UNKNOWN','','','','','','','','','STOCK',0,'',0)
 
 INSERT INTO Supplier
-(SupName,SupContactPerson,SupREP,SupCellNr,SupBusinessNr,SupEmail,SupAddress,SupCity,SupProvince,SupPrefix,SupReorderTime)
-VALUES ('SONDOR INDUSTRIES (PTY) LTD','DENNIS FRITZ','','','012 803 4471','dennis.fritz@sondor.co.za','266 HAAK STREET, WALTLOO','PRETORIA','GAUTENG','SON',7)
+(SupName,SupContactPerson,SupREP,SupCellNr,SupBusinessNr,SupEmail,SupAddress,SupCity,SupProvince,SupPrefix,SupReorderTime,SupPaymentTerm,SupIsDeleted)
+VALUES ('VOLTEX/ ATLAS GROUP','YVONNE','','082 070 7855','011 864 5255','','','','','EE',7,'Account',0)
 
 INSERT INTO Supplier
-(SupName,SupContactPerson,SupREP,SupCellNr,SupBusinessNr,SupEmail,SupAddress,SupCity,SupProvince,SupPrefix,SupReorderTime)
-VALUES ('LEISURE QUIP','THINUS','','','011 822 4150','','','','','LQ',5)
+(SupName,SupContactPerson,SupREP,SupCellNr,SupBusinessNr,SupEmail,SupAddress,SupCity,SupProvince,SupPrefix,SupReorderTime,SupPaymentTerm,SupIsDeleted)
+VALUES ('SONDOR INDUSTRIES (PTY) LTD','DENNIS FRITZ','','','012 803 4471','dennis.fritz@sondor.co.za','266 HAAK STREET, WALTLOO','PRETORIA','GAUTENG','SON',7,'COD (Electronic Transfer)',0)
 
 INSERT INTO Supplier
-(SupName,SupContactPerson,SupREP,SupCellNr,SupBusinessNr,SupEmail,SupAddress,SupCity,SupProvince,SupPrefix,SupReorderTime)
-VALUES ('BEARING MAN GROUP','Paul','','','012 849 1700','pretoriaeast@bmgworld.net','','','','BMG',4)
+(SupName,SupContactPerson,SupREP,SupCellNr,SupBusinessNr,SupEmail,SupAddress,SupCity,SupProvince,SupPrefix,SupReorderTime,SupPaymentTerm,SupIsDeleted)
+VALUES ('LEISURE QUIP','THINUS','','','011 822 4150','','','','','LQ',5,'EFT',0)
 
 INSERT INTO Supplier
-(SupName,SupContactPerson,SupREP,SupCellNr,SupBusinessNr,SupEmail,SupAddress,SupCity,SupProvince,SupPrefix,SupReorderTime)
-VALUES ('NATIONAL LUNA','KOBUS / CHANTAL','','','011 452 5438','sales@nationalluna.com','','','','NL',6)
+(SupName,SupContactPerson,SupREP,SupCellNr,SupBusinessNr,SupEmail,SupAddress,SupCity,SupProvince,SupPrefix,SupReorderTime,SupPaymentTerm,SupIsDeleted)
+VALUES ('BEARING MAN GROUP','PAUL','','','012 849 1700','pretoriaeast@bmgworld.net','','','','BMG',4,'Account',0)
+
+INSERT INTO Supplier
+(SupName,SupContactPerson,SupREP,SupCellNr,SupBusinessNr,SupEmail,SupAddress,SupCity,SupProvince,SupPrefix,SupReorderTime,SupPaymentTerm,SupIsDeleted)
+VALUES ('NATIONAL LUNA','KOBUS / CHANTAL','','','011 452 5438','sales@nationalluna.com','','','','NL',6,'COD',0)
+
 
 INSERT INTO InventoryStock
 (InventoryID,ISTotalStock)
-VALUES (1,9)
+VALUES (1,14)
 
 INSERT INTO InventoryStock
 (InventoryID,ISTotalStock)
-VALUES (2,16)
+VALUES (2,25)
 
 INSERT INTO InventoryStock
 (InventoryID,ISTotalStock)
-VALUES (3,4)
+VALUES (3,11)
+
 
 INSERT INTO SubStockIN
 (InventoryID,SSIQuantityIN,SSIPrice,ISIID,SSIStockLeft)
@@ -120,57 +136,95 @@ VALUES(1,9,'494.73',1,9)
 
 INSERT INTO SubStockIN
 (InventoryID,SSIQuantityIN,SSIPrice,ISIID,SSIStockLeft)
-VALUES(2,16,'333.33',5,16)
+VALUES(1,5,'500.00',4,5)
 
 INSERT INTO SubStockIN
 (InventoryID,SSIQuantityIN,SSIPrice,ISIID,SSIStockLeft)
-VALUES(3,5,'66.46',4,5)
+VALUES(2,16,'333.33',2,16)
+
+INSERT INTO SubStockIN
+(InventoryID,SSIQuantityIN,SSIPrice,ISIID,SSIStockLeft)
+VALUES(2,9,'666.66',5,9)
+
+INSERT INTO SubStockIN
+(InventoryID,SSIQuantityIN,SSIPrice,ISIID,SSIStockLeft)
+VALUES(3,5,'66.46',3,5)
+
+INSERT INTO SubStockIN
+(InventoryID,SSIQuantityIN,SSIPrice,ISIID,SSIStockLeft)
+VALUES(3,6,'100.00',6,6)
+
 
 INSERT INTO InvoiceStockIN
 (ISIInvoiceNo,ISIDateReceived,SupplierID,ISIInvoiceTotalIncl)
-VALUES('','2017-09-21 09:38',1,'')
+VALUES('0001','2017-09-21',1,'')
 
 INSERT INTO InvoiceStockIN
 (ISIInvoiceNo,ISIDateReceived,SupplierID,ISIInvoiceTotalIncl)
-VALUES('','2017-09-21 09:43',2,'')
+VALUES('inv0002','2017-09-21',5,'')
 
 INSERT INTO InvoiceStockIN
 (ISIInvoiceNo,ISIDateReceived,SupplierID,ISIInvoiceTotalIncl)
-VALUES('','2017-09-21 09:47',3,'')
+VALUES('iv003','2017-09-21',4,'')
 
 INSERT INTO InvoiceStockIN
 (ISIInvoiceNo,ISIDateReceived,SupplierID,ISIInvoiceTotalIncl)
-VALUES('','2017-09-23 09:50',4,'')
+VALUES('0002','2017-09-23',1,'')
 
 INSERT INTO InvoiceStockIN
 (ISIInvoiceNo,ISIDateReceived,SupplierID,ISIInvoiceTotalIncl)
-VALUES('','2017-10-02 12:30',5,'')
+VALUES('inv0003','2017-10-02',5,'')
+
+INSERT INTO InvoiceStockIN
+(ISIInvoiceNo,ISIDateReceived,SupplierID,ISIInvoiceTotalIncl)
+VALUES('in004','2017-10-16',4,'')
+
 
 INSERT INTO Orders
-(OrderNumber,SupplierID)
-VALUES(35,1)
+(OrderNumber,SupplierID,OrdersDate,OrderEstimateTotal)
+VALUES(35,1,'2017-10-16','')
 
 INSERT INTO Orders
-(OrderNumber,SupplierID)
-VALUES(74,2)
+(OrderNumber,SupplierID,OrdersDate,OrderEstimateTotal)
+VALUES(74,5,'2017-10-10','')
 
 INSERT INTO Orders
-(OrderNumber,SupplierID)
-VALUES(46,3)
+(OrderNumber,SupplierID,OrdersDate,OrderEstimateTotal)
+VALUES(46,4,'2017-10-26','')
 
 INSERT INTO Orders
-(OrderNumber,SupplierID)
-VALUES(227,4)
+(OrderNumber,SupplierID,OrdersDate,OrderEstimateTotal)
+VALUES(60,1,'2017-10-20','')
+
+INSERT INTO Orders
+(OrderNumber,SupplierID,OrdersDate,OrderEstimateTotal)
+VALUES(148,5,'2017-10-06','')
+
+INSERT INTO Orders
+(OrderNumber,SupplierID,OrdersDate,OrderEstimateTotal)
+VALUES(92,4,'2017-10-19','')
+
 
 INSERT INTO SubOrders
-(InventoryID,SOOrderedQuantity,OrdersID,SOLength)
-VALUES(1,9,1,'0')
+(InventoryID,SOOrderedQuantity,SOPrice,OrdersID,SOLength)
+VALUES(1,9,'300.00',1,'0')
 
 INSERT INTO SubOrders
-(InventoryID,SOOrderedQuantity,OrdersID,SOLength)
-VALUES(2,16,5,'')
+(InventoryID,SOOrderedQuantity,SOPrice,OrdersID,SOLength)
+VALUES(2,16,'200.00',2,'')
 
 INSERT INTO SubOrders
-(InventoryID,SOOrderedQuantity,OrdersID,SOLength)
-VALUES(3,4,4,'')
+(InventoryID,SOOrderedQuantity,SOPrice,OrdersID,SOLength)
+VALUES(3,4,'400.00',3,'')
 
+INSERT INTO SubOrders
+(InventoryID,SOOrderedQuantity,SOPrice,OrdersID,SOLength)
+VALUES(1,9,'500.00',4,'0')
+
+INSERT INTO SubOrders
+(InventoryID,SOOrderedQuantity,SOPrice,OrdersID,SOLength)
+VALUES(2,16,'600.00',5,'')
+
+INSERT INTO SubOrders
+(InventoryID,SOOrderedQuantity,SOPrice,OrdersID,SOLength)
+VALUES(3,4,'700.00',6,'')
