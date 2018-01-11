@@ -184,16 +184,20 @@
             this.lblSearchSup = new System.Windows.Forms.Label();
             this.txtSearchSupplier = new System.Windows.Forms.TextBox();
             this.dtgSupplierSearch = new System.Windows.Forms.DataGridView();
-            this.tabLowStock = new System.Windows.Forms.TabPage();
+            this.tabOrderStock = new System.Windows.Forms.TabPage();
+            this.cbxOrderSup = new System.Windows.Forms.ComboBox();
+            this.btnOrderSupGO = new System.Windows.Forms.Button();
+            this.btnOrderFilter = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.txtOrderNumber = new System.Windows.Forms.TextBox();
             this.label38 = new System.Windows.Forms.Label();
             this.label37 = new System.Windows.Forms.Label();
             this.label36 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
-            this.cbxOrderSup = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.masktxtOrderNo = new System.Windows.Forms.MaskedTextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.txtOrderTotalIncl = new System.Windows.Forms.TextBox();
             this.txtOrderVAT = new System.Windows.Forms.TextBox();
@@ -201,25 +205,20 @@
             this.btnOrderNextItem = new System.Windows.Forms.Button();
             this.btnOrderPreview = new System.Windows.Forms.Button();
             this.btnSaveOrder = new System.Windows.Forms.Button();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtOrderInvReQaunt = new System.Windows.Forms.TextBox();
-            this.txtOrderInvLength = new System.Windows.Forms.TextBox();
-            this.txtOrderInvPrice = new System.Windows.Forms.TextBox();
-            this.txtOrderInvDesc = new System.Windows.Forms.TextBox();
-            this.txtOrderInvItem = new System.Windows.Forms.TextBox();
-            this.txtOrderInvID = new System.Windows.Forms.TextBox();
-            this.btnOrderSupGO = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.dtgSupOrderHistory = new System.Windows.Forms.DataGridView();
             this.btnRemoveAll = new System.Windows.Forms.Button();
             this.btnAddAll = new System.Windows.Forms.Button();
             this.btnRemoveSingle = new System.Windows.Forms.Button();
             this.btnAddSingle = new System.Windows.Forms.Button();
             this.dtgOrderInvList = new System.Windows.Forms.DataGridView();
+            this.invID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.invCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.invItem = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.invSupDescription = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.invDescription = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.invLength = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.orderQuantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.orderPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dtgSupOrderList = new System.Windows.Forms.DataGridView();
             this.tabOrderInventory = new System.Windows.Forms.TabPage();
             this.txtOrderID = new System.Windows.Forms.TextBox();
@@ -262,7 +261,7 @@
             this.tabSupplierSummary.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgInventorySummary)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgSupplierSearch)).BeginInit();
-            this.tabLowStock.SuspendLayout();
+            this.tabOrderStock.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgSupOrderHistory)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgOrderInvList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgSupOrderList)).BeginInit();
@@ -280,7 +279,7 @@
             this.tConInventory.Controls.Add(this.tabSuppliers);
             this.tConInventory.Controls.Add(this.tabInventoryValue);
             this.tConInventory.Controls.Add(this.tabSupplierSummary);
-            this.tConInventory.Controls.Add(this.tabLowStock);
+            this.tConInventory.Controls.Add(this.tabOrderStock);
             this.tConInventory.Controls.Add(this.tabOrderInventory);
             this.tConInventory.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tConInventory.Location = new System.Drawing.Point(0, 0);
@@ -1855,61 +1854,117 @@
             this.dtgSupplierSearch.Size = new System.Drawing.Size(1020, 119);
             this.dtgSupplierSearch.TabIndex = 0;
             // 
-            // tabLowStock
+            // tabOrderStock
             // 
-            this.tabLowStock.Controls.Add(this.label38);
-            this.tabLowStock.Controls.Add(this.label37);
-            this.tabLowStock.Controls.Add(this.label36);
-            this.tabLowStock.Controls.Add(this.label15);
-            this.tabLowStock.Controls.Add(this.cbxOrderSup);
-            this.tabLowStock.Controls.Add(this.label10);
-            this.tabLowStock.Controls.Add(this.label9);
-            this.tabLowStock.Controls.Add(this.label8);
-            this.tabLowStock.Controls.Add(this.masktxtOrderNo);
-            this.tabLowStock.Controls.Add(this.label2);
-            this.tabLowStock.Controls.Add(this.txtOrderTotalIncl);
-            this.tabLowStock.Controls.Add(this.txtOrderVAT);
-            this.tabLowStock.Controls.Add(this.txtOrderTotalExcl);
-            this.tabLowStock.Controls.Add(this.btnOrderNextItem);
-            this.tabLowStock.Controls.Add(this.btnOrderPreview);
-            this.tabLowStock.Controls.Add(this.btnSaveOrder);
-            this.tabLowStock.Controls.Add(this.label7);
-            this.tabLowStock.Controls.Add(this.label6);
-            this.tabLowStock.Controls.Add(this.label5);
-            this.tabLowStock.Controls.Add(this.label4);
-            this.tabLowStock.Controls.Add(this.label3);
-            this.tabLowStock.Controls.Add(this.txtOrderInvReQaunt);
-            this.tabLowStock.Controls.Add(this.txtOrderInvLength);
-            this.tabLowStock.Controls.Add(this.txtOrderInvPrice);
-            this.tabLowStock.Controls.Add(this.txtOrderInvDesc);
-            this.tabLowStock.Controls.Add(this.txtOrderInvItem);
-            this.tabLowStock.Controls.Add(this.txtOrderInvID);
-            this.tabLowStock.Controls.Add(this.btnOrderSupGO);
-            this.tabLowStock.Controls.Add(this.label1);
-            this.tabLowStock.Controls.Add(this.dtgSupOrderHistory);
-            this.tabLowStock.Controls.Add(this.btnRemoveAll);
-            this.tabLowStock.Controls.Add(this.btnAddAll);
-            this.tabLowStock.Controls.Add(this.btnRemoveSingle);
-            this.tabLowStock.Controls.Add(this.btnAddSingle);
-            this.tabLowStock.Controls.Add(this.dtgOrderInvList);
-            this.tabLowStock.Controls.Add(this.dtgSupOrderList);
-            this.tabLowStock.Location = new System.Drawing.Point(4, 22);
-            this.tabLowStock.Name = "tabLowStock";
-            this.tabLowStock.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLowStock.Size = new System.Drawing.Size(1036, 525);
-            this.tabLowStock.TabIndex = 4;
-            this.tabLowStock.Tag = "";
-            this.tabLowStock.Text = "Low Inventory";
-            this.tabLowStock.UseVisualStyleBackColor = true;
+            this.tabOrderStock.Controls.Add(this.cbxOrderSup);
+            this.tabOrderStock.Controls.Add(this.btnOrderSupGO);
+            this.tabOrderStock.Controls.Add(this.btnOrderFilter);
+            this.tabOrderStock.Controls.Add(this.label3);
+            this.tabOrderStock.Controls.Add(this.label14);
+            this.tabOrderStock.Controls.Add(this.txtOrderNumber);
+            this.tabOrderStock.Controls.Add(this.label38);
+            this.tabOrderStock.Controls.Add(this.label37);
+            this.tabOrderStock.Controls.Add(this.label36);
+            this.tabOrderStock.Controls.Add(this.label15);
+            this.tabOrderStock.Controls.Add(this.label10);
+            this.tabOrderStock.Controls.Add(this.label9);
+            this.tabOrderStock.Controls.Add(this.label8);
+            this.tabOrderStock.Controls.Add(this.label2);
+            this.tabOrderStock.Controls.Add(this.txtOrderTotalIncl);
+            this.tabOrderStock.Controls.Add(this.txtOrderVAT);
+            this.tabOrderStock.Controls.Add(this.txtOrderTotalExcl);
+            this.tabOrderStock.Controls.Add(this.btnOrderNextItem);
+            this.tabOrderStock.Controls.Add(this.btnOrderPreview);
+            this.tabOrderStock.Controls.Add(this.btnSaveOrder);
+            this.tabOrderStock.Controls.Add(this.dtgSupOrderHistory);
+            this.tabOrderStock.Controls.Add(this.btnRemoveAll);
+            this.tabOrderStock.Controls.Add(this.btnAddAll);
+            this.tabOrderStock.Controls.Add(this.btnRemoveSingle);
+            this.tabOrderStock.Controls.Add(this.btnAddSingle);
+            this.tabOrderStock.Controls.Add(this.dtgOrderInvList);
+            this.tabOrderStock.Controls.Add(this.dtgSupOrderList);
+            this.tabOrderStock.Location = new System.Drawing.Point(4, 22);
+            this.tabOrderStock.Name = "tabOrderStock";
+            this.tabOrderStock.Padding = new System.Windows.Forms.Padding(3);
+            this.tabOrderStock.Size = new System.Drawing.Size(1036, 525);
+            this.tabOrderStock.TabIndex = 4;
+            this.tabOrderStock.Tag = "";
+            this.tabOrderStock.Text = "ORDER STOCK";
+            this.tabOrderStock.UseVisualStyleBackColor = true;
+            // 
+            // cbxOrderSup
+            // 
+            this.cbxOrderSup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbxOrderSup.DataBindings.Add(new System.Windows.Forms.Binding("SelectedValue", this.supplierBindingSource, "SupName", true));
+            this.cbxOrderSup.DataSource = this.supplierBindingSource;
+            this.cbxOrderSup.DisplayMember = "SupName";
+            this.cbxOrderSup.FormattingEnabled = true;
+            this.cbxOrderSup.Location = new System.Drawing.Point(77, 9);
+            this.cbxOrderSup.Name = "cbxOrderSup";
+            this.cbxOrderSup.Size = new System.Drawing.Size(366, 21);
+            this.cbxOrderSup.TabIndex = 70;
+            this.cbxOrderSup.ValueMember = "SupplierID";
+            // 
+            // btnOrderSupGO
+            // 
+            this.btnOrderSupGO.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnOrderSupGO.Location = new System.Drawing.Point(591, 8);
+            this.btnOrderSupGO.Name = "btnOrderSupGO";
+            this.btnOrderSupGO.Size = new System.Drawing.Size(136, 21);
+            this.btnOrderSupGO.TabIndex = 69;
+            this.btnOrderSupGO.Text = "Generate Order Number";
+            this.btnOrderSupGO.UseVisualStyleBackColor = true;
+            this.btnOrderSupGO.Click += new System.EventHandler(this.btnOrderSupGO_Click);
+            // 
+            // btnOrderFilter
+            // 
+            this.btnOrderFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnOrderFilter.Location = new System.Drawing.Point(449, 8);
+            this.btnOrderFilter.Name = "btnOrderFilter";
+            this.btnOrderFilter.Size = new System.Drawing.Size(136, 21);
+            this.btnOrderFilter.TabIndex = 68;
+            this.btnOrderFilter.Text = "Filter History by Supplier";
+            this.btnOrderFilter.UseVisualStyleBackColor = true;
+            this.btnOrderFilter.Click += new System.EventHandler(this.btnOrderFilter_Click);
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(287, 455);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(89, 13);
+            this.label3.TabIndex = 67;
+            this.label3.Text = "Order Number:";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(8, 11);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(63, 13);
+            this.label14.TabIndex = 63;
+            this.label14.Text = "Suppliers:";
+            // 
+            // txtOrderNumber
+            // 
+            this.txtOrderNumber.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtOrderNumber.Location = new System.Drawing.Point(395, 452);
+            this.txtOrderNumber.Name = "txtOrderNumber";
+            this.txtOrderNumber.Size = new System.Drawing.Size(274, 20);
+            this.txtOrderNumber.TabIndex = 62;
             // 
             // label38
             // 
+            this.label38.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(828, 168);
+            this.label38.Location = new System.Drawing.Point(685, 168);
             this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(198, 13);
+            this.label38.Size = new System.Drawing.Size(341, 13);
             this.label38.TabIndex = 61;
-            this.label38.Text = "(Click on Item to change Quantity below)";
+            this.label38.Text = "(Click on Item on the right and drag over, or create new or click ALL>>)";
             // 
             // label37
             // 
@@ -1925,28 +1980,18 @@
             this.label36.AutoSize = true;
             this.label36.Location = new System.Drawing.Point(8, 168);
             this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(123, 13);
+            this.label36.Size = new System.Drawing.Size(68, 13);
             this.label36.TabIndex = 59;
-            this.label36.Text = "Order Details by Supplier";
+            this.label36.Text = "Order Details";
             // 
             // label15
             // 
             this.label15.AutoSize = true;
             this.label15.Location = new System.Drawing.Point(8, 32);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(123, 13);
+            this.label15.Size = new System.Drawing.Size(68, 13);
             this.label15.TabIndex = 58;
-            this.label15.Text = "Order History by Supplier";
-            // 
-            // cbxOrderSup
-            // 
-            this.cbxOrderSup.DisplayMember = "SupplierID";
-            this.cbxOrderSup.FormattingEnabled = true;
-            this.cbxOrderSup.Location = new System.Drawing.Point(176, 7);
-            this.cbxOrderSup.Name = "cbxOrderSup";
-            this.cbxOrderSup.Size = new System.Drawing.Size(274, 21);
-            this.cbxOrderSup.TabIndex = 57;
-            this.cbxOrderSup.ValueMember = "SupplierID";
+            this.label15.Text = "Order History";
             // 
             // label10
             // 
@@ -1978,24 +2023,14 @@
             this.label8.TabIndex = 54;
             this.label8.Text = "TOTAL  R:";
             // 
-            // masktxtOrderNo
-            // 
-            this.masktxtOrderNo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.masktxtOrderNo.Location = new System.Drawing.Point(400, 452);
-            this.masktxtOrderNo.Mask = "IT 00-LL-0000";
-            this.masktxtOrderNo.Name = "masktxtOrderNo";
-            this.masktxtOrderNo.Size = new System.Drawing.Size(232, 20);
-            this.masktxtOrderNo.TabIndex = 53;
-            // 
             // label2
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(293, 455);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(96, 13);
+            this.label2.Size = new System.Drawing.Size(0, 13);
             this.label2.TabIndex = 52;
-            this.label2.Text = "ORDER NUMBER";
             // 
             // txtOrderTotalIncl
             // 
@@ -2034,15 +2069,15 @@
             this.btnOrderNextItem.Name = "btnOrderNextItem";
             this.btnOrderNextItem.Size = new System.Drawing.Size(87, 23);
             this.btnOrderNextItem.TabIndex = 47;
-            this.btnOrderNextItem.Text = "Next Item";
+            this.btnOrderNextItem.Text = "Next";
             this.btnOrderNextItem.UseVisualStyleBackColor = true;
             // 
             // btnOrderPreview
             // 
             this.btnOrderPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnOrderPreview.Location = new System.Drawing.Point(481, 483);
+            this.btnOrderPreview.Location = new System.Drawing.Point(506, 483);
             this.btnOrderPreview.Name = "btnOrderPreview";
-            this.btnOrderPreview.Size = new System.Drawing.Size(75, 23);
+            this.btnOrderPreview.Size = new System.Drawing.Size(88, 23);
             this.btnOrderPreview.TabIndex = 46;
             this.btnOrderPreview.Text = "Preview";
             this.btnOrderPreview.UseVisualStyleBackColor = true;
@@ -2051,138 +2086,17 @@
             // btnSaveOrder
             // 
             this.btnSaveOrder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSaveOrder.Location = new System.Drawing.Point(400, 483);
+            this.btnSaveOrder.Location = new System.Drawing.Point(395, 484);
             this.btnSaveOrder.Name = "btnSaveOrder";
-            this.btnSaveOrder.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveOrder.Size = new System.Drawing.Size(89, 23);
             this.btnSaveOrder.TabIndex = 45;
             this.btnSaveOrder.Text = "Save";
             this.btnSaveOrder.UseVisualStyleBackColor = true;
             // 
-            // label7
-            // 
-            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(936, 363);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(75, 13);
-            this.label7.TabIndex = 44;
-            this.label7.Text = "Order Quantity";
-            // 
-            // label6
-            // 
-            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(839, 363);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(40, 13);
-            this.label6.TabIndex = 43;
-            this.label6.Text = "Length";
-            // 
-            // label5
-            // 
-            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(742, 363);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(31, 13);
-            this.label5.TabIndex = 42;
-            this.label5.Text = "Price";
-            // 
-            // label4
-            // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(439, 363);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(60, 13);
-            this.label4.TabIndex = 41;
-            this.label4.Text = "Description";
-            // 
-            // label3
-            // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(76, 363);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(27, 13);
-            this.label3.TabIndex = 40;
-            this.label3.Text = "Item";
-            // 
-            // txtOrderInvReQaunt
-            // 
-            this.txtOrderInvReQaunt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtOrderInvReQaunt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.txtOrderInvReQaunt.Location = new System.Drawing.Point(939, 379);
-            this.txtOrderInvReQaunt.Name = "txtOrderInvReQaunt";
-            this.txtOrderInvReQaunt.Size = new System.Drawing.Size(87, 20);
-            this.txtOrderInvReQaunt.TabIndex = 38;
-            // 
-            // txtOrderInvLength
-            // 
-            this.txtOrderInvLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtOrderInvLength.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.txtOrderInvLength.Location = new System.Drawing.Point(842, 379);
-            this.txtOrderInvLength.Name = "txtOrderInvLength";
-            this.txtOrderInvLength.Size = new System.Drawing.Size(87, 20);
-            this.txtOrderInvLength.TabIndex = 37;
-            // 
-            // txtOrderInvPrice
-            // 
-            this.txtOrderInvPrice.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtOrderInvPrice.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.txtOrderInvPrice.Location = new System.Drawing.Point(745, 379);
-            this.txtOrderInvPrice.Name = "txtOrderInvPrice";
-            this.txtOrderInvPrice.Size = new System.Drawing.Size(87, 20);
-            this.txtOrderInvPrice.TabIndex = 36;
-            // 
-            // txtOrderInvDesc
-            // 
-            this.txtOrderInvDesc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtOrderInvDesc.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.txtOrderInvDesc.Location = new System.Drawing.Point(442, 379);
-            this.txtOrderInvDesc.Name = "txtOrderInvDesc";
-            this.txtOrderInvDesc.Size = new System.Drawing.Size(293, 20);
-            this.txtOrderInvDesc.TabIndex = 35;
-            // 
-            // txtOrderInvItem
-            // 
-            this.txtOrderInvItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtOrderInvItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.txtOrderInvItem.Location = new System.Drawing.Point(79, 379);
-            this.txtOrderInvItem.Name = "txtOrderInvItem";
-            this.txtOrderInvItem.Size = new System.Drawing.Size(353, 20);
-            this.txtOrderInvItem.TabIndex = 34;
-            // 
-            // txtOrderInvID
-            // 
-            this.txtOrderInvID.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtOrderInvID.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.txtOrderInvID.Location = new System.Drawing.Point(6, 379);
-            this.txtOrderInvID.Name = "txtOrderInvID";
-            this.txtOrderInvID.Size = new System.Drawing.Size(63, 20);
-            this.txtOrderInvID.TabIndex = 33;
-            // 
-            // btnOrderSupGO
-            // 
-            this.btnOrderSupGO.Location = new System.Drawing.Point(476, 7);
-            this.btnOrderSupGO.Name = "btnOrderSupGO";
-            this.btnOrderSupGO.Size = new System.Drawing.Size(53, 20);
-            this.btnOrderSupGO.TabIndex = 31;
-            this.btnOrderSupGO.Text = "GO";
-            this.btnOrderSupGO.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(50, 10);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(120, 13);
-            this.label1.TabIndex = 20;
-            this.label1.Text = "Search for Supplier:";
-            // 
             // dtgSupOrderHistory
             // 
+            this.dtgSupOrderHistory.AllowUserToAddRows = false;
+            this.dtgSupOrderHistory.AllowUserToDeleteRows = false;
             this.dtgSupOrderHistory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dtgSupOrderHistory.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
@@ -2192,6 +2106,7 @@
             this.dtgSupOrderHistory.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dtgSupOrderHistory.Size = new System.Drawing.Size(1024, 107);
             this.dtgSupOrderHistory.TabIndex = 18;
+            this.dtgSupOrderHistory.Click += new System.EventHandler(this.dtgSupOrderHistory_Click);
             // 
             // btnRemoveAll
             // 
@@ -2199,7 +2114,7 @@
             this.btnRemoveAll.Name = "btnRemoveAll";
             this.btnRemoveAll.Size = new System.Drawing.Size(75, 23);
             this.btnRemoveAll.TabIndex = 5;
-            this.btnRemoveAll.Text = "<< ALL";
+            this.btnRemoveAll.Text = "CLEAR";
             this.btnRemoveAll.UseVisualStyleBackColor = true;
             // 
             // btnAddAll
@@ -2235,13 +2150,79 @@
             this.dtgOrderInvList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dtgOrderInvList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dtgOrderInvList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             this.dtgOrderInvList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dtgOrderInvList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.invID,
+            this.invCode,
+            this.invItem,
+            this.invSupDescription,
+            this.invDescription,
+            this.invLength,
+            this.orderQuantity,
+            this.orderPrice});
+            this.dtgOrderInvList.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
             this.dtgOrderInvList.Location = new System.Drawing.Point(571, 184);
             this.dtgOrderInvList.Name = "dtgOrderInvList";
-            this.dtgOrderInvList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtgOrderInvList.Size = new System.Drawing.Size(455, 173);
+            this.dtgOrderInvList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dtgOrderInvList.Size = new System.Drawing.Size(455, 205);
             this.dtgOrderInvList.TabIndex = 1;
+            // 
+            // invID
+            // 
+            this.invID.HeaderText = "ID";
+            this.invID.Name = "invID";
+            this.invID.ReadOnly = true;
+            this.invID.Width = 43;
+            // 
+            // invCode
+            // 
+            this.invCode.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.invCode.HeaderText = "Part Code";
+            this.invCode.Name = "invCode";
+            this.invCode.Width = 73;
+            // 
+            // invItem
+            // 
+            this.invItem.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.invItem.HeaderText = "Item";
+            this.invItem.Name = "invItem";
+            this.invItem.Width = 52;
+            // 
+            // invSupDescription
+            // 
+            this.invSupDescription.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.invSupDescription.HeaderText = "Description to Supplier";
+            this.invSupDescription.Name = "invSupDescription";
+            this.invSupDescription.Width = 92;
+            // 
+            // invDescription
+            // 
+            this.invDescription.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.invDescription.HeaderText = "Local Description";
+            this.invDescription.Name = "invDescription";
+            this.invDescription.Width = 105;
+            // 
+            // invLength
+            // 
+            this.invLength.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.invLength.HeaderText = "Length";
+            this.invLength.Name = "invLength";
+            this.invLength.Width = 65;
+            // 
+            // orderQuantity
+            // 
+            this.orderQuantity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.orderQuantity.HeaderText = "Quantity";
+            this.orderQuantity.Name = "orderQuantity";
+            this.orderQuantity.Width = 71;
+            // 
+            // orderPrice
+            // 
+            this.orderPrice.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.orderPrice.HeaderText = "Price";
+            this.orderPrice.Name = "orderPrice";
+            this.orderPrice.Width = 56;
             // 
             // dtgSupOrderList
             // 
@@ -2255,7 +2236,7 @@
             this.dtgSupOrderList.ReadOnly = true;
             this.dtgSupOrderList.RowTemplate.ReadOnly = true;
             this.dtgSupOrderList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtgSupOrderList.Size = new System.Drawing.Size(455, 173);
+            this.dtgSupOrderList.Size = new System.Drawing.Size(455, 205);
             this.dtgSupOrderList.TabIndex = 0;
             // 
             // tabOrderInventory
@@ -2425,8 +2406,8 @@
             this.tabSupplierSummary.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgInventorySummary)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgSupplierSearch)).EndInit();
-            this.tabLowStock.ResumeLayout(false);
-            this.tabLowStock.PerformLayout();
+            this.tabOrderStock.ResumeLayout(false);
+            this.tabOrderStock.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgSupOrderHistory)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgOrderInvList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgSupOrderList)).EndInit();
@@ -2513,9 +2494,7 @@
         private System.Windows.Forms.Button btnSearchClear;
         private System.Windows.Forms.Button btnSearchGO;
         private System.Windows.Forms.Label lblInventoryValue;
-        private System.Windows.Forms.TabPage tabLowStock;
-        private System.Windows.Forms.Button btnOrderSupGO;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TabPage tabOrderStock;
         private System.Windows.Forms.DataGridView dtgSupOrderHistory;
         private System.Windows.Forms.Button btnRemoveAll;
         private System.Windows.Forms.Button btnAddAll;
@@ -2523,17 +2502,6 @@
         private System.Windows.Forms.Button btnAddSingle;
         private System.Windows.Forms.DataGridView dtgOrderInvList;
         private System.Windows.Forms.DataGridView dtgSupOrderList;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txtOrderInvReQaunt;
-        private System.Windows.Forms.TextBox txtOrderInvLength;
-        private System.Windows.Forms.TextBox txtOrderInvPrice;
-        private System.Windows.Forms.TextBox txtOrderInvDesc;
-        private System.Windows.Forms.TextBox txtOrderInvItem;
-        private System.Windows.Forms.TextBox txtOrderInvID;
         private System.Windows.Forms.TextBox txtOrderTotalIncl;
         private System.Windows.Forms.TextBox txtOrderVAT;
         private System.Windows.Forms.TextBox txtOrderTotalExcl;
@@ -2543,7 +2511,6 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.MaskedTextBox masktxtOrderNo;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox gboxPrice;
         private System.Windows.Forms.GroupBox gboxStock;
@@ -2587,7 +2554,6 @@
         private System.Windows.Forms.Label label37;
         private System.Windows.Forms.Label label36;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.ComboBox cbxOrderSup;
         private System.Windows.Forms.ComboBox cmbOrderSupplier;
         private System.Windows.Forms.DataGridView dtgNewInvOrderDetails;
         private System.Windows.Forms.DataGridView dtgInvOrderDetails;
@@ -2647,5 +2613,19 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox txtOrderID;
+        private System.Windows.Forms.TextBox txtOrderNumber;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Button btnOrderFilter;
+        private System.Windows.Forms.DataGridViewTextBoxColumn invID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn invCode;
+        private System.Windows.Forms.DataGridViewTextBoxColumn invItem;
+        private System.Windows.Forms.DataGridViewTextBoxColumn invSupDescription;
+        private System.Windows.Forms.DataGridViewTextBoxColumn invDescription;
+        private System.Windows.Forms.DataGridViewTextBoxColumn invLength;
+        private System.Windows.Forms.DataGridViewTextBoxColumn orderQuantity;
+        private System.Windows.Forms.DataGridViewTextBoxColumn orderPrice;
+        private System.Windows.Forms.Button btnOrderSupGO;
+        private System.Windows.Forms.ComboBox cbxOrderSup;
     }
 }

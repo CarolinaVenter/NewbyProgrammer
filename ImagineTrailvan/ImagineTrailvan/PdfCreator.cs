@@ -51,7 +51,7 @@ namespace ImagineTrailvan
 
             graph.DrawImage(image, 170, 60, 200, 60);//here I insert the image and specify the size.
 
-            graph.DrawString("ORDER DETAILS", fontTitle, XBrushes.Black, new XRect(200, 170, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString("ORDER DETAILS", fontTitle, XBrushes.Black, new XRect(210, 160, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             graph.DrawString("REG. No: 2006/032270/07", fontHead, XBrushes.Black, new XRect(40, 48, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             graph.DrawString("VAT REG. No: 4150234369", fontHead, XBrushes.Black, new XRect(40, 56, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             graph.DrawString("PO Box 25238", fontHead, XBrushes.Black, new XRect(40, 76, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
@@ -139,8 +139,8 @@ namespace ImagineTrailvan
                 graph.DrawString("TO WHOM IT MAY CONCERN", fontHead, XBrushes.Black, new XRect(380, 48, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             }//end of else of if (dtSupValues.Rows[0][3].ToString()!="")
             graph.DrawString("TO: " + dtSupValues.Rows[0][1].ToString(), fontBoldHead, XBrushes.Black, new XRect(40, 158, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-            graph.DrawString("TEL: " + dtSupValues.Rows[0][4].ToString(), fontHead, XBrushes.Black, new XRect(40, 166, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-            graph.DrawString("CELL: " + dtSupValues.Rows[0][5].ToString(), fontHead, XBrushes.Black, new XRect(40, 174, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString("TEL: " + dtSupValues.Rows[0][5].ToString(), fontHead, XBrushes.Black, new XRect(40, 166, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString("CELL: " + dtSupValues.Rows[0][4].ToString(), fontHead, XBrushes.Black, new XRect(40, 174, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             graph.DrawString("EMAIL: " + dtSupValues.Rows[0][6].ToString(), fontHead, XBrushes.Black, new XRect(40, 182, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             graph.DrawString(payTerm.ToUpper(), fontFoot, XBrushes.Black, new XRect(130, 685, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             #endregion
@@ -150,11 +150,13 @@ namespace ImagineTrailvan
             XFont fontBoldTableHead = new XFont("Sans-serif", 8, XFontStyle.Bold);
 
             #region TableHeadings
-            graph.DrawString("PART CODE", fontBoldTableHead, XBrushes.Black, new XRect(60, 220, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-            graph.DrawString("ITEM", fontBoldTableHead, XBrushes.Black, new XRect(140, 220, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-            graph.DrawString("QUANTITY", fontBoldTableHead, XBrushes.Black, new XRect(345, 220, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-            graph.DrawString("PRICE/UNIT", fontBoldTableHead, XBrushes.Black, new XRect(410, 220, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-            graph.DrawString("TOTAL", fontBoldTableHead, XBrushes.Black, new XRect(490, 220, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString("PART CODE", fontBoldTableHead, XBrushes.Black, new XRect(55, 210, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString("ITEM", fontBoldTableHead, XBrushes.Black, new XRect(120, 210, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString("DESCRIPTION", fontBoldTableHead, XBrushes.Black, new XRect(275, 210, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString("LENGTH", fontBoldTableHead, XBrushes.Black, new XRect(375, 210, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString("QUANTITY", fontBoldTableHead, XBrushes.Black, new XRect(415, 210, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString("PRICE/UNIT", fontBoldTableHead, XBrushes.Black, new XRect(460, 210, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString("TOTAL", fontBoldTableHead, XBrushes.Black, new XRect(510, 210, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             //  graph.DrawString(itemCount.ToString(), fontHead, XBrushes.Black, new XRect(40, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             #endregion
         }//end of private void DrawOrderTableHead(PdfPage pdfpage, XGraphics graph)
@@ -170,24 +172,24 @@ namespace ImagineTrailvan
             XFont fontHead = new XFont("Sans-serif", 6, XFontStyle.Regular);
 
             #region TableValues
-            ypoint = 240;
+            ypoint = 230;
             for (int i = 0; i < dtInvValues.Rows.Count; i++)
             {//INCLUDE LENGTH?
                 if (lineCount < 29)
                 {
                     graph.DrawString(itemCount.ToString(), fontHead, XBrushes.Black, new XRect(40, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    graph.DrawString(dtInvValues.Rows[i][1].ToString(), font, XBrushes.Black, new XRect(60, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    graph.DrawString(dtInvValues.Rows[i][2].ToString(), font, XBrushes.Black, new XRect(140, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    graph.DrawString(dtInvValues.Rows[i][3].ToString(), font, XBrushes.Black, new XRect(355, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    graph.DrawString(dtInvValues.Rows[i][4].ToString(), font, XBrushes.Black, new XRect(410, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    graph.DrawString((int.Parse(dtInvValues.Rows[i][3].ToString()) * double.Parse(dtInvValues.Rows[i][4].ToString())).ToString(), font, XBrushes.Black, new XRect(490, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString(dtInvValues.Rows[i][1].ToString(), font, XBrushes.Black, new XRect(55, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString(dtInvValues.Rows[i][2].ToString(), font, XBrushes.Black, new XRect(120, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString(dtInvValues.Rows[i][3].ToString(), font, XBrushes.Black, new XRect(275, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString(dtInvValues.Rows[i][5].ToString(), font, XBrushes.Black, new XRect(380, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString(dtInvValues.Rows[i][6].ToString(), font, XBrushes.Black, new XRect(420, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString(dtInvValues.Rows[i][7].ToString(), font, XBrushes.Black, new XRect(465, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString((int.Parse(dtInvValues.Rows[i][6].ToString()) * double.Parse(dtInvValues.Rows[i][7].ToString())).ToString(), font, XBrushes.Black, new XRect(510, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
 
-                   // graph.DrawString(dtInvValues.Rows[i][5].ToString(), font, XBrushes.Black, new XRect(490, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    //  graph.DrawString(dtInvValues.Rows[i][6].ToString(), fontHead, XBrushes.Black, new XRect(40, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
                     ypoint = ypoint + 15;
                     itemCount += 1;
                     lineCount += 1;
-                    total += (int.Parse(dtInvValues.Rows[i][3].ToString()) * double.Parse(dtInvValues.Rows[i][4].ToString()));
+                    total += (int.Parse(dtInvValues.Rows[i][6].ToString()) * double.Parse(dtInvValues.Rows[i][7].ToString()));
                 }
                 else
                 {
@@ -213,21 +215,21 @@ namespace ImagineTrailvan
                     DrawOrderFooter(pdfpage, graph);
 
                     lineCount = 1;
-                    ypoint = 240;
+                    ypoint = 230;
 
                     //do the next page
                     graph.DrawString(itemCount.ToString(), fontHead, XBrushes.Black, new XRect(40, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    graph.DrawString(dtInvValues.Rows[i][1].ToString(), font, XBrushes.Black, new XRect(60, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    graph.DrawString(dtInvValues.Rows[i][2].ToString(), font, XBrushes.Black, new XRect(140, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    graph.DrawString(dtInvValues.Rows[i][3].ToString(), font, XBrushes.Black, new XRect(355, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    graph.DrawString(dtInvValues.Rows[i][4].ToString(), font, XBrushes.Black, new XRect(410, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    graph.DrawString((int.Parse(dtInvValues.Rows[i][3].ToString()) * double.Parse(dtInvValues.Rows[i][4].ToString())).ToString(), font, XBrushes.Black, new XRect(490, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString(dtInvValues.Rows[i][1].ToString(), font, XBrushes.Black, new XRect(55, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString(dtInvValues.Rows[i][2].ToString(), font, XBrushes.Black, new XRect(120, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString(dtInvValues.Rows[i][3].ToString(), font, XBrushes.Black, new XRect(275, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString(dtInvValues.Rows[i][5].ToString(), font, XBrushes.Black, new XRect(380, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString(dtInvValues.Rows[i][6].ToString(), font, XBrushes.Black, new XRect(420, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString(dtInvValues.Rows[i][7].ToString(), font, XBrushes.Black, new XRect(465, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString((int.Parse(dtInvValues.Rows[i][6].ToString()) * double.Parse(dtInvValues.Rows[i][7].ToString())).ToString(), font, XBrushes.Black, new XRect(510, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
 
-                    //    graph.DrawString(dtInvValues.Rows[i][5].ToString(), font, XBrushes.Black, new XRect(490, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    //  graph.DrawString(dtInvValues.Rows[i][6].ToString(), fontHead, XBrushes.Black, new XRect(40, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
                     ypoint = ypoint + 15;
                     itemCount += 1;
-                    total += (int.Parse(dtInvValues.Rows[i][3].ToString()) * double.Parse(dtInvValues.Rows[i][4].ToString()));
+                    total += (int.Parse(dtInvValues.Rows[i][6].ToString()) * double.Parse(dtInvValues.Rows[i][7].ToString()));
                 }
             }//end of for (int i = 0; i < tableValues.Rows.Count; i++)
             //send the total to the last page
