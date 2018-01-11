@@ -279,7 +279,6 @@ namespace ImagineTrailvan
              }//end of using (SqlConnection conn = new SqlConnection(connString))
          }//end of public DataTable getCurrentInvoice(string isiID)        
 
-
          public DataTable getStockInInvoice(string isiID)
          {
              using (SqlConnection conn = new SqlConnection(connString))
@@ -302,7 +301,7 @@ namespace ImagineTrailvan
              {
                  DataTable result = new DataTable();
                  //  DataSet getds;
-                 cmd = new SqlCommand("SELECT ssi.SubStockINID,inv.InventoryID,inv.InvItem,ssi.SSIQuantityIN,ssi.SSIPrice,isi.ISIID,ssi.SSIStockLeft,isi.ISIInvoiceNo,isi.ISIDateReceived FROM InvoiceStockIN isi, SubStockIN ssi,Inventory inv WHERE ssi.InventoryID='" + invID + "' AND ssi.SSIStockLeft>0 AND inv.InventoryID='" + invID + "' AND isi.ISIDateReceived=(SELECT min(ISIDateReceived) FROM InvoiceStockIN WHERE isi.ISIID=ssi.ISIID )", conn);
+                 cmd = new SqlCommand("SELECT TOP 1 ssi.SubStockINID,inv.InventoryID,inv.InvItem,ssi.SSIQuantityIN,ssi.SSIPrice,isi.ISIID,ssi.SSIStockLeft,isi.ISIInvoiceNo,isi.ISIDateReceived FROM InvoiceStockIN isi, SubStockIN ssi,Inventory inv WHERE ssi.InventoryID='" + invID + "' AND ssi.SSIStockLeft>0 AND inv.InventoryID='" + invID + "' AND isi.ISIID=ssi.ISIID ORDER BY ISIDateReceived DESC", conn);
                  adapter = new SqlDataAdapter(cmd);
                  SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
                  conn.Open();
@@ -318,7 +317,7 @@ namespace ImagineTrailvan
              {
                  DataTable result = new DataTable();
                  //  DataSet getds;
-                 cmd = new SqlCommand("SELECT inv.InventoryID,inv.InvCode,inv.InvItem,inv.InvDescription,inv.InvSupplierDescription, inv.InvReorderLevel, tot.ISTotalStock FROM Inventory inv, InventoryStock tot WHERE inv.InventoryID= tot.InventoryID AND inv.InvReorderLevel>=tot.ISTotalStock", conn);
+                 cmd = new SqlCommand("SELECT inv.InventoryID,inv.InvCode,inv.InvItem,inv.InvSupplierDescription,inv.InvDescription, inv.InvReorderLevel, tot.ISTotalStock FROM Inventory inv, InventoryStock tot WHERE inv.InventoryID= tot.InventoryID AND inv.InvReorderLevel>=tot.ISTotalStock", conn);
                  adapter = new SqlDataAdapter(cmd);
                  SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
                  conn.Open();
@@ -334,7 +333,7 @@ namespace ImagineTrailvan
              {
                  DataTable result = new DataTable();
                  //  DataSet getds;
-                 cmd = new SqlCommand("SELECT cast(sup.SupPrefix AS varchar(10)) +'-'+ cast(ord.OrderNumber AS varchar(10)) AS OrderNum, sup.SupName,ord.OrdersDate, ord.OrderEstimateTotal FROM Orders ord,Supplier sup WHERE sup.SupplierID=ord.SupplierID ORDER BY ord.OrdersDate DESC", conn);
+                 cmd = new SqlCommand("SELECT cast(sup.SupPrefix AS varchar(10)) +'-'+ cast(ord.OrderNumber AS varchar(10)) AS OrderNum, sup.SupName,ord.OrdersDate, ord.OrderEstimateTotal, ord.OrdersID FROM Orders ord,Supplier sup WHERE sup.SupplierID=ord.SupplierID ORDER BY ord.OrdersDate DESC", conn);
                  adapter = new SqlDataAdapter(cmd);
                  SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
                  conn.Open();
@@ -344,13 +343,13 @@ namespace ImagineTrailvan
              }//end of using (SqlConnection conn = new SqlConnection(connString))
          }//end of public DataTable getAllOrderHistory()
 
-         public DataTable getSupplierOrderHistory(int supID)
+         public DataTable getSupplierOrderHistory(string supID)
          {
              using (SqlConnection conn = new SqlConnection(connString))
              {
                  DataTable result = new DataTable();
                  //  DataSet getds;
-                 cmd = new SqlCommand("SELECT cast(sup.SupPrefix AS varchar(10)) +'-'+ cast(ord.OrderNumber AS varchar(10)) AS OrderNum, sup.SupName,ord.OrdersDate, ord.OrderEstimateTotal FROM Orders ord,Supplier sup WHERE sup.SupplierID=ord.SupplierID ORDER BY ord.OrdersDate DESC", conn);
+                 cmd = new SqlCommand("SELECT cast(sup.SupPrefix AS varchar(10)) +'-'+ cast(ord.OrderNumber AS varchar(10)) AS OrderNum, sup.SupName,ord.OrdersDate, ord.OrderEstimateTotal, ord.OrdersID FROM Orders ord,Supplier sup WHERE sup.SupplierID='" + supID + "' AND ord.SupplierID='" + supID + "' ORDER BY ord.OrdersDate DESC", conn);
                  adapter = new SqlDataAdapter(cmd);
                  SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
                  conn.Open();
@@ -358,7 +357,38 @@ namespace ImagineTrailvan
                  conn.Close();
                  return result;
              }//end of using (SqlConnection conn = new SqlConnection(connString))
-         }//end of public DataTable getAllOrderHistory()
+         }//end of public DataTable getSupplierOrderHistory(string supID)
+         public DataTable getSupOrderDetails(string orderID)
+         {
+             using (SqlConnection conn = new SqlConnection(connString))
+             {
+                 DataTable result = new DataTable();
+                 //  DataSet getds;
+                 cmd = new SqlCommand("SELECT subord.InventoryID,inv.InvCode,inv.InvItem,inv.InvSupplierDescription,inv.InvDescription,subord.SOLength,subord.SOOrderedQuantity,subord.SOPrice FROM Inventory inv, SubOrders subord WHERE subord.OrdersID='" + orderID + "' AND subord.InventoryID=inv.InventoryID", conn);
+                 adapter = new SqlDataAdapter(cmd);
+                 SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                 conn.Open();
+                 adapter.Fill(result);
+                 conn.Close();
+                 return result;
+             }//end of using (SqlConnection conn = new SqlConnection(connString))
+         }//end of public DataTable getSupOrderDetails(string supID)
+
+         public DataTable getLastOrderNumber(string supID)
+         {
+             using (SqlConnection conn = new SqlConnection(connString))
+             {
+                 DataTable result = new DataTable();
+                 //  DataSet getds;
+                 cmd = new SqlCommand("SELECT TOP 1 OrderNumber FROM Orders WHERE SupplierID='" + supID + "' ORDER BY OrderNumber DESC", conn);
+                 adapter = new SqlDataAdapter(cmd);
+                 SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                 conn.Open();
+                 adapter.Fill(result);
+                 conn.Close();
+                 return result;
+             }//end of using (SqlConnection conn = new SqlConnection(connString))
+         }//end of public DataTable getLastOrderNumber(string supID)
          #endregion
     }//end of public class DataAccess
  }//end of namespace ImagineTrailvan

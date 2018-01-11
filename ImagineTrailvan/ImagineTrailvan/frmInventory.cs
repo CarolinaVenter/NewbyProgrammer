@@ -50,18 +50,22 @@ namespace ImagineTrailvan
 
                 dtgCheckStock.DataSource = datac.getTable("Inventory");
                 dtgInventoryValue.DataSource = datac.getInventoryValue();
-                dtgOrderInvList.DataSource = datac.getLowStock();
                 dtgSupOrderHistory.DataSource = datac.getAllOrderHistory();
                 dtgSupOrderList.DataSource = datac.getLowStock();
+
+                dtgOrderInvList.AllowDrop = true;
+                dtgSupOrderList.MouseMove += new MouseEventHandler(dtgSupOrderList_MouseMove);
+                dtgOrderInvList.DragEnter += new DragEventHandler(dtgOrderInvList_DragEnter);
+                dtgOrderInvList.DragDrop += new DragEventHandler(dtgOrderInvList_DragDrop);
 
                 tabStockOUT.Controls.Add(dtgInventory);
                 tabSuppliers.Controls.Add(dtgSuppliers);
                 tabStockIN.Controls.Add(dtgStockIn);
                 tabInventoryValue.Controls.Add(dtgInventoryValue);
                 tabStockCheck.Controls.Add(dtgCheckStock);
-                tabLowStock.Controls.Add(dtgSupOrderHistory);
-                tabLowStock.Controls.Add(dtgSupOrderList);
-                tabLowStock.Controls.Add(dtgOrderInvList);
+                tabOrderStock.Controls.Add(dtgSupOrderHistory);
+                tabOrderStock.Controls.Add(dtgSupOrderList);
+                tabOrderStock.Controls.Add(dtgOrderInvList);
                 
                 btnClear.Enabled = true;
                 btnSearch.Enabled = true;
@@ -211,6 +215,8 @@ namespace ImagineTrailvan
         {
             try
             {
+                DataAccess datac = new DataAccess();
+
                 txtInvID.Text = dtgInventory.SelectedRows[0].Cells[0].Value.ToString();
                 txtInvCode.Text = dtgInventory.SelectedRows[0].Cells[1].Value.ToString();
                 txtInvItem.Text = dtgInventory.SelectedRows[0].Cells[2].Value.ToString().ToUpper();
@@ -223,52 +229,78 @@ namespace ImagineTrailvan
                 btnClear.Enabled = true;
                 btnStockUpdate.Enabled = true;
                 btnSearch.Enabled = false;
-                /*   DataTable dt = new DataTable();
-   dt.Clear();
-   dt.Columns.Add("Name");
-   dt.Columns.Add("Marks");            example found to create and pass an array of values in a datatable
-   object[] o = { "Ravi", 500 };
-   dt.Rows.Add(o);
-   dt.Rows.Add(new object[] { "Ravi", 500 }); */
-
-                DataAccess datac = new DataAccess();
-                //****************Get the stock total quantity from InventoryStock table, relevant to the InventoryID******************
-                DataTable dtTotalStock = new DataTable();               
-                string [] fieldTotal={"InventoryID"};
-                ArrayList getIDValue=new ArrayList();
-                getIDValue.Add("="+txtInvID.Text);
-
-                dtTotalStock = datac.getMathRecord("InventoryStock", fieldTotal, getIDValue);
-                if (dtTotalStock.Rows[0] != null)
+                
+                DataTable testTotalStock = new DataTable();
+                Boolean exists = new Boolean();
+                Boolean flag = new Boolean();
+                testTotalStock = datac.getTable("InventoryStock");
+                //test if there is any references in the linked tables
+                for (int i = 0; i < testTotalStock.Rows.Count+1; i++)
                 {
-                    txtInvTotalStock.Text = dtTotalStock.Rows[0][2].ToString();
-                }//end of if (dtStockIn.Rows[0] != null)
+                    if (exists == false)
+                    {
+                        if (testTotalStock.Rows[i][1].ToString() == txtInvID.Text)
+                        {
+                            exists = true;
+                        }//end of if (testTotalStock.Rows[i][1].ToString() == txtInvID.Text)
+                        else
+                        {
+                            exists = false;
+                        }//end of else of if (testTotalStock.Rows[i][1].ToString() == txtInvID.Text) 
+                    }//end of if (exists == false)
+                    else
+                    {
+                        flag = true;
+                    }//end of else of if (exists == false)
+                }//end of for (int i = 0; i < testTotalStock.Rows.Count; i++)
+
+                //here the flag will be tested, doing the actual determining of what should be done.
+                if (flag == true)
+                {//if the flag is true, meaning the record already exists, will then get references
+                    //****************Get the stock total quantity from InventoryStock table, relevant to the InventoryID******************
+                    DataTable dtTotalStock = new DataTable();
+                    string[] fieldTotal = { "InventoryID" };
+                    ArrayList getIDValue = new ArrayList();
+                    getIDValue.Add("=" + txtInvID.Text);
+
+                    dtTotalStock = datac.getMathRecord("InventoryStock", fieldTotal, getIDValue);
+                    if (dtTotalStock.Rows[0] != null)
+                    {
+                        txtInvTotalStock.Text = dtTotalStock.Rows[0][2].ToString();
+                    }//end of if (dtStockIn.Rows[0] != null)
+                    else
+                    {
+                        MessageBox.Show("no rows in datatable: ");
+                    } //end of else      
+
+                    //**************Get the oldest date's stock price via the InvoiceStockIN table's date and the InventoryID found in the SubStockIN table*********
+                    DataTable dtStockIn = new DataTable();
+                    dtStockIn = datac.getFIFODatedPrice(txtInvID.Text);
+                    if (dtStockIn.Rows[0] != null)
+                    {
+                        txtInvPrice.Text = dtStockIn.Rows[0][4].ToString();
+                    }//end of if (dtStockIn.Rows[0] != null)
+                    else
+                    {
+                        MessageBox.Show("No rows in datatable: ");
+                    } //end of else              
+
+                    //to calculate the selling price (price + markup excl VAT)***
+                    //   txtSellPrice.Text = (double.Parse(txtInvPrice.Text) * ((100 + (int.Parse(cmbInvMarkup.ValueMember))) / 100)).ToString(); //tried but failed
+                    double price = 0;
+                    double markup = 0;
+                    double sellPrice = 0;
+                    price = double.Parse(txtInvPrice.Text);
+                    markup = int.Parse(cmbInvMarkup.Text);
+                    sellPrice = price * ((100 + markup) / 100);
+                    txtSellPrice.Text = sellPrice.ToString();
+                }//end of if (flag == true)
                 else
                 {
-                    MessageBox.Show("no rows in datatable: ");
-                } //end of else      
-
-                //**************Get the oldest date's stock price via the InvoiceStockIN table's date and the InventoryID found in the SubStockIN table*********
-                DataTable dtStockIn = new DataTable();
-                dtStockIn = datac.getFIFODatedPrice(txtInvID.Text);
-                if (dtStockIn.Rows[0] != null)
-                {
-                    txtInvPrice.Text = dtStockIn.Rows[0][4].ToString();
-                }//end of if (dtStockIn.Rows[0] != null)
-                else
-                {
-                    MessageBox.Show("No rows in datatable: "); 
-                } //end of else              
-             
-                //to calculate the selling price (price + markup excl VAT)***
-                //   txtSellPrice.Text = (double.Parse(txtInvPrice.Text) * ((100 + (int.Parse(cmbInvMarkup.ValueMember))) / 100)).ToString(); //tried but failed
-                double price = 0;
-                double markup = 0;
-                double sellPrice = 0;
-                price = double.Parse(txtInvPrice.Text);
-                markup = int.Parse(cmbInvMarkup.Text);
-                sellPrice = price * ((100 + markup) / 100);
-                txtSellPrice.Text = sellPrice.ToString();
+                    MessageBox.Show(@"Please log the stock in the STOCK IN tab FIRST to ensure all the correct references are established.", "Reference reminder", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    btnStockUpdate.Enabled = false; //disable button so that nothing can happen- force to either choose another item or go to StockIN
+                }//end of else of if (flag == true)
+              
             }//end of try
             catch (Exception ex)
             {
@@ -404,6 +436,7 @@ namespace ImagineTrailvan
                 ArrayList getIDValue = new ArrayList();
                 string[] fieldFilter = { "ISIInvoiceNo", "SupplierID" };//cant work with this guy "ISIInvoiceTotalIncl"
                 Boolean exists = new Boolean();
+                Boolean flag = new Boolean();
 
                 //update any inventory details
                 ArrayList invValues = new ArrayList(); //make arrayList to store all values of current record
@@ -418,53 +451,77 @@ namespace ImagineTrailvan
 
                 datac.updateRecCmd("Inventory", fieldInv[0], txtISIinvID.Text, fieldInv, invValues);        //Send values in fieldInv string format from textBox/ comboBox through updateCmd query to database table using InvID as key            
                 dtgStockIn.DataSource = datac.getTable("Inventory");
-
+                flag = false;
                 if (txtInvoiceNo.Text != "")//this if makes it invoice based, invoice reference made-else is for recirculation
                 {
                     if (dtpInvoiceDate.Text != "")
                     {
                         dtAllInvoices = datac.getTable("InvoiceStockIN");
 
-                        for (int i = 0; i < dtAllInvoices.Rows.Count; i++)
+                        for (int i = 0; i < dtAllInvoices.Rows.Count+1; i++)
                         {
-                            if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())//&& dtAllInvoices.Rows[i][4].ToString() == txtISITotal.Text
+                            if (exists == false)
                             {
-                                exists = true;
-                            }//end of if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())
+                                if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())//&& dtAllInvoices.Rows[i][4].ToString() == txtISITotal.Text
+                                {
+                                    exists = true;
+                                }//end of if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())
+                                else
+                                {
+                                    exists = false;
+                                }//end of else, if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString()) 
+                            }//end of if (exists == false)
                             else
                             {
-                                exists = false;
-                            }//end of else, if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())
-                        }//end of for (int i = 0; i < dtAllInvoices.Rows.Count; i++)
-                     //   MessageBox.Show("Exists value: " + exists, "Testing complete");
-
-                        if (exists == true)
-                        {
-                            //make fancy pop-up to state that invoice exists, want to add to invoice?
-                            getIDValue.Add(" LIKE '" + txtInvoiceNo.Text + "'");
-                            // getIDValue.Add("='" + dtpInvoiceDate.Text+"00:00:00.000'");
-                            getIDValue.Add("=" + cmbISISupplier.SelectedValue);
-                            // getIDValue.Add("=" + txtISITotal.Text + "00");
-
-                            dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, getIDValue);  //save invoice details in this dataTable, to get the precise ISIID
-
-                            stockINValues.Add(0);
-                            stockINValues.Add(txtISIinvID.Text);
-                            stockINValues.Add(txtISIstockReceived.Text);
-                            stockINValues.Add(txtISIstockPrice.Text);
-                            stockINValues.Add(dtInvoiceIN.Rows[0][0].ToString());//use dtInvoiceIN for the reference to the invoice received
-                            stockINValues.Add(txtISIstockReceived.Text);
-                            datac.insertCmd("SubStockIN", fieldStockIN, stockINValues);// a new transaction with a reference to an invoice is created and inserted
-
-                            totalStockChanged.Add(0);
-                            totalStockChanged.Add(txtISIinvID.Text);
-                            totalStockChanged.Add((int.Parse(txtISIstockReceived.Text) + int.Parse(txtISIstockTotal.Text)));
-                            datac.updateRecCmd("InventoryStock", fieldTotalStock[0].ToString(), txtISIinvID.Text, fieldTotalStock, totalStockChanged);//string tblName, string idField, string ID, string[] fields, ArrayList values
-
-                            // dtgStockIn.DataSource = datac.getAllInvoice();
-                            dtgStockIn.DataSource = datac.getStockInInvoice(dtInvoiceIN.Rows[0][0].ToString());
+                                //this will be my flag to signal if it exists, since the first part of exist will only test each row and then move on, thus not stopping if it exists
+                                flag = true;
+                            }//end of else of if (exists == false)
                             
-                        }//end of if (exists = true)
+                        }//end of for (int i = 0; i < dtAllInvoices.Rows.Count; i++)
+                     //   MessageBox.Show("Exists value: " + flag, "Testing complete");
+                        if (flag == true)
+                        {
+                           // MessageBox.Show("This invoice already exists. ", "Testing complete");
+                            DialogResult result = MessageBox.Show("This invoice already exists: Do you wish to add items to it?", "Invoice Exists", MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+                            
+                            //make fancy pop-up to state that invoice exists, want to add to invoice?
+                            if (result == DialogResult.Yes)
+                            {
+                                getIDValue.Add(" LIKE '" + txtInvoiceNo.Text + "'");
+                                // getIDValue.Add("='" + dtpInvoiceDate.Text+"00:00:00.000'");
+                                getIDValue.Add("=" + cmbISISupplier.SelectedValue);
+                                // getIDValue.Add("=" + txtISITotal.Text + "00");
+
+                                dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, getIDValue);  //save invoice details in this dataTable, to get the precise ISIID
+
+                                stockINValues.Add(0);
+                                stockINValues.Add(txtISIinvID.Text);
+                                stockINValues.Add(txtISIstockReceived.Text);
+                                stockINValues.Add(txtISIstockPrice.Text);
+                                stockINValues.Add(dtInvoiceIN.Rows[0][0].ToString());//use dtInvoiceIN for the reference to the invoice received
+                                stockINValues.Add(txtISIstockReceived.Text);
+                                datac.insertCmd("SubStockIN", fieldStockIN, stockINValues);// a new transaction with a reference to an invoice is created and inserted
+
+                                totalStockChanged.Add(0);
+                                totalStockChanged.Add(txtISIinvID.Text);
+                                totalStockChanged.Add((int.Parse(txtISIstockReceived.Text) + int.Parse(txtISIstockTotal.Text)));
+                                datac.updateRecCmd("InventoryStock", fieldTotalStock[0].ToString(), txtISIinvID.Text, fieldTotalStock, totalStockChanged);//string tblName, string idField, string ID, string[] fields, ArrayList values
+
+                                // dtgStockIn.DataSource = datac.getAllInvoice();
+                                dtgStockIn.DataSource = datac.getStockInInvoice(dtInvoiceIN.Rows[0][0].ToString());
+                            }//end of if (result == DialogResult.Yes)
+                            else if ((result == DialogResult.No))
+                            {
+                                MessageBox.Show("Please enter a new invoice number value in the Invoice Number field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                txtInvoiceNo.Clear();
+                                txtISITotal.Clear();
+                                btnISIpreviewCurrent.Enabled = false;
+
+                                dtgStockIn.DataSource = datac.getTable("Inventory");
+                            }//end of else if (result == DialogResult.No)
+                            
+                        }//end of if (flag == true)
                         else
                         {//make new invoice thingy
                             invoiceValues.Add(0);
@@ -491,7 +548,7 @@ namespace ImagineTrailvan
                             totalStockChanged.Add(txtISIinvID.Text);
                             totalStockChanged.Add((int.Parse(txtISIstockReceived.Text) + int.Parse(txtISIstockTotal.Text)));
                             datac.updateRecCmd("InventoryStock", fieldTotalStock[0].ToString(), txtISIinvID.Text, fieldTotalStock, totalStockChanged);//string tblName, string idField, string ID, string[] fields, ArrayList values
-                        }//end of else
+                        }//end of else of if (flag == true)
                     }//end of if (dtpInvoiceDate.Text!="")
                     else
                     {
@@ -552,12 +609,7 @@ namespace ImagineTrailvan
             try
             {
                 DataAccess datac = new DataAccess();
-             //   if (dtgStockIn.DataSource.Equals(datac.getAllInvoice()))
-             //   {
-             //       MessageBox.Show("Click <clear> to reload stock details in the grid", "Grid click unsuccessful ", MessageBoxButtons.OK, MessageBoxIcon.Information);
-             //   }
-            //    else if (dtgStockIn.DataSource.Equals(datac.getTable("Inventory")))
-            //    {
+           
                     txtISIinvID.Text = dtgStockIn.SelectedRows[0].Cells[0].Value.ToString();
                     txtISIinvCode.Text = dtgStockIn.SelectedRows[0].Cells[1].Value.ToString();
                     txtISIinvItem.Text = dtgStockIn.SelectedRows[0].Cells[2].Value.ToString().ToUpper();
@@ -574,11 +626,7 @@ namespace ImagineTrailvan
 
                     dtStockIN = datac.getMathRecord("InventoryStock", fieldTotal, getIDValue);
                     txtISIstockTotal.Text = dtStockIN.Rows[0][2].ToString();
-             //   }
-             //   else
-             //   {
-             //       MessageBox.Show("Click <clear> to reload stock details in the grid", "Grid click unsuccessful ", MessageBoxButtons.OK, MessageBoxIcon.Information);
-              //  }
+
                     btnISIsave.Enabled = true;
               
             }//end of try
@@ -705,6 +753,7 @@ namespace ImagineTrailvan
                     string[] fieldFilter = { "ISIInvoiceNo", "SupplierID" };//cant work with this guy "ISIInvoiceTotalIncl"
                     string[] fieldNewItemID= { "InvItem" };
                     Boolean exists = new Boolean();
+                    Boolean flag = new Boolean();
 
                     values.Add("0");          //store textBox / comboBox value in the ArrayList
                     values.Add(txtISIinvCode.Text);
@@ -730,6 +779,8 @@ namespace ImagineTrailvan
                     }//end of else, if (cmbInvMarkupi.Text!="")
                     values.Add("false");
 
+                    flag = false;
+
                     datac.insertCmd("Inventory", fieldInvAll, values);       ////Send values in fieldInv string format through insertCmd query to database table
                     dtgStockIn.DataSource = datac.getTable("Inventory");
 
@@ -748,17 +799,25 @@ namespace ImagineTrailvan
                                 {
                                     for (int i = 0; i < dtAllInvoices.Rows.Count; i++)
                                     {
-                                        if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())//&& dtAllInvoices.Rows[i][4].ToString() == txtISITotal.Text
+                                        if (exists == false) 
                                         {
-                                            exists = true;
-                                        }//end of 
+                                            if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())//&& dtAllInvoices.Rows[i][4].ToString() == txtISITotal.Text
+                                            {
+                                                exists = true;
+                                            }//end of 
+                                            else
+                                            {
+                                                exists = false;
+                                            }//end of else
+                                        }//end of if (exists == false)
                                         else
                                         {
-                                            exists = false;
-                                        }//end of else
+                                            //this will be my flag to signal if it exists, since the first part of exist will only test each row and then move on, thus not stopping if it exists
+                                            flag = true;
+                                        }//end of else of if (exists == false)
                                     }//end of for (int i = 0; i < dtAllInvoices.Rows.Count; i++)
                                     //   MessageBox.Show("Exists value: " + exists, "Testing complete");
-                                    if (exists == true)
+                                    if (flag == true)
                                     {
                                         getIDValue.Add(" LIKE '" + txtInvoiceNo.Text + "'");
                                         // getIDValue.Add("='" + dtpInvoiceDate.Text+"00:00:00.000'");
@@ -783,7 +842,7 @@ namespace ImagineTrailvan
 
                                         // dtgStockIn.DataSource = datac.getAllInvoice();
                                         dtgStockIn.DataSource = datac.getStockInInvoice(dtInvoiceIN.Rows[0][0].ToString());
-                                    }//end of if (exists = true)
+                                    }//end of if (flag = true)
                                     else
                                     {//make new invoice thingy
                                         invoiceValues.Add(0);
@@ -810,7 +869,7 @@ namespace ImagineTrailvan
                                         totalStockChanged.Add(dtGetNewItemID.Rows[0][0].ToString());
                                         totalStockChanged.Add(txtISIstockReceived.Text);
                                         datac.insertCmd("InventoryStock", fieldTotalStock, totalStockChanged);//create a reference to totalStock with first stock
-                                    }//end of else, if (exists == true)
+                                    }//end of else, if (flag == true)
                                 }//end of if (txtISIstockPrice.Text!="")
                                 else
                                 {
@@ -1292,27 +1351,58 @@ namespace ImagineTrailvan
                 txtSCinvCode.Text = dtgCheckStock.SelectedRows[0].Cells[1].Value.ToString();
                 txtSCinvItem.Text = dtgCheckStock.SelectedRows[0].Cells[2].Value.ToString().ToUpper();
                 txtSCinvDesc.Text = dtgCheckStock.SelectedRows[0].Cells[3].Value.ToString().ToUpper();
-                txtSCinvCat.Text = dtgCheckStock.SelectedRows[0].Cells[4].Value.ToString().ToUpper();
-                txtSCinvRelevel.Text = dtgCheckStock.SelectedRows[0].Cells[5].Value.ToString();
+                txtSCinvCat.Text = dtgCheckStock.SelectedRows[0].Cells[5].Value.ToString().ToUpper();
+                txtSCinvRelevel.Text = dtgCheckStock.SelectedRows[0].Cells[6].Value.ToString();
 
                 txtSCactualTotal.Clear();
-
+                Boolean exists = new Boolean();
+                Boolean flag = new Boolean();
+                DataTable testTotalStock = new DataTable();
                 DataAccess datac = new DataAccess();
                 //****************Get the stock total quantity from InventoryStock table, relevant to the InventoryID******************
                 DataTable dtTotalStock = new DataTable();
-                string[] fieldTotal = { "InventoryID" };
-                ArrayList getIDValue = new ArrayList();
-                getIDValue.Add("=" + txtSCinvID.Text);
+                testTotalStock = datac.getTable("InventoryStock");
 
-                dtTotalStock = datac.getMathRecord("InventoryStock", fieldTotal, getIDValue);
-                if (dtTotalStock.Rows[0] != null)
+                 for (int i = 0; i < testTotalStock.Rows.Count+1; i++)
                 {
-                    txtSCsysTotal.Text = dtTotalStock.Rows[0][2].ToString();
-                }//end of if (dtStockIn.Rows[0] != null)
+                    if (exists == false)
+                    {
+                        if (testTotalStock.Rows[i][1].ToString() == txtInvID.Text)
+                        {
+                            exists = true;
+                        }//end of if (testTotalStock.Rows[i][1].ToString() == txtInvID.Text)
+                        else
+                        {
+                            exists = false;
+                        }//end of else of if (testTotalStock.Rows[i][1].ToString() == txtInvID.Text) 
+                    }//end of if (exists == false)
+                    else
+                    {
+                        flag = true;
+                    }//end of else of if (exists == false)
+                }//end of for (int i = 0; i < testTotalStock.Rows.Count; i++)
+
+                //here the flag will be tested, doing the actual determining of what should be done.
+                if (flag == true)
+                {//if the flag is true, meaning the record already exists, will then get references
+                    string[] fieldTotal = { "InventoryID" };
+                    ArrayList getIDValue = new ArrayList();
+                    getIDValue.Add("=" + txtSCinvID.Text);
+                    dtTotalStock = datac.getMathRecord("InventoryStock", fieldTotal, getIDValue);
+                    if (dtTotalStock.Rows[0] != null)
+                    {
+                        txtSCsysTotal.Text = dtTotalStock.Rows[0][2].ToString();
+                    }//end of if (dtStockIn.Rows[0] != null)
+                    else
+                    {
+                        MessageBox.Show("no rows in datatable: ");
+                    } //end of else    
+                }//end of if (flag == true)
                 else
                 {
-                    MessageBox.Show("no rows in datatable: ");
-                } //end of else                     
+                    MessageBox.Show(@"Please log the stock in the STOCK IN tab as stock received FIRST, to ensure that all the correct references are established.", "No References Were Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    btnSCsave.Enabled = false; //disable button so that nothing can happen- force to either choose another item or go to StockIN
+                }//end of else of if (flag == true)
             }//end of try
             catch (Exception ex)
             {
@@ -1356,8 +1446,8 @@ namespace ImagineTrailvan
                                      updateStockIn.Add(dtTempStockIN.Rows[0][1].ToString());
                                      updateStockIn.Add(dtTempStockIN.Rows[0][2].ToString());
                                      updateStockIn.Add(dtTempStockIN.Rows[0][3].ToString());
-                                     updateStockIn.Add(dtTempStockIN.Rows[0][4].ToString());
-                                     updateStockIn.Add(int.Parse(dtTempStockIN.Rows[0][5].ToString())-1);
+                                     updateStockIn.Add(dtTempStockIN.Rows[0][5].ToString());
+                                     updateStockIn.Add(int.Parse(dtTempStockIN.Rows[0][6].ToString())-1);
                                      datac.updateRecCmd("SubStockIN", fieldStockIN[0],dtTempStockIN.Rows[0][0].ToString(),fieldStockIN,updateStockIn);
                                  }//end of if (int.Parse(dtSubStockIN.Rows[0][2].ToString())>0)
                                  else
@@ -1367,8 +1457,8 @@ namespace ImagineTrailvan
                                      updateStockIn.Add(dtTempStockIN.Rows[0][1].ToString());
                                      updateStockIn.Add(dtTempStockIN.Rows[0][2].ToString());
                                      updateStockIn.Add(dtTempStockIN.Rows[0][3].ToString());
-                                     updateStockIn.Add(dtTempStockIN.Rows[0][4].ToString());
-                                     updateStockIn.Add(int.Parse(dtTempStockIN.Rows[0][5].ToString()) - 1);
+                                     updateStockIn.Add(dtTempStockIN.Rows[0][5].ToString());
+                                     updateStockIn.Add(int.Parse(dtTempStockIN.Rows[0][6].ToString()) - 1);
                                      datac.updateRecCmd("SubStockIN", fieldStockIN[0], dtTempStockIN.Rows[0][0].ToString(), fieldStockIN, updateStockIn);                          
                                  }//end of else
                              }//end of for (int i = 0; i < int.Parse(txtInvStockOut.Text); i++)
@@ -1393,8 +1483,8 @@ namespace ImagineTrailvan
                             updateStockIn.Add(dtTempStockIN.Rows[0][1].ToString());
                             updateStockIn.Add(dtTempStockIN.Rows[0][2].ToString());
                             updateStockIn.Add(dtTempStockIN.Rows[0][3].ToString());
-                            updateStockIn.Add(dtTempStockIN.Rows[0][4].ToString());
-                            updateStockIn.Add(int.Parse(dtTempStockIN.Rows[0][5].ToString()) + 1);
+                            updateStockIn.Add(dtTempStockIN.Rows[0][5].ToString());
+                            updateStockIn.Add(int.Parse(dtTempStockIN.Rows[0][6].ToString()) + 1);
                             datac.updateRecCmd("SubStockIN", fieldStockIN[0], dtTempStockIN.Rows[0][0].ToString(), fieldStockIN, updateStockIn);
                             updateStockIn = new ArrayList();//basically clearing this arrayList
                             dtTempStockIN = datac.getFIFODatedPrice(txtSCinvID.Text);//get the record again after the update
@@ -1425,22 +1515,213 @@ namespace ImagineTrailvan
             }//end of catch (Exception ex)
         }//end of private void btnSCsave_Click(object sender, EventArgs e)
         #endregion
+
+        #region tabOrderStock
+        private void btnOrderSupGO_Click(object sender, EventArgs e)
+        {
+            //give the dtg new datasource from dropdownbox with supplier as filter
+            DataAccess datac = new DataAccess();
+
+            //construct the order number here
+            DataTable orderNum = new DataTable();
+            DataTable orderSupDetails = new DataTable();
+            DataTable ordersTable = new DataTable();
+            string year = "";
+            string finalOrderNumber = "";
+            string[] supplierIDfield = { "SupplierID" };
+            Boolean exists = false;
+            Boolean flag = new Boolean();
+            ArrayList supplierIDvalue = new ArrayList();
+
+            //test if there any previous orders from this supplier (while this supplier exists)
+            //first get the table of orders
+            ordersTable = datac.getTable("Orders");
+            flag = false;
+            //run through all the orders
+            for (int i = 0; i < ordersTable.Rows.Count; i++)
+            {
+                //test if there is a supplierID that matches
+                 if (exists == false) 
+                 {
+                     if (ordersTable.Rows[i][2].ToString() == cbxOrderSup.SelectedValue.ToString())
+                     {
+                    //this means there is a previous order made
+                         exists = true;
+                     }//end of if (ordersTable.Rows[i][2].ToString()==cbxOrderSup.SelectedValue.ToString())
+                     else
+                     {
+                    //this means there is no order history for this supplier
+                         exists = false;
+                     }//end of else of if (ordersTable.Rows[i][2].ToString()==cbxOrderSup.SelectedValue.ToString())
+                 }//end of if (exists == false)
+                 else
+                 {
+                     //this will be my flag to signal if it exists, since the first part of exist will only test each row and then move on, thus not stopping if it exists
+                     flag = true;
+                 }//end of else of if (exists == false)
+            }//end of for (int i = 0; i < ordersTable.Rows.Count; i++)
+
+            //do something if there is a history
+            if (flag == true)
+            {
+                supplierIDvalue.Add(cbxOrderSup.SelectedValue.ToString());
+                year = DateTime.Now.ToString("yy");//get the date for the year block in the orderNumber-string
+                orderSupDetails = datac.getRecord("Supplier", supplierIDfield, supplierIDvalue);
+                orderNum = datac.getLastOrderNumber(cbxOrderSup.SelectedValue.ToString()); //get the last ordernumber for specific supplier
+
+                finalOrderNumber = "IT" + "-" + year + "-" + orderSupDetails.Rows[0][10].ToString() + "-" + (int.Parse(orderNum.Rows[0][0].ToString()) + 1);
+                txtOrderNumber.Text = finalOrderNumber;
+              //  dtgSupOrderHistory.DataSource = datac.getSupplierOrderHistory(cbxOrderSup.SelectedValue.ToString());
+            }//end of if (flag==true)
+            //do something if there is NO history
+            else
+            {
+                supplierIDvalue.Add(cbxOrderSup.SelectedValue.ToString());
+                year = DateTime.Now.ToString("yy");//get the date for the year block in the orderNumber-string
+                orderSupDetails = datac.getRecord("Supplier", supplierIDfield, supplierIDvalue);
+                string newOrdernumber = "0001";
+
+                finalOrderNumber = "IT" + "-" + year + "-" + orderSupDetails.Rows[0][10].ToString() + "-" + newOrdernumber;
+                txtOrderNumber.Text = finalOrderNumber;
+                MessageBox.Show(@"No order history is found for the SUPPLIER selected. 
+                Create order 0001?", "No History Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+               // dtgSupOrderHistory.DataSource = datac.getAllOrderHistory();
+            }//end of else of if (flag==true)
+
+            //-----sample for split, to get the numeric order number value-------
+            //string strDate = "26/07/2011"; //Format – dd/MM/yyyy
+            ////split string date by separator, here I'm using '/'
+            //string[] arrDate = strDate.Split('/');
+            ////now use array to get specific date object
+            //string day = arrDate[0].ToString();
+            //string month = arrDate[1].ToString();
+            //string year = arrDate[2].ToString();
+
+        }//end of private void btnOrderSupGO_Click(object sender, EventArgs e)
+
+        private void btnOrderFilter_Click(object sender, EventArgs e)
+        {
+            //give the dtg new datasource from dropdownbox with supplier as filter
+            DataAccess datac = new DataAccess();
+
+            DataTable orderSupDetails = new DataTable();
+            DataTable ordersTable = new DataTable();
+            string[] supplierIDfield = { "SupplierID" };
+            Boolean exists = false;
+            Boolean flag = new Boolean();
+            ArrayList supplierIDvalue = new ArrayList();
+
+            //test if there any previous orders from this supplier (while this supplier exists)
+            //first get the table of orders
+            flag = false;
+            ordersTable = datac.getTable("Orders");
+            //run through all the orders
+            for (int i = 0; i < ordersTable.Rows.Count; i++)
+            {
+                //test if there is a supplierID that matches
+                 if (exists == false) 
+                 {
+                     if (ordersTable.Rows[i][2].ToString() == cbxOrderSup.SelectedValue.ToString())
+                     {
+                    //this means there is a previous order made
+                         exists = true;
+                     }//end of if (ordersTable.Rows[i][2].ToString()==cbxOrderSup.SelectedValue.ToString())
+                     else
+                     {
+                    //this means there is no order history for this supplier
+                         exists = false;
+                     }//end of else of if (ordersTable.Rows[i][2].ToString()==cbxOrderSup.SelectedValue.ToString())
+                 }//end of if (exists == false)
+                 else
+                 {
+                     //this will be my flag to signal if it exists, since the first part of exist will only test each row and then move on, thus not stopping if it exists
+                     flag = true;
+                 }//end of else of if (exists == false)
+            }//end of for (int i = 0; i < ordersTable.Rows.Count; i++)
+
+            //do something if there is a history
+            if (flag == true)
+            {
+                  dtgSupOrderHistory.DataSource = datac.getSupplierOrderHistory(cbxOrderSup.SelectedValue.ToString());
+            }//end of if (flag==true)
+            //do something if there is NO history
+            else
+            {
+                MessageBox.Show(@"No order history is found for the SUPPLIER selected.", "No History Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                dtgSupOrderHistory.DataSource = datac.getAllOrderHistory();
+            }//end of else of if (flag==true)
+        }//end of private void btnOrderFilter_Click(object sender, EventArgs e)
+        
+        private void dtgSupOrderHistory_Click(object sender, EventArgs e)
+        {
+            //give the details dtg a new datasource depended on the order selected
+            DataAccess datac = new DataAccess();
+            //make if to see if there is at all any history of this supplier.
+            dtgSupOrderList.DataSource = datac.getSupOrderDetails(dtgSupOrderHistory.SelectedRows[0].Cells[4].Value.ToString());
+        }//end of private void dtgSupOrderHistory_Click(object sender, EventArgs e)
+
+        //begin drag and drop methods
+        void dtgOrderInvList_DragDrop(object sender, DragEventArgs e)
+        {
+            DataGridViewRow row = e.Data.GetData(typeof(DataGridViewRow))
+            as DataGridViewRow;
+            if (row != null)
+            {
+                DataGridViewRow newrow = row.Clone() as DataGridViewRow;
+                for (int i = 0; i < newrow.Cells.Count; i++)
+                {
+                    newrow.Cells[i].Value = row.Cells[i].Value;
+                }//end of for (int i = 0; i < newrow.Cells.Count; i++)
+                this.dtgOrderInvList.Rows.Add(newrow);
+            }//end of  if (row != null)
+        }//end of  void dtgOrderInvList_DragDrop(object sender, DragEventArgs e)
+        void dtgOrderInvList_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(typeof(DataGridViewRow)))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }//end of if (e.Data.GetDataPresent(typeof(DataGridViewRow)))
+        }//end of void dtgOrderInvList_DragEnter(object sender, DragEventArgs e)
+        void dtgSupOrderList_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                this.dtgSupOrderList.DoDragDrop(this.dtgSupOrderList.CurrentRow, DragDropEffects.All);
+            }//end of if (e.Button == MouseButtons.Left)
+        }//end of void dtgSupOrderList_MouseMove(object sender, MouseEventArgs e)
+        //end drag and drop methods
+        #endregion
         private void btnPDFprint_Click(object sender, EventArgs e)
         {
             try
             {
                 DataAccess datac=new DataAccess();
                 PdfCreator pdfc = new PdfCreator();
-                DataTable dtInvValues = new DataTable();
+                DataTable dtInvValues = new DataTable();        //this variable is the datatable that will contain all the details of the inventory being ordered
                 DataTable dtSupValues = new DataTable();
-                string fileName = "whoop whoop test success!";
-                string getID="3";
-             //   dtInvValues = (DataTable)dtgInventory.DataSource;
-                dtInvValues = datac.getStockInInvoice(getID);
+                string fileName = txtOrderNumber.Text;
+                string getID = cbxOrderSup.SelectedValue.ToString();
+               // dtInvValues = (DataTable)dtgSupOrderList.DataSource;
+               // dtInvValues = datac.getStockInInvoice(getID);
+
+                foreach (DataGridViewColumn header in dtgOrderInvList.Columns)
+                {
+                    dtInvValues.Columns.Add(header.Name);
+                }//end of foreach (DataGridViewColumn header in dtgOrderInvList.Columns)
+                foreach (DataGridViewRow row in dtgOrderInvList.Rows)
+                {
+                    if (row.IsNewRow)
+                        continue;
+                    DataRow dtRow = dtInvValues.NewRow();
+                    for (int i1 = 0; i1 < dtgOrderInvList.Columns.Count; i1++)
+                        dtRow[i1] = (row.Cells[i1].Value == null ? DBNull.Value : row.Cells[i1].Value);
+                    dtInvValues.Rows.Add(dtRow);
+                }//end of foreach (DataGridViewRow row in dtgOrderInvList.Rows)
+
                 ArrayList val=new ArrayList();
 
                 string[] field = { "SupplierID" };
-                val.Add("1");
+                val.Add(getID);
                 dtSupValues = datac.getRecord("Supplier", field, val);
                 //take care when creating datatable for items: Columns needed:1) PartCode, Item, Quantity, Price, ?Length? 2) consider creating the TOTAL col here
                 pdfc.CreateOrderPDF(dtInvValues, dtSupValues, fileName);//simply send a datatable for supplier, a datatable for the items, and a string for the filename- it will do the rest
@@ -1450,9 +1731,20 @@ namespace ImagineTrailvan
                 MessageBox.Show(ex.ToString());
             }//end of catch (Exception ex)            
         }//end of private void btnPDFprint_Click(object sender, EventArgs e)
-       
+
+
+
+
     }//end of public partial class frmInventory : Form
 }//end of namespace ImagineTrailvan
+
+/*   DataTable dt = new DataTable();
+   dt.Clear();
+   dt.Columns.Add("Name");
+   dt.Columns.Add("Marks");            example found to create and pass an array of values in a datatable
+   object[] o = { "Ravi", 500 };
+   dt.Rows.Add(o);
+   dt.Rows.Add(new object[] { "Ravi", 500 }); */
 
 // Add TabPage1
 //  TabPage tabStock = new TabPage();
