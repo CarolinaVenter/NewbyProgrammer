@@ -29,9 +29,11 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tConInventory = new System.Windows.Forms.TabControl();
             this.tabStockOUT = new System.Windows.Forms.TabPage();
-            this.btnPDFprint = new System.Windows.Forms.Button();
             this.dtpDateStockOUT = new System.Windows.Forms.DateTimePicker();
             this.gboxPrice = new System.Windows.Forms.GroupBox();
             this.lblSellPrice = new System.Windows.Forms.Label();
@@ -63,6 +65,8 @@
             this.txtInvID = new System.Windows.Forms.TextBox();
             this.dtgInventory = new System.Windows.Forms.DataGridView();
             this.tabStockIN = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
+            this.dtgInvoiceHistory = new System.Windows.Forms.DataGridView();
             this.btnISIsave = new System.Windows.Forms.Button();
             this.btnISIrecordNewInvoice = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -165,25 +169,6 @@
             this.lblInventoryValue = new System.Windows.Forms.Label();
             this.txtStockValue = new System.Windows.Forms.TextBox();
             this.dtgInventoryValue = new System.Windows.Forms.DataGridView();
-            this.tabSupplierSummary = new System.Windows.Forms.TabPage();
-            this.btnSearchClear = new System.Windows.Forms.Button();
-            this.btnSearchGO = new System.Windows.Forms.Button();
-            this.lblValueSummary = new System.Windows.Forms.Label();
-            this.txtSupSummaryValue = new System.Windows.Forms.TextBox();
-            this.dtgInventorySummary = new System.Windows.Forms.DataGridView();
-            this.txtSearchSCell = new System.Windows.Forms.TextBox();
-            this.txtSearchSProv = new System.Windows.Forms.TextBox();
-            this.txtSearchSCity = new System.Windows.Forms.TextBox();
-            this.txtSearchSAddress = new System.Windows.Forms.TextBox();
-            this.txtSearchSBus = new System.Windows.Forms.TextBox();
-            this.txtSearchSEmail = new System.Windows.Forms.TextBox();
-            this.txtSearchSREP = new System.Windows.Forms.TextBox();
-            this.txtSearchSContact = new System.Windows.Forms.TextBox();
-            this.txtSearchSName = new System.Windows.Forms.TextBox();
-            this.txtSearchSID = new System.Windows.Forms.TextBox();
-            this.lblSearchSup = new System.Windows.Forms.Label();
-            this.txtSearchSupplier = new System.Windows.Forms.TextBox();
-            this.dtgSupplierSearch = new System.Windows.Forms.DataGridView();
             this.tabOrderStock = new System.Windows.Forms.TabPage();
             this.cbxOrderSup = new System.Windows.Forms.ComboBox();
             this.btnOrderSupGO = new System.Windows.Forms.Button();
@@ -202,14 +187,10 @@
             this.txtOrderTotalIncl = new System.Windows.Forms.TextBox();
             this.txtOrderVAT = new System.Windows.Forms.TextBox();
             this.txtOrderTotalExcl = new System.Windows.Forms.TextBox();
-            this.btnOrderNextItem = new System.Windows.Forms.Button();
-            this.btnOrderPreview = new System.Windows.Forms.Button();
-            this.btnSaveOrder = new System.Windows.Forms.Button();
+            this.btnOrderSavePDF = new System.Windows.Forms.Button();
             this.dtgSupOrderHistory = new System.Windows.Forms.DataGridView();
             this.btnRemoveAll = new System.Windows.Forms.Button();
             this.btnAddAll = new System.Windows.Forms.Button();
-            this.btnRemoveSingle = new System.Windows.Forms.Button();
-            this.btnAddSingle = new System.Windows.Forms.Button();
             this.dtgOrderInvList = new System.Windows.Forms.DataGridView();
             this.invID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.invCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -233,6 +214,25 @@
             this.dtgNewInvOrderDetails = new System.Windows.Forms.DataGridView();
             this.dtgInvOrderDetails = new System.Windows.Forms.DataGridView();
             this.dtgInvOrderHistory = new System.Windows.Forms.DataGridView();
+            this.tabSupplierSummary = new System.Windows.Forms.TabPage();
+            this.btnSearchClear = new System.Windows.Forms.Button();
+            this.btnSearchGO = new System.Windows.Forms.Button();
+            this.lblValueSummary = new System.Windows.Forms.Label();
+            this.txtSupSummaryValue = new System.Windows.Forms.TextBox();
+            this.dtgInventorySummary = new System.Windows.Forms.DataGridView();
+            this.txtSearchSCell = new System.Windows.Forms.TextBox();
+            this.txtSearchSProv = new System.Windows.Forms.TextBox();
+            this.txtSearchSCity = new System.Windows.Forms.TextBox();
+            this.txtSearchSAddress = new System.Windows.Forms.TextBox();
+            this.txtSearchSBus = new System.Windows.Forms.TextBox();
+            this.txtSearchSEmail = new System.Windows.Forms.TextBox();
+            this.txtSearchSREP = new System.Windows.Forms.TextBox();
+            this.txtSearchSContact = new System.Windows.Forms.TextBox();
+            this.txtSearchSName = new System.Windows.Forms.TextBox();
+            this.txtSearchSID = new System.Windows.Forms.TextBox();
+            this.lblSearchSup = new System.Windows.Forms.Label();
+            this.txtSearchSupplier = new System.Windows.Forms.TextBox();
+            this.dtgSupplierSearch = new System.Windows.Forms.DataGridView();
             this.supplierTableAdapter = new ImagineTrailvan.SupplierDataSetTableAdapters.SupplierTableAdapter();
             this.tConInventory.SuspendLayout();
             this.tabStockOUT.SuspendLayout();
@@ -241,6 +241,7 @@
             this.grbInventory.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgInventory)).BeginInit();
             this.tabStockIN.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dtgInvoiceHistory)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.supplierBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.supplierDataSet)).BeginInit();
@@ -258,9 +259,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.dtgSuppliers)).BeginInit();
             this.tabInventoryValue.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgInventoryValue)).BeginInit();
-            this.tabSupplierSummary.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dtgInventorySummary)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dtgSupplierSearch)).BeginInit();
             this.tabOrderStock.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgSupOrderHistory)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgOrderInvList)).BeginInit();
@@ -269,6 +267,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.dtgNewInvOrderDetails)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgInvOrderDetails)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgInvOrderHistory)).BeginInit();
+            this.tabSupplierSummary.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dtgInventorySummary)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dtgSupplierSearch)).BeginInit();
             this.SuspendLayout();
             // 
             // tConInventory
@@ -278,9 +279,9 @@
             this.tConInventory.Controls.Add(this.tabStockCheck);
             this.tConInventory.Controls.Add(this.tabSuppliers);
             this.tConInventory.Controls.Add(this.tabInventoryValue);
-            this.tConInventory.Controls.Add(this.tabSupplierSummary);
             this.tConInventory.Controls.Add(this.tabOrderStock);
             this.tConInventory.Controls.Add(this.tabOrderInventory);
+            this.tConInventory.Controls.Add(this.tabSupplierSummary);
             this.tConInventory.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tConInventory.Location = new System.Drawing.Point(0, 0);
             this.tConInventory.Name = "tConInventory";
@@ -290,7 +291,6 @@
             // 
             // tabStockOUT
             // 
-            this.tabStockOUT.Controls.Add(this.btnPDFprint);
             this.tabStockOUT.Controls.Add(this.dtpDateStockOUT);
             this.tabStockOUT.Controls.Add(this.gboxPrice);
             this.tabStockOUT.Controls.Add(this.gboxStock);
@@ -305,16 +305,6 @@
             this.tabStockOUT.Text = "STOCK OUT";
             this.tabStockOUT.UseVisualStyleBackColor = true;
             this.tabStockOUT.Click += new System.EventHandler(this.tabStock_Click);
-            // 
-            // btnPDFprint
-            // 
-            this.btnPDFprint.Location = new System.Drawing.Point(266, 154);
-            this.btnPDFprint.Name = "btnPDFprint";
-            this.btnPDFprint.Size = new System.Drawing.Size(75, 23);
-            this.btnPDFprint.TabIndex = 41;
-            this.btnPDFprint.Text = "print to pdf";
-            this.btnPDFprint.UseVisualStyleBackColor = true;
-            this.btnPDFprint.Click += new System.EventHandler(this.btnPDFprint_Click);
             // 
             // dtpDateStockOUT
             // 
@@ -627,6 +617,8 @@
             // 
             // tabStockIN
             // 
+            this.tabStockIN.Controls.Add(this.label1);
+            this.tabStockIN.Controls.Add(this.dtgInvoiceHistory);
             this.tabStockIN.Controls.Add(this.btnISIsave);
             this.tabStockIN.Controls.Add(this.btnISIrecordNewInvoice);
             this.tabStockIN.Controls.Add(this.groupBox1);
@@ -643,10 +635,27 @@
             this.tabStockIN.Text = "STOCK IN";
             this.tabStockIN.UseVisualStyleBackColor = true;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(445, 11);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(77, 13);
+            this.label1.TabIndex = 43;
+            this.label1.Text = "Invoice History";
+            // 
+            // dtgInvoiceHistory
+            // 
+            this.dtgInvoiceHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dtgInvoiceHistory.Location = new System.Drawing.Point(448, 27);
+            this.dtgInvoiceHistory.Name = "dtgInvoiceHistory";
+            this.dtgInvoiceHistory.Size = new System.Drawing.Size(584, 119);
+            this.dtgInvoiceHistory.TabIndex = 61;
+            // 
             // btnISIsave
             // 
             this.btnISIsave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnISIsave.Location = new System.Drawing.Point(401, 276);
+            this.btnISIsave.Location = new System.Drawing.Point(402, 279);
             this.btnISIsave.Name = "btnISIsave";
             this.btnISIsave.Size = new System.Drawing.Size(223, 23);
             this.btnISIsave.TabIndex = 60;
@@ -657,7 +666,7 @@
             // btnISIrecordNewInvoice
             // 
             this.btnISIrecordNewInvoice.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnISIrecordNewInvoice.Location = new System.Drawing.Point(778, 276);
+            this.btnISIrecordNewInvoice.Location = new System.Drawing.Point(779, 279);
             this.btnISIrecordNewInvoice.Name = "btnISIrecordNewInvoice";
             this.btnISIrecordNewInvoice.Size = new System.Drawing.Size(222, 23);
             this.btnISIrecordNewInvoice.TabIndex = 53;
@@ -670,9 +679,9 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.label40);
             this.groupBox1.Controls.Add(this.cmbISISupplier);
-            this.groupBox1.Location = new System.Drawing.Point(447, 11);
+            this.groupBox1.Location = new System.Drawing.Point(4, 107);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(585, 105);
+            this.groupBox1.Size = new System.Drawing.Size(429, 39);
             this.groupBox1.TabIndex = 59;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Supplier Details";
@@ -680,7 +689,7 @@
             // label40
             // 
             this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(14, 31);
+            this.label40.Location = new System.Drawing.Point(21, 16);
             this.label40.Name = "label40";
             this.label40.Size = new System.Drawing.Size(45, 13);
             this.label40.TabIndex = 12;
@@ -694,9 +703,9 @@
             this.cmbISISupplier.DataSource = this.supplierBindingSource;
             this.cmbISISupplier.DisplayMember = "SupName";
             this.cmbISISupplier.FormattingEnabled = true;
-            this.cmbISISupplier.Location = new System.Drawing.Point(122, 28);
+            this.cmbISISupplier.Location = new System.Drawing.Point(99, 13);
             this.cmbISISupplier.Name = "cmbISISupplier";
-            this.cmbISISupplier.Size = new System.Drawing.Size(417, 21);
+            this.cmbISISupplier.Size = new System.Drawing.Size(314, 21);
             this.cmbISISupplier.TabIndex = 5;
             this.cmbISISupplier.ValueMember = "SupplierID";
             // 
@@ -722,7 +731,7 @@
             this.groupBox4.Controls.Add(this.txtInvoiceNo);
             this.groupBox4.Location = new System.Drawing.Point(4, 11);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(429, 105);
+            this.groupBox4.Size = new System.Drawing.Size(429, 90);
             this.groupBox4.TabIndex = 58;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Invoice Details";
@@ -730,7 +739,7 @@
             // label41
             // 
             this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(8, 75);
+            this.label41.Location = new System.Drawing.Point(8, 67);
             this.label41.Name = "label41";
             this.label41.Size = new System.Drawing.Size(101, 13);
             this.label41.TabIndex = 13;
@@ -739,7 +748,7 @@
             // label42
             // 
             this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(8, 50);
+            this.label42.Location = new System.Drawing.Point(8, 46);
             this.label42.Name = "label42";
             this.label42.Size = new System.Drawing.Size(68, 13);
             this.label42.TabIndex = 12;
@@ -748,7 +757,7 @@
             // label43
             // 
             this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(8, 22);
+            this.label43.Location = new System.Drawing.Point(8, 19);
             this.label43.Name = "label43";
             this.label43.Size = new System.Drawing.Size(82, 13);
             this.label43.TabIndex = 11;
@@ -760,9 +769,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dtpInvoiceDate.CustomFormat = "yyyy-MM-dd ";
             this.dtpInvoiceDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpInvoiceDate.Location = new System.Drawing.Point(187, 44);
+            this.dtpInvoiceDate.Location = new System.Drawing.Point(160, 40);
             this.dtpInvoiceDate.Name = "dtpInvoiceDate";
-            this.dtpInvoiceDate.Size = new System.Drawing.Size(200, 20);
+            this.dtpInvoiceDate.Size = new System.Drawing.Size(253, 20);
             this.dtpInvoiceDate.TabIndex = 4;
             this.dtpInvoiceDate.Value = new System.DateTime(2017, 10, 16, 15, 24, 7, 0);
             // 
@@ -770,18 +779,18 @@
             // 
             this.txtISITotal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtISITotal.Location = new System.Drawing.Point(287, 72);
+            this.txtISITotal.Location = new System.Drawing.Point(287, 64);
             this.txtISITotal.Name = "txtISITotal";
-            this.txtISITotal.Size = new System.Drawing.Size(100, 20);
+            this.txtISITotal.Size = new System.Drawing.Size(126, 20);
             this.txtISITotal.TabIndex = 1;
             // 
             // txtInvoiceNo
             // 
             this.txtInvoiceNo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtInvoiceNo.Location = new System.Drawing.Point(187, 16);
+            this.txtInvoiceNo.Location = new System.Drawing.Point(160, 16);
             this.txtInvoiceNo.Name = "txtInvoiceNo";
-            this.txtInvoiceNo.Size = new System.Drawing.Size(200, 20);
+            this.txtInvoiceNo.Size = new System.Drawing.Size(253, 20);
             this.txtInvoiceNo.TabIndex = 0;
             // 
             // groupBox5
@@ -798,9 +807,9 @@
             this.groupBox5.Controls.Add(this.label48);
             this.groupBox5.Controls.Add(this.txtISIstockReceived);
             this.groupBox5.Controls.Add(this.txtISIstockPrice);
-            this.groupBox5.Location = new System.Drawing.Point(767, 122);
+            this.groupBox5.Location = new System.Drawing.Point(781, 152);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(251, 148);
+            this.groupBox5.Size = new System.Drawing.Size(251, 120);
             this.groupBox5.TabIndex = 57;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Stock";
@@ -815,7 +824,7 @@
             "30",
             "40",
             "50"});
-            this.cmbISIinvMarkup.Location = new System.Drawing.Point(149, 120);
+            this.cmbISIinvMarkup.Location = new System.Drawing.Point(149, 95);
             this.cmbISIinvMarkup.Name = "cmbISIinvMarkup";
             this.cmbISIinvMarkup.Size = new System.Drawing.Size(78, 21);
             this.cmbISIinvMarkup.TabIndex = 54;
@@ -824,7 +833,7 @@
             // 
             this.label44.AutoSize = true;
             this.label44.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label44.Location = new System.Drawing.Point(154, 104);
+            this.label44.Location = new System.Drawing.Point(154, 81);
             this.label44.Name = "label44";
             this.label44.Size = new System.Drawing.Size(66, 13);
             this.label44.TabIndex = 53;
@@ -833,7 +842,7 @@
             // txtISIinvReLevel
             // 
             this.txtISIinvReLevel.BackColor = System.Drawing.SystemColors.Window;
-            this.txtISIinvReLevel.Location = new System.Drawing.Point(149, 31);
+            this.txtISIinvReLevel.Location = new System.Drawing.Point(149, 27);
             this.txtISIinvReLevel.Name = "txtISIinvReLevel";
             this.txtISIinvReLevel.Size = new System.Drawing.Size(78, 20);
             this.txtISIinvReLevel.TabIndex = 51;
@@ -843,7 +852,7 @@
             this.label45.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label45.AutoSize = true;
-            this.label45.Location = new System.Drawing.Point(8, 59);
+            this.label45.Location = new System.Drawing.Point(8, 48);
             this.label45.Name = "label45";
             this.label45.Size = new System.Drawing.Size(95, 13);
             this.label45.TabIndex = 22;
@@ -852,7 +861,7 @@
             // txtISIstockTotal
             // 
             this.txtISIstockTotal.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
-            this.txtISIstockTotal.Location = new System.Drawing.Point(8, 36);
+            this.txtISIstockTotal.Location = new System.Drawing.Point(8, 28);
             this.txtISIstockTotal.Name = "txtISIstockTotal";
             this.txtISIstockTotal.ReadOnly = true;
             this.txtISIstockTotal.Size = new System.Drawing.Size(78, 20);
@@ -862,7 +871,7 @@
             // 
             this.label46.AutoSize = true;
             this.label46.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label46.Location = new System.Drawing.Point(146, 15);
+            this.label46.Location = new System.Drawing.Point(146, 13);
             this.label46.Name = "label46";
             this.label46.Size = new System.Drawing.Size(83, 13);
             this.label46.TabIndex = 52;
@@ -871,7 +880,7 @@
             // label47
             // 
             this.label47.AutoSize = true;
-            this.label47.Location = new System.Drawing.Point(8, 18);
+            this.label47.Location = new System.Drawing.Point(8, 13);
             this.label47.Name = "label47";
             this.label47.Size = new System.Drawing.Size(62, 13);
             this.label47.TabIndex = 50;
@@ -882,29 +891,29 @@
             this.label48.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label48.AutoSize = true;
-            this.label48.Location = new System.Drawing.Point(129, 59);
+            this.label48.Location = new System.Drawing.Point(124, 47);
             this.label48.Name = "label48";
-            this.label48.Size = new System.Drawing.Size(104, 13);
+            this.label48.Size = new System.Drawing.Size(127, 13);
             this.label48.TabIndex = 23;
-            this.label48.Text = "Price/ Unit excl VAT";
+            this.label48.Text = "Price/ Unit excl VAT ( R )";
             // 
             // txtISIstockReceived
             // 
-            this.txtISIstockReceived.Location = new System.Drawing.Point(8, 77);
+            this.txtISIstockReceived.Location = new System.Drawing.Point(8, 63);
             this.txtISIstockReceived.Name = "txtISIstockReceived";
             this.txtISIstockReceived.Size = new System.Drawing.Size(78, 20);
             this.txtISIstockReceived.TabIndex = 6;
             // 
             // txtISIstockPrice
             // 
-            this.txtISIstockPrice.Location = new System.Drawing.Point(149, 77);
+            this.txtISIstockPrice.Location = new System.Drawing.Point(149, 60);
             this.txtISIstockPrice.Name = "txtISIstockPrice";
             this.txtISIstockPrice.Size = new System.Drawing.Size(78, 20);
             this.txtISIstockPrice.TabIndex = 7;
             // 
             // btnISIpreviewCurrent
             // 
-            this.btnISIpreviewCurrent.Location = new System.Drawing.Point(7, 276);
+            this.btnISIpreviewCurrent.Location = new System.Drawing.Point(8, 279);
             this.btnISIpreviewCurrent.Name = "btnISIpreviewCurrent";
             this.btnISIpreviewCurrent.Size = new System.Drawing.Size(240, 23);
             this.btnISIpreviewCurrent.TabIndex = 55;
@@ -929,16 +938,16 @@
             this.groupBox6.Controls.Add(this.txtISIinvItem);
             this.groupBox6.Controls.Add(this.txtISIinvCode);
             this.groupBox6.Controls.Add(this.txtISIinvID);
-            this.groupBox6.Location = new System.Drawing.Point(4, 122);
+            this.groupBox6.Location = new System.Drawing.Point(4, 152);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(752, 147);
+            this.groupBox6.Size = new System.Drawing.Size(752, 120);
             this.groupBox6.TabIndex = 56;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Inventory Details";
             // 
             // btnISIinvDeleteItem
             // 
-            this.btnISIinvDeleteItem.Location = new System.Drawing.Point(395, 118);
+            this.btnISIinvDeleteItem.Location = new System.Drawing.Point(395, 94);
             this.btnISIinvDeleteItem.Name = "btnISIinvDeleteItem";
             this.btnISIinvDeleteItem.Size = new System.Drawing.Size(114, 23);
             this.btnISIinvDeleteItem.TabIndex = 42;
@@ -948,7 +957,7 @@
             // 
             // btnISInewItem
             // 
-            this.btnISInewItem.Location = new System.Drawing.Point(231, 118);
+            this.btnISInewItem.Location = new System.Drawing.Point(231, 94);
             this.btnISInewItem.Name = "btnISInewItem";
             this.btnISInewItem.Size = new System.Drawing.Size(114, 23);
             this.btnISInewItem.TabIndex = 41;
@@ -958,7 +967,7 @@
             // 
             // btnISIclear
             // 
-            this.btnISIclear.Location = new System.Drawing.Point(655, 57);
+            this.btnISIclear.Location = new System.Drawing.Point(655, 53);
             this.btnISIclear.Name = "btnISIclear";
             this.btnISIclear.Size = new System.Drawing.Size(89, 23);
             this.btnISIclear.TabIndex = 40;
@@ -969,7 +978,7 @@
             // label49
             // 
             this.label49.AutoSize = true;
-            this.label49.Location = new System.Drawing.Point(176, 90);
+            this.label49.Location = new System.Drawing.Point(176, 74);
             this.label49.Name = "label49";
             this.label49.Size = new System.Drawing.Size(49, 13);
             this.label49.TabIndex = 20;
@@ -977,7 +986,7 @@
             // 
             // btnISIdelItemInvoice
             // 
-            this.btnISIdelItemInvoice.Location = new System.Drawing.Point(573, 118);
+            this.btnISIdelItemInvoice.Location = new System.Drawing.Point(573, 94);
             this.btnISIdelItemInvoice.Name = "btnISIdelItemInvoice";
             this.btnISIdelItemInvoice.Size = new System.Drawing.Size(173, 23);
             this.btnISIdelItemInvoice.TabIndex = 36;
@@ -987,7 +996,7 @@
             // 
             // btnISIsearchItem
             // 
-            this.btnISIsearchItem.Location = new System.Drawing.Point(655, 31);
+            this.btnISIsearchItem.Location = new System.Drawing.Point(655, 27);
             this.btnISIsearchItem.Name = "btnISIsearchItem";
             this.btnISIsearchItem.Size = new System.Drawing.Size(89, 23);
             this.btnISIsearchItem.TabIndex = 39;
@@ -998,7 +1007,7 @@
             // label50
             // 
             this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(165, 63);
+            this.label50.Location = new System.Drawing.Point(165, 54);
             this.label50.Name = "label50";
             this.label50.Size = new System.Drawing.Size(60, 13);
             this.label50.TabIndex = 19;
@@ -1007,7 +1016,7 @@
             // label51
             // 
             this.label51.AutoSize = true;
-            this.label51.Location = new System.Drawing.Point(228, 16);
+            this.label51.Location = new System.Drawing.Point(228, 12);
             this.label51.Name = "label51";
             this.label51.Size = new System.Drawing.Size(27, 13);
             this.label51.TabIndex = 18;
@@ -1016,7 +1025,7 @@
             // label52
             // 
             this.label52.AutoSize = true;
-            this.label52.Location = new System.Drawing.Point(73, 19);
+            this.label52.Location = new System.Drawing.Point(73, 15);
             this.label52.Name = "label52";
             this.label52.Size = new System.Drawing.Size(54, 13);
             this.label52.TabIndex = 17;
@@ -1025,7 +1034,7 @@
             // label53
             // 
             this.label53.AutoSize = true;
-            this.label53.Location = new System.Drawing.Point(8, 19);
+            this.label53.Location = new System.Drawing.Point(8, 15);
             this.label53.Name = "label53";
             this.label53.Size = new System.Drawing.Size(18, 13);
             this.label53.TabIndex = 16;
@@ -1034,7 +1043,7 @@
             // txtISIinvCategory
             // 
             this.txtISIinvCategory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.txtISIinvCategory.Location = new System.Drawing.Point(231, 86);
+            this.txtISIinvCategory.Location = new System.Drawing.Point(231, 70);
             this.txtISIinvCategory.Name = "txtISIinvCategory";
             this.txtISIinvCategory.Size = new System.Drawing.Size(278, 20);
             this.txtISIinvCategory.TabIndex = 8;
@@ -1042,7 +1051,7 @@
             // txtISIinvDescription
             // 
             this.txtISIinvDescription.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.txtISIinvDescription.Location = new System.Drawing.Point(231, 60);
+            this.txtISIinvDescription.Location = new System.Drawing.Point(231, 51);
             this.txtISIinvDescription.Name = "txtISIinvDescription";
             this.txtISIinvDescription.Size = new System.Drawing.Size(407, 20);
             this.txtISIinvDescription.TabIndex = 5;
@@ -1051,7 +1060,7 @@
             // 
             this.txtISIinvItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txtISIinvItem.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtISIinvItem.Location = new System.Drawing.Point(231, 34);
+            this.txtISIinvItem.Location = new System.Drawing.Point(231, 30);
             this.txtISIinvItem.Name = "txtISIinvItem";
             this.txtISIinvItem.Size = new System.Drawing.Size(407, 20);
             this.txtISIinvItem.TabIndex = 4;
@@ -1059,14 +1068,14 @@
             // txtISIinvCode
             // 
             this.txtISIinvCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.txtISIinvCode.Location = new System.Drawing.Point(73, 35);
+            this.txtISIinvCode.Location = new System.Drawing.Point(73, 31);
             this.txtISIinvCode.Name = "txtISIinvCode";
             this.txtISIinvCode.Size = new System.Drawing.Size(152, 20);
             this.txtISIinvCode.TabIndex = 3;
             // 
             // txtISIinvID
             // 
-            this.txtISIinvID.Location = new System.Drawing.Point(6, 35);
+            this.txtISIinvID.Location = new System.Drawing.Point(6, 31);
             this.txtISIinvID.Name = "txtISIinvID";
             this.txtISIinvID.ReadOnly = true;
             this.txtISIinvID.Size = new System.Drawing.Size(61, 20);
@@ -1083,7 +1092,7 @@
             this.dtgStockIn.Location = new System.Drawing.Point(4, 305);
             this.dtgStockIn.Name = "dtgStockIn";
             this.dtgStockIn.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtgStockIn.Size = new System.Drawing.Size(1012, 209);
+            this.dtgStockIn.Size = new System.Drawing.Size(1028, 209);
             this.dtgStockIn.TabIndex = 54;
             this.dtgStockIn.Click += new System.EventHandler(this.dtgStockIn_Click);
             // 
@@ -1677,6 +1686,470 @@
             this.dtgInventoryValue.Size = new System.Drawing.Size(1030, 366);
             this.dtgInventoryValue.TabIndex = 0;
             // 
+            // tabOrderStock
+            // 
+            this.tabOrderStock.Controls.Add(this.cbxOrderSup);
+            this.tabOrderStock.Controls.Add(this.btnOrderSupGO);
+            this.tabOrderStock.Controls.Add(this.btnOrderFilter);
+            this.tabOrderStock.Controls.Add(this.label3);
+            this.tabOrderStock.Controls.Add(this.label14);
+            this.tabOrderStock.Controls.Add(this.txtOrderNumber);
+            this.tabOrderStock.Controls.Add(this.label38);
+            this.tabOrderStock.Controls.Add(this.label37);
+            this.tabOrderStock.Controls.Add(this.label36);
+            this.tabOrderStock.Controls.Add(this.label15);
+            this.tabOrderStock.Controls.Add(this.label10);
+            this.tabOrderStock.Controls.Add(this.label9);
+            this.tabOrderStock.Controls.Add(this.label8);
+            this.tabOrderStock.Controls.Add(this.label2);
+            this.tabOrderStock.Controls.Add(this.txtOrderTotalIncl);
+            this.tabOrderStock.Controls.Add(this.txtOrderVAT);
+            this.tabOrderStock.Controls.Add(this.txtOrderTotalExcl);
+            this.tabOrderStock.Controls.Add(this.btnOrderSavePDF);
+            this.tabOrderStock.Controls.Add(this.dtgSupOrderHistory);
+            this.tabOrderStock.Controls.Add(this.btnRemoveAll);
+            this.tabOrderStock.Controls.Add(this.btnAddAll);
+            this.tabOrderStock.Controls.Add(this.dtgOrderInvList);
+            this.tabOrderStock.Controls.Add(this.dtgSupOrderList);
+            this.tabOrderStock.Location = new System.Drawing.Point(4, 22);
+            this.tabOrderStock.Name = "tabOrderStock";
+            this.tabOrderStock.Padding = new System.Windows.Forms.Padding(3);
+            this.tabOrderStock.Size = new System.Drawing.Size(1036, 525);
+            this.tabOrderStock.TabIndex = 4;
+            this.tabOrderStock.Tag = "";
+            this.tabOrderStock.Text = "ORDER STOCK";
+            this.tabOrderStock.UseVisualStyleBackColor = true;
+            // 
+            // cbxOrderSup
+            // 
+            this.cbxOrderSup.DataBindings.Add(new System.Windows.Forms.Binding("SelectedValue", this.supplierBindingSource, "SupName", true));
+            this.cbxOrderSup.DataSource = this.supplierBindingSource;
+            this.cbxOrderSup.DisplayMember = "SupName";
+            this.cbxOrderSup.FormattingEnabled = true;
+            this.cbxOrderSup.Location = new System.Drawing.Point(77, 9);
+            this.cbxOrderSup.Name = "cbxOrderSup";
+            this.cbxOrderSup.Size = new System.Drawing.Size(366, 21);
+            this.cbxOrderSup.TabIndex = 70;
+            this.cbxOrderSup.ValueMember = "SupplierID";
+            // 
+            // btnOrderSupGO
+            // 
+            this.btnOrderSupGO.Location = new System.Drawing.Point(591, 8);
+            this.btnOrderSupGO.Name = "btnOrderSupGO";
+            this.btnOrderSupGO.Size = new System.Drawing.Size(136, 21);
+            this.btnOrderSupGO.TabIndex = 69;
+            this.btnOrderSupGO.Text = "Generate Order Number";
+            this.btnOrderSupGO.UseVisualStyleBackColor = true;
+            this.btnOrderSupGO.Click += new System.EventHandler(this.btnOrderSupGO_Click);
+            // 
+            // btnOrderFilter
+            // 
+            this.btnOrderFilter.Location = new System.Drawing.Point(449, 8);
+            this.btnOrderFilter.Name = "btnOrderFilter";
+            this.btnOrderFilter.Size = new System.Drawing.Size(136, 21);
+            this.btnOrderFilter.TabIndex = 68;
+            this.btnOrderFilter.Text = "Filter History by Supplier";
+            this.btnOrderFilter.UseVisualStyleBackColor = true;
+            this.btnOrderFilter.Click += new System.EventHandler(this.btnOrderFilter_Click);
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(287, 455);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(89, 13);
+            this.label3.TabIndex = 67;
+            this.label3.Text = "Order Number:";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(8, 11);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(63, 13);
+            this.label14.TabIndex = 63;
+            this.label14.Text = "Suppliers:";
+            // 
+            // txtOrderNumber
+            // 
+            this.txtOrderNumber.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtOrderNumber.Location = new System.Drawing.Point(395, 452);
+            this.txtOrderNumber.Name = "txtOrderNumber";
+            this.txtOrderNumber.Size = new System.Drawing.Size(274, 20);
+            this.txtOrderNumber.TabIndex = 62;
+            // 
+            // label38
+            // 
+            this.label38.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label38.AutoSize = true;
+            this.label38.Location = new System.Drawing.Point(685, 168);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(341, 13);
+            this.label38.TabIndex = 61;
+            this.label38.Text = "(Click on Item on the right and drag over, or create new or click ALL>>)";
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Location = new System.Drawing.Point(568, 168);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(93, 13);
+            this.label37.TabIndex = 60;
+            this.label37.Text = "New Order Details";
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(8, 168);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(68, 13);
+            this.label36.TabIndex = 59;
+            this.label36.Text = "Order Details";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(8, 32);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(68, 13);
+            this.label15.TabIndex = 58;
+            this.label15.Text = "Order History";
+            // 
+            // label10
+            // 
+            this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(807, 493);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(113, 13);
+            this.label10.TabIndex = 56;
+            this.label10.Text = "TOTAL INCL. VAT  R:";
+            // 
+            // label9
+            // 
+            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(829, 467);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(68, 13);
+            this.label9.TabIndex = 55;
+            this.label9.Text = "14% VAT  R:";
+            // 
+            // label8
+            // 
+            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(834, 441);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(59, 13);
+            this.label8.TabIndex = 54;
+            this.label8.Text = "TOTAL  R:";
+            // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(293, 455);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(0, 13);
+            this.label2.TabIndex = 52;
+            // 
+            // txtOrderTotalIncl
+            // 
+            this.txtOrderTotalIncl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtOrderTotalIncl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.txtOrderTotalIncl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtOrderTotalIncl.Location = new System.Drawing.Point(926, 486);
+            this.txtOrderTotalIncl.Name = "txtOrderTotalIncl";
+            this.txtOrderTotalIncl.Size = new System.Drawing.Size(100, 20);
+            this.txtOrderTotalIncl.TabIndex = 50;
+            // 
+            // txtOrderVAT
+            // 
+            this.txtOrderVAT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtOrderVAT.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.txtOrderVAT.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtOrderVAT.Location = new System.Drawing.Point(926, 460);
+            this.txtOrderVAT.Name = "txtOrderVAT";
+            this.txtOrderVAT.Size = new System.Drawing.Size(100, 20);
+            this.txtOrderVAT.TabIndex = 49;
+            // 
+            // txtOrderTotalExcl
+            // 
+            this.txtOrderTotalExcl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtOrderTotalExcl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.txtOrderTotalExcl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtOrderTotalExcl.Location = new System.Drawing.Point(926, 434);
+            this.txtOrderTotalExcl.Name = "txtOrderTotalExcl";
+            this.txtOrderTotalExcl.Size = new System.Drawing.Size(100, 20);
+            this.txtOrderTotalExcl.TabIndex = 48;
+            // 
+            // btnOrderSavePDF
+            // 
+            this.btnOrderSavePDF.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnOrderSavePDF.Location = new System.Drawing.Point(463, 483);
+            this.btnOrderSavePDF.Name = "btnOrderSavePDF";
+            this.btnOrderSavePDF.Size = new System.Drawing.Size(131, 23);
+            this.btnOrderSavePDF.TabIndex = 46;
+            this.btnOrderSavePDF.Text = "Preview and Save";
+            this.btnOrderSavePDF.UseVisualStyleBackColor = true;
+            this.btnOrderSavePDF.Click += new System.EventHandler(this.btnPDForder_Click);
+            // 
+            // dtgSupOrderHistory
+            // 
+            this.dtgSupOrderHistory.AllowUserToAddRows = false;
+            this.dtgSupOrderHistory.AllowUserToDeleteRows = false;
+            this.dtgSupOrderHistory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dtgSupOrderHistory.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dtgSupOrderHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dtgSupOrderHistory.Location = new System.Drawing.Point(6, 48);
+            this.dtgSupOrderHistory.Name = "dtgSupOrderHistory";
+            this.dtgSupOrderHistory.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dtgSupOrderHistory.Size = new System.Drawing.Size(1024, 107);
+            this.dtgSupOrderHistory.TabIndex = 18;
+            this.dtgSupOrderHistory.Click += new System.EventHandler(this.dtgSupOrderHistory_Click);
+            // 
+            // btnRemoveAll
+            // 
+            this.btnRemoveAll.Location = new System.Drawing.Point(481, 275);
+            this.btnRemoveAll.Name = "btnRemoveAll";
+            this.btnRemoveAll.Size = new System.Drawing.Size(75, 23);
+            this.btnRemoveAll.TabIndex = 5;
+            this.btnRemoveAll.Text = "CLEAR";
+            this.btnRemoveAll.UseVisualStyleBackColor = true;
+            this.btnRemoveAll.Click += new System.EventHandler(this.btnRemoveAll_Click);
+            // 
+            // btnAddAll
+            // 
+            this.btnAddAll.Location = new System.Drawing.Point(481, 246);
+            this.btnAddAll.Name = "btnAddAll";
+            this.btnAddAll.Size = new System.Drawing.Size(75, 23);
+            this.btnAddAll.TabIndex = 4;
+            this.btnAddAll.Text = "ALL >>";
+            this.btnAddAll.UseVisualStyleBackColor = true;
+            this.btnAddAll.Click += new System.EventHandler(this.btnAddAll_Click);
+            // 
+            // dtgOrderInvList
+            // 
+            this.dtgOrderInvList.AllowDrop = true;
+            this.dtgOrderInvList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dtgOrderInvList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
+            this.dtgOrderInvList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dtgOrderInvList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.invID,
+            this.invCode,
+            this.invItem,
+            this.invSupDescription,
+            this.invDescription,
+            this.invLength,
+            this.orderQuantity,
+            this.orderPrice});
+            this.dtgOrderInvList.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
+            this.dtgOrderInvList.Location = new System.Drawing.Point(571, 184);
+            this.dtgOrderInvList.Name = "dtgOrderInvList";
+            this.dtgOrderInvList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dtgOrderInvList.Size = new System.Drawing.Size(455, 231);
+            this.dtgOrderInvList.TabIndex = 1;
+            this.dtgOrderInvList.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dtgOrderInvList_RowsRemoved);
+            this.dtgOrderInvList.Click += new System.EventHandler(this.dtgOrderInvList_Click);
+            // 
+            // invID
+            // 
+            this.invID.HeaderText = "ID";
+            this.invID.Name = "invID";
+            this.invID.ReadOnly = true;
+            this.invID.Width = 43;
+            // 
+            // invCode
+            // 
+            this.invCode.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.invCode.HeaderText = "Part Code";
+            this.invCode.Name = "invCode";
+            this.invCode.Width = 73;
+            // 
+            // invItem
+            // 
+            this.invItem.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.invItem.HeaderText = "Item";
+            this.invItem.Name = "invItem";
+            this.invItem.Width = 52;
+            // 
+            // invSupDescription
+            // 
+            this.invSupDescription.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.invSupDescription.HeaderText = "Description to Supplier";
+            this.invSupDescription.Name = "invSupDescription";
+            this.invSupDescription.Width = 92;
+            // 
+            // invDescription
+            // 
+            this.invDescription.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.invDescription.HeaderText = "Local Description";
+            this.invDescription.Name = "invDescription";
+            this.invDescription.Width = 105;
+            // 
+            // invLength
+            // 
+            this.invLength.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            dataGridViewCellStyle4.Format = "N2";
+            dataGridViewCellStyle4.NullValue = "0.0";
+            this.invLength.DefaultCellStyle = dataGridViewCellStyle4;
+            this.invLength.HeaderText = "Length";
+            this.invLength.Name = "invLength";
+            this.invLength.Width = 65;
+            // 
+            // orderQuantity
+            // 
+            this.orderQuantity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            dataGridViewCellStyle5.NullValue = "0";
+            this.orderQuantity.DefaultCellStyle = dataGridViewCellStyle5;
+            this.orderQuantity.HeaderText = "Quantity";
+            this.orderQuantity.Name = "orderQuantity";
+            this.orderQuantity.Width = 71;
+            // 
+            // orderPrice
+            // 
+            this.orderPrice.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            dataGridViewCellStyle6.Format = "C2";
+            dataGridViewCellStyle6.NullValue = "0.00";
+            this.orderPrice.DefaultCellStyle = dataGridViewCellStyle6;
+            this.orderPrice.HeaderText = "Price";
+            this.orderPrice.Name = "orderPrice";
+            this.orderPrice.Width = 56;
+            // 
+            // dtgSupOrderList
+            // 
+            this.dtgSupOrderList.AllowUserToAddRows = false;
+            this.dtgSupOrderList.AllowUserToDeleteRows = false;
+            this.dtgSupOrderList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.dtgSupOrderList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dtgSupOrderList.Location = new System.Drawing.Point(6, 184);
+            this.dtgSupOrderList.Name = "dtgSupOrderList";
+            this.dtgSupOrderList.ReadOnly = true;
+            this.dtgSupOrderList.RowTemplate.ReadOnly = true;
+            this.dtgSupOrderList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dtgSupOrderList.Size = new System.Drawing.Size(455, 231);
+            this.dtgSupOrderList.TabIndex = 0;
+            // 
+            // tabOrderInventory
+            // 
+            this.tabOrderInventory.Controls.Add(this.txtOrderID);
+            this.tabOrderInventory.Controls.Add(this.textBox6);
+            this.tabOrderInventory.Controls.Add(this.textBox5);
+            this.tabOrderInventory.Controls.Add(this.textBox4);
+            this.tabOrderInventory.Controls.Add(this.textBox3);
+            this.tabOrderInventory.Controls.Add(this.textBox2);
+            this.tabOrderInventory.Controls.Add(this.textBox1);
+            this.tabOrderInventory.Controls.Add(this.label13);
+            this.tabOrderInventory.Controls.Add(this.cmbOrderSupplier);
+            this.tabOrderInventory.Controls.Add(this.dtgNewInvOrderDetails);
+            this.tabOrderInventory.Controls.Add(this.dtgInvOrderDetails);
+            this.tabOrderInventory.Controls.Add(this.dtgInvOrderHistory);
+            this.tabOrderInventory.Location = new System.Drawing.Point(4, 22);
+            this.tabOrderInventory.Name = "tabOrderInventory";
+            this.tabOrderInventory.Padding = new System.Windows.Forms.Padding(3);
+            this.tabOrderInventory.Size = new System.Drawing.Size(1036, 525);
+            this.tabOrderInventory.TabIndex = 6;
+            this.tabOrderInventory.Text = "ORDER INVENTORY";
+            this.tabOrderInventory.UseVisualStyleBackColor = true;
+            // 
+            // txtOrderID
+            // 
+            this.txtOrderID.Location = new System.Drawing.Point(580, 318);
+            this.txtOrderID.Name = "txtOrderID";
+            this.txtOrderID.Size = new System.Drawing.Size(46, 20);
+            this.txtOrderID.TabIndex = 11;
+            // 
+            // textBox6
+            // 
+            this.textBox6.Location = new System.Drawing.Point(928, 394);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.Size = new System.Drawing.Size(100, 20);
+            this.textBox6.TabIndex = 10;
+            // 
+            // textBox5
+            // 
+            this.textBox5.Location = new System.Drawing.Point(738, 394);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.Size = new System.Drawing.Size(100, 20);
+            this.textBox5.TabIndex = 9;
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(632, 394);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(100, 20);
+            this.textBox4.TabIndex = 8;
+            // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(632, 368);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(396, 20);
+            this.textBox3.TabIndex = 7;
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(632, 342);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(396, 20);
+            this.textBox2.TabIndex = 6;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(632, 318);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(259, 20);
+            this.textBox1.TabIndex = 5;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(37, 37);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(105, 13);
+            this.label13.TabIndex = 4;
+            this.label13.Text = "Choose the Supplier:";
+            // 
+            // cmbOrderSupplier
+            // 
+            this.cmbOrderSupplier.FormattingEnabled = true;
+            this.cmbOrderSupplier.Location = new System.Drawing.Point(181, 34);
+            this.cmbOrderSupplier.Name = "cmbOrderSupplier";
+            this.cmbOrderSupplier.Size = new System.Drawing.Size(270, 21);
+            this.cmbOrderSupplier.TabIndex = 3;
+            // 
+            // dtgNewInvOrderDetails
+            // 
+            this.dtgNewInvOrderDetails.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dtgNewInvOrderDetails.Location = new System.Drawing.Point(8, 318);
+            this.dtgNewInvOrderDetails.Name = "dtgNewInvOrderDetails";
+            this.dtgNewInvOrderDetails.Size = new System.Drawing.Size(443, 166);
+            this.dtgNewInvOrderDetails.TabIndex = 2;
+            // 
+            // dtgInvOrderDetails
+            // 
+            this.dtgInvOrderDetails.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dtgInvOrderDetails.Location = new System.Drawing.Point(588, 73);
+            this.dtgInvOrderDetails.Name = "dtgInvOrderDetails";
+            this.dtgInvOrderDetails.Size = new System.Drawing.Size(440, 224);
+            this.dtgInvOrderDetails.TabIndex = 1;
+            // 
+            // dtgInvOrderHistory
+            // 
+            this.dtgInvOrderHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dtgInvOrderHistory.Location = new System.Drawing.Point(8, 73);
+            this.dtgInvOrderHistory.Name = "dtgInvOrderHistory";
+            this.dtgInvOrderHistory.Size = new System.Drawing.Size(443, 224);
+            this.dtgInvOrderHistory.TabIndex = 0;
+            // 
             // tabSupplierSummary
             // 
             this.tabSupplierSummary.Controls.Add(this.btnSearchClear);
@@ -1854,503 +2327,6 @@
             this.dtgSupplierSearch.Size = new System.Drawing.Size(1020, 119);
             this.dtgSupplierSearch.TabIndex = 0;
             // 
-            // tabOrderStock
-            // 
-            this.tabOrderStock.Controls.Add(this.cbxOrderSup);
-            this.tabOrderStock.Controls.Add(this.btnOrderSupGO);
-            this.tabOrderStock.Controls.Add(this.btnOrderFilter);
-            this.tabOrderStock.Controls.Add(this.label3);
-            this.tabOrderStock.Controls.Add(this.label14);
-            this.tabOrderStock.Controls.Add(this.txtOrderNumber);
-            this.tabOrderStock.Controls.Add(this.label38);
-            this.tabOrderStock.Controls.Add(this.label37);
-            this.tabOrderStock.Controls.Add(this.label36);
-            this.tabOrderStock.Controls.Add(this.label15);
-            this.tabOrderStock.Controls.Add(this.label10);
-            this.tabOrderStock.Controls.Add(this.label9);
-            this.tabOrderStock.Controls.Add(this.label8);
-            this.tabOrderStock.Controls.Add(this.label2);
-            this.tabOrderStock.Controls.Add(this.txtOrderTotalIncl);
-            this.tabOrderStock.Controls.Add(this.txtOrderVAT);
-            this.tabOrderStock.Controls.Add(this.txtOrderTotalExcl);
-            this.tabOrderStock.Controls.Add(this.btnOrderNextItem);
-            this.tabOrderStock.Controls.Add(this.btnOrderPreview);
-            this.tabOrderStock.Controls.Add(this.btnSaveOrder);
-            this.tabOrderStock.Controls.Add(this.dtgSupOrderHistory);
-            this.tabOrderStock.Controls.Add(this.btnRemoveAll);
-            this.tabOrderStock.Controls.Add(this.btnAddAll);
-            this.tabOrderStock.Controls.Add(this.btnRemoveSingle);
-            this.tabOrderStock.Controls.Add(this.btnAddSingle);
-            this.tabOrderStock.Controls.Add(this.dtgOrderInvList);
-            this.tabOrderStock.Controls.Add(this.dtgSupOrderList);
-            this.tabOrderStock.Location = new System.Drawing.Point(4, 22);
-            this.tabOrderStock.Name = "tabOrderStock";
-            this.tabOrderStock.Padding = new System.Windows.Forms.Padding(3);
-            this.tabOrderStock.Size = new System.Drawing.Size(1036, 525);
-            this.tabOrderStock.TabIndex = 4;
-            this.tabOrderStock.Tag = "";
-            this.tabOrderStock.Text = "ORDER STOCK";
-            this.tabOrderStock.UseVisualStyleBackColor = true;
-            // 
-            // cbxOrderSup
-            // 
-            this.cbxOrderSup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbxOrderSup.DataBindings.Add(new System.Windows.Forms.Binding("SelectedValue", this.supplierBindingSource, "SupName", true));
-            this.cbxOrderSup.DataSource = this.supplierBindingSource;
-            this.cbxOrderSup.DisplayMember = "SupName";
-            this.cbxOrderSup.FormattingEnabled = true;
-            this.cbxOrderSup.Location = new System.Drawing.Point(77, 9);
-            this.cbxOrderSup.Name = "cbxOrderSup";
-            this.cbxOrderSup.Size = new System.Drawing.Size(366, 21);
-            this.cbxOrderSup.TabIndex = 70;
-            this.cbxOrderSup.ValueMember = "SupplierID";
-            // 
-            // btnOrderSupGO
-            // 
-            this.btnOrderSupGO.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnOrderSupGO.Location = new System.Drawing.Point(591, 8);
-            this.btnOrderSupGO.Name = "btnOrderSupGO";
-            this.btnOrderSupGO.Size = new System.Drawing.Size(136, 21);
-            this.btnOrderSupGO.TabIndex = 69;
-            this.btnOrderSupGO.Text = "Generate Order Number";
-            this.btnOrderSupGO.UseVisualStyleBackColor = true;
-            this.btnOrderSupGO.Click += new System.EventHandler(this.btnOrderSupGO_Click);
-            // 
-            // btnOrderFilter
-            // 
-            this.btnOrderFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnOrderFilter.Location = new System.Drawing.Point(449, 8);
-            this.btnOrderFilter.Name = "btnOrderFilter";
-            this.btnOrderFilter.Size = new System.Drawing.Size(136, 21);
-            this.btnOrderFilter.TabIndex = 68;
-            this.btnOrderFilter.Text = "Filter History by Supplier";
-            this.btnOrderFilter.UseVisualStyleBackColor = true;
-            this.btnOrderFilter.Click += new System.EventHandler(this.btnOrderFilter_Click);
-            // 
-            // label3
-            // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(287, 455);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(89, 13);
-            this.label3.TabIndex = 67;
-            this.label3.Text = "Order Number:";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.Location = new System.Drawing.Point(8, 11);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(63, 13);
-            this.label14.TabIndex = 63;
-            this.label14.Text = "Suppliers:";
-            // 
-            // txtOrderNumber
-            // 
-            this.txtOrderNumber.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtOrderNumber.Location = new System.Drawing.Point(395, 452);
-            this.txtOrderNumber.Name = "txtOrderNumber";
-            this.txtOrderNumber.Size = new System.Drawing.Size(274, 20);
-            this.txtOrderNumber.TabIndex = 62;
-            // 
-            // label38
-            // 
-            this.label38.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(685, 168);
-            this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(341, 13);
-            this.label38.TabIndex = 61;
-            this.label38.Text = "(Click on Item on the right and drag over, or create new or click ALL>>)";
-            // 
-            // label37
-            // 
-            this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(568, 168);
-            this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(93, 13);
-            this.label37.TabIndex = 60;
-            this.label37.Text = "New Order Details";
-            // 
-            // label36
-            // 
-            this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(8, 168);
-            this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(68, 13);
-            this.label36.TabIndex = 59;
-            this.label36.Text = "Order Details";
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(8, 32);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(68, 13);
-            this.label15.TabIndex = 58;
-            this.label15.Text = "Order History";
-            // 
-            // label10
-            // 
-            this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(807, 493);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(113, 13);
-            this.label10.TabIndex = 56;
-            this.label10.Text = "TOTAL INCL. VAT  R:";
-            // 
-            // label9
-            // 
-            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(829, 467);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(68, 13);
-            this.label9.TabIndex = 55;
-            this.label9.Text = "14% VAT  R:";
-            // 
-            // label8
-            // 
-            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(834, 441);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(59, 13);
-            this.label8.TabIndex = 54;
-            this.label8.Text = "TOTAL  R:";
-            // 
-            // label2
-            // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(293, 455);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(0, 13);
-            this.label2.TabIndex = 52;
-            // 
-            // txtOrderTotalIncl
-            // 
-            this.txtOrderTotalIncl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtOrderTotalIncl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.txtOrderTotalIncl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtOrderTotalIncl.Location = new System.Drawing.Point(926, 486);
-            this.txtOrderTotalIncl.Name = "txtOrderTotalIncl";
-            this.txtOrderTotalIncl.Size = new System.Drawing.Size(100, 20);
-            this.txtOrderTotalIncl.TabIndex = 50;
-            // 
-            // txtOrderVAT
-            // 
-            this.txtOrderVAT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtOrderVAT.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.txtOrderVAT.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtOrderVAT.Location = new System.Drawing.Point(926, 460);
-            this.txtOrderVAT.Name = "txtOrderVAT";
-            this.txtOrderVAT.Size = new System.Drawing.Size(100, 20);
-            this.txtOrderVAT.TabIndex = 49;
-            // 
-            // txtOrderTotalExcl
-            // 
-            this.txtOrderTotalExcl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtOrderTotalExcl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.txtOrderTotalExcl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtOrderTotalExcl.Location = new System.Drawing.Point(926, 434);
-            this.txtOrderTotalExcl.Name = "txtOrderTotalExcl";
-            this.txtOrderTotalExcl.Size = new System.Drawing.Size(100, 20);
-            this.txtOrderTotalExcl.TabIndex = 48;
-            // 
-            // btnOrderNextItem
-            // 
-            this.btnOrderNextItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnOrderNextItem.Location = new System.Drawing.Point(939, 405);
-            this.btnOrderNextItem.Name = "btnOrderNextItem";
-            this.btnOrderNextItem.Size = new System.Drawing.Size(87, 23);
-            this.btnOrderNextItem.TabIndex = 47;
-            this.btnOrderNextItem.Text = "Next";
-            this.btnOrderNextItem.UseVisualStyleBackColor = true;
-            // 
-            // btnOrderPreview
-            // 
-            this.btnOrderPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnOrderPreview.Location = new System.Drawing.Point(506, 483);
-            this.btnOrderPreview.Name = "btnOrderPreview";
-            this.btnOrderPreview.Size = new System.Drawing.Size(88, 23);
-            this.btnOrderPreview.TabIndex = 46;
-            this.btnOrderPreview.Text = "Preview";
-            this.btnOrderPreview.UseVisualStyleBackColor = true;
-            this.btnOrderPreview.Click += new System.EventHandler(this.btnPDFprint_Click);
-            // 
-            // btnSaveOrder
-            // 
-            this.btnSaveOrder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSaveOrder.Location = new System.Drawing.Point(395, 484);
-            this.btnSaveOrder.Name = "btnSaveOrder";
-            this.btnSaveOrder.Size = new System.Drawing.Size(89, 23);
-            this.btnSaveOrder.TabIndex = 45;
-            this.btnSaveOrder.Text = "Save";
-            this.btnSaveOrder.UseVisualStyleBackColor = true;
-            // 
-            // dtgSupOrderHistory
-            // 
-            this.dtgSupOrderHistory.AllowUserToAddRows = false;
-            this.dtgSupOrderHistory.AllowUserToDeleteRows = false;
-            this.dtgSupOrderHistory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dtgSupOrderHistory.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dtgSupOrderHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dtgSupOrderHistory.Location = new System.Drawing.Point(6, 48);
-            this.dtgSupOrderHistory.Name = "dtgSupOrderHistory";
-            this.dtgSupOrderHistory.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtgSupOrderHistory.Size = new System.Drawing.Size(1024, 107);
-            this.dtgSupOrderHistory.TabIndex = 18;
-            this.dtgSupOrderHistory.Click += new System.EventHandler(this.dtgSupOrderHistory_Click);
-            // 
-            // btnRemoveAll
-            // 
-            this.btnRemoveAll.Location = new System.Drawing.Point(481, 275);
-            this.btnRemoveAll.Name = "btnRemoveAll";
-            this.btnRemoveAll.Size = new System.Drawing.Size(75, 23);
-            this.btnRemoveAll.TabIndex = 5;
-            this.btnRemoveAll.Text = "CLEAR";
-            this.btnRemoveAll.UseVisualStyleBackColor = true;
-            // 
-            // btnAddAll
-            // 
-            this.btnAddAll.Location = new System.Drawing.Point(481, 246);
-            this.btnAddAll.Name = "btnAddAll";
-            this.btnAddAll.Size = new System.Drawing.Size(75, 23);
-            this.btnAddAll.TabIndex = 4;
-            this.btnAddAll.Text = "ALL >>";
-            this.btnAddAll.UseVisualStyleBackColor = true;
-            // 
-            // btnRemoveSingle
-            // 
-            this.btnRemoveSingle.Location = new System.Drawing.Point(481, 217);
-            this.btnRemoveSingle.Name = "btnRemoveSingle";
-            this.btnRemoveSingle.Size = new System.Drawing.Size(75, 23);
-            this.btnRemoveSingle.TabIndex = 3;
-            this.btnRemoveSingle.Text = "<";
-            this.btnRemoveSingle.UseVisualStyleBackColor = true;
-            // 
-            // btnAddSingle
-            // 
-            this.btnAddSingle.Location = new System.Drawing.Point(481, 188);
-            this.btnAddSingle.Name = "btnAddSingle";
-            this.btnAddSingle.Size = new System.Drawing.Size(75, 23);
-            this.btnAddSingle.TabIndex = 2;
-            this.btnAddSingle.Text = ">";
-            this.btnAddSingle.UseVisualStyleBackColor = true;
-            // 
-            // dtgOrderInvList
-            // 
-            this.dtgOrderInvList.AllowDrop = true;
-            this.dtgOrderInvList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dtgOrderInvList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
-            this.dtgOrderInvList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dtgOrderInvList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.invID,
-            this.invCode,
-            this.invItem,
-            this.invSupDescription,
-            this.invDescription,
-            this.invLength,
-            this.orderQuantity,
-            this.orderPrice});
-            this.dtgOrderInvList.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
-            this.dtgOrderInvList.Location = new System.Drawing.Point(571, 184);
-            this.dtgOrderInvList.Name = "dtgOrderInvList";
-            this.dtgOrderInvList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dtgOrderInvList.Size = new System.Drawing.Size(455, 205);
-            this.dtgOrderInvList.TabIndex = 1;
-            // 
-            // invID
-            // 
-            this.invID.HeaderText = "ID";
-            this.invID.Name = "invID";
-            this.invID.ReadOnly = true;
-            this.invID.Width = 43;
-            // 
-            // invCode
-            // 
-            this.invCode.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.invCode.HeaderText = "Part Code";
-            this.invCode.Name = "invCode";
-            this.invCode.Width = 73;
-            // 
-            // invItem
-            // 
-            this.invItem.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.invItem.HeaderText = "Item";
-            this.invItem.Name = "invItem";
-            this.invItem.Width = 52;
-            // 
-            // invSupDescription
-            // 
-            this.invSupDescription.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.invSupDescription.HeaderText = "Description to Supplier";
-            this.invSupDescription.Name = "invSupDescription";
-            this.invSupDescription.Width = 92;
-            // 
-            // invDescription
-            // 
-            this.invDescription.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.invDescription.HeaderText = "Local Description";
-            this.invDescription.Name = "invDescription";
-            this.invDescription.Width = 105;
-            // 
-            // invLength
-            // 
-            this.invLength.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.invLength.HeaderText = "Length";
-            this.invLength.Name = "invLength";
-            this.invLength.Width = 65;
-            // 
-            // orderQuantity
-            // 
-            this.orderQuantity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.orderQuantity.HeaderText = "Quantity";
-            this.orderQuantity.Name = "orderQuantity";
-            this.orderQuantity.Width = 71;
-            // 
-            // orderPrice
-            // 
-            this.orderPrice.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.orderPrice.HeaderText = "Price";
-            this.orderPrice.Name = "orderPrice";
-            this.orderPrice.Width = 56;
-            // 
-            // dtgSupOrderList
-            // 
-            this.dtgSupOrderList.AllowUserToAddRows = false;
-            this.dtgSupOrderList.AllowUserToDeleteRows = false;
-            this.dtgSupOrderList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.dtgSupOrderList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dtgSupOrderList.Location = new System.Drawing.Point(6, 184);
-            this.dtgSupOrderList.Name = "dtgSupOrderList";
-            this.dtgSupOrderList.ReadOnly = true;
-            this.dtgSupOrderList.RowTemplate.ReadOnly = true;
-            this.dtgSupOrderList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtgSupOrderList.Size = new System.Drawing.Size(455, 205);
-            this.dtgSupOrderList.TabIndex = 0;
-            // 
-            // tabOrderInventory
-            // 
-            this.tabOrderInventory.Controls.Add(this.txtOrderID);
-            this.tabOrderInventory.Controls.Add(this.textBox6);
-            this.tabOrderInventory.Controls.Add(this.textBox5);
-            this.tabOrderInventory.Controls.Add(this.textBox4);
-            this.tabOrderInventory.Controls.Add(this.textBox3);
-            this.tabOrderInventory.Controls.Add(this.textBox2);
-            this.tabOrderInventory.Controls.Add(this.textBox1);
-            this.tabOrderInventory.Controls.Add(this.label13);
-            this.tabOrderInventory.Controls.Add(this.cmbOrderSupplier);
-            this.tabOrderInventory.Controls.Add(this.dtgNewInvOrderDetails);
-            this.tabOrderInventory.Controls.Add(this.dtgInvOrderDetails);
-            this.tabOrderInventory.Controls.Add(this.dtgInvOrderHistory);
-            this.tabOrderInventory.Location = new System.Drawing.Point(4, 22);
-            this.tabOrderInventory.Name = "tabOrderInventory";
-            this.tabOrderInventory.Padding = new System.Windows.Forms.Padding(3);
-            this.tabOrderInventory.Size = new System.Drawing.Size(1036, 525);
-            this.tabOrderInventory.TabIndex = 6;
-            this.tabOrderInventory.Text = "ORDER INVENTORY";
-            this.tabOrderInventory.UseVisualStyleBackColor = true;
-            // 
-            // txtOrderID
-            // 
-            this.txtOrderID.Location = new System.Drawing.Point(580, 318);
-            this.txtOrderID.Name = "txtOrderID";
-            this.txtOrderID.Size = new System.Drawing.Size(46, 20);
-            this.txtOrderID.TabIndex = 11;
-            // 
-            // textBox6
-            // 
-            this.textBox6.Location = new System.Drawing.Point(928, 394);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(100, 20);
-            this.textBox6.TabIndex = 10;
-            // 
-            // textBox5
-            // 
-            this.textBox5.Location = new System.Drawing.Point(738, 394);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(100, 20);
-            this.textBox5.TabIndex = 9;
-            // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(632, 394);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(100, 20);
-            this.textBox4.TabIndex = 8;
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(632, 368);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(396, 20);
-            this.textBox3.TabIndex = 7;
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(632, 342);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(396, 20);
-            this.textBox2.TabIndex = 6;
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(632, 318);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(259, 20);
-            this.textBox1.TabIndex = 5;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(37, 37);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(105, 13);
-            this.label13.TabIndex = 4;
-            this.label13.Text = "Choose the Supplier:";
-            // 
-            // cmbOrderSupplier
-            // 
-            this.cmbOrderSupplier.FormattingEnabled = true;
-            this.cmbOrderSupplier.Location = new System.Drawing.Point(181, 34);
-            this.cmbOrderSupplier.Name = "cmbOrderSupplier";
-            this.cmbOrderSupplier.Size = new System.Drawing.Size(270, 21);
-            this.cmbOrderSupplier.TabIndex = 3;
-            // 
-            // dtgNewInvOrderDetails
-            // 
-            this.dtgNewInvOrderDetails.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dtgNewInvOrderDetails.Location = new System.Drawing.Point(8, 318);
-            this.dtgNewInvOrderDetails.Name = "dtgNewInvOrderDetails";
-            this.dtgNewInvOrderDetails.Size = new System.Drawing.Size(443, 166);
-            this.dtgNewInvOrderDetails.TabIndex = 2;
-            // 
-            // dtgInvOrderDetails
-            // 
-            this.dtgInvOrderDetails.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dtgInvOrderDetails.Location = new System.Drawing.Point(588, 73);
-            this.dtgInvOrderDetails.Name = "dtgInvOrderDetails";
-            this.dtgInvOrderDetails.Size = new System.Drawing.Size(440, 224);
-            this.dtgInvOrderDetails.TabIndex = 1;
-            // 
-            // dtgInvOrderHistory
-            // 
-            this.dtgInvOrderHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dtgInvOrderHistory.Location = new System.Drawing.Point(8, 73);
-            this.dtgInvOrderHistory.Name = "dtgInvOrderHistory";
-            this.dtgInvOrderHistory.Size = new System.Drawing.Size(443, 224);
-            this.dtgInvOrderHistory.TabIndex = 0;
-            // 
             // supplierTableAdapter
             // 
             this.supplierTableAdapter.ClearBeforeFill = true;
@@ -2375,6 +2351,8 @@
             this.grbInventory.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgInventory)).EndInit();
             this.tabStockIN.ResumeLayout(false);
+            this.tabStockIN.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dtgInvoiceHistory)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.supplierBindingSource)).EndInit();
@@ -2402,10 +2380,6 @@
             this.tabInventoryValue.ResumeLayout(false);
             this.tabInventoryValue.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgInventoryValue)).EndInit();
-            this.tabSupplierSummary.ResumeLayout(false);
-            this.tabSupplierSummary.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dtgInventorySummary)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dtgSupplierSearch)).EndInit();
             this.tabOrderStock.ResumeLayout(false);
             this.tabOrderStock.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgSupOrderHistory)).EndInit();
@@ -2416,6 +2390,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.dtgNewInvOrderDetails)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgInvOrderDetails)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgInvOrderHistory)).EndInit();
+            this.tabSupplierSummary.ResumeLayout(false);
+            this.tabSupplierSummary.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dtgInventorySummary)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dtgSupplierSearch)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -2498,16 +2476,12 @@
         private System.Windows.Forms.DataGridView dtgSupOrderHistory;
         private System.Windows.Forms.Button btnRemoveAll;
         private System.Windows.Forms.Button btnAddAll;
-        private System.Windows.Forms.Button btnRemoveSingle;
-        private System.Windows.Forms.Button btnAddSingle;
         private System.Windows.Forms.DataGridView dtgOrderInvList;
         private System.Windows.Forms.DataGridView dtgSupOrderList;
         private System.Windows.Forms.TextBox txtOrderTotalIncl;
         private System.Windows.Forms.TextBox txtOrderVAT;
         private System.Windows.Forms.TextBox txtOrderTotalExcl;
-        private System.Windows.Forms.Button btnOrderNextItem;
-        private System.Windows.Forms.Button btnOrderPreview;
-        private System.Windows.Forms.Button btnSaveOrder;
+        private System.Windows.Forms.Button btnOrderSavePDF;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label8;
@@ -2549,7 +2523,6 @@
         private System.Windows.Forms.Button btnSupSearch;
         private System.Windows.Forms.Button btnSupClear;
         private System.Windows.Forms.DateTimePicker dtpDateStockOUT;
-        private System.Windows.Forms.Button btnPDFprint;
         private System.Windows.Forms.Label label38;
         private System.Windows.Forms.Label label37;
         private System.Windows.Forms.Label label36;
@@ -2617,6 +2590,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Button btnOrderFilter;
+        private System.Windows.Forms.Button btnOrderSupGO;
+        private System.Windows.Forms.ComboBox cbxOrderSup;
         private System.Windows.Forms.DataGridViewTextBoxColumn invID;
         private System.Windows.Forms.DataGridViewTextBoxColumn invCode;
         private System.Windows.Forms.DataGridViewTextBoxColumn invItem;
@@ -2625,7 +2600,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn invLength;
         private System.Windows.Forms.DataGridViewTextBoxColumn orderQuantity;
         private System.Windows.Forms.DataGridViewTextBoxColumn orderPrice;
-        private System.Windows.Forms.Button btnOrderSupGO;
-        private System.Windows.Forms.ComboBox cbxOrderSup;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.DataGridView dtgInvoiceHistory;
     }
 }

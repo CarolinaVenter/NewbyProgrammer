@@ -358,6 +358,7 @@ namespace ImagineTrailvan
                  return result;
              }//end of using (SqlConnection conn = new SqlConnection(connString))
          }//end of public DataTable getSupplierOrderHistory(string supID)
+
          public DataTable getSupOrderDetails(string orderID)
          {
              using (SqlConnection conn = new SqlConnection(connString))
