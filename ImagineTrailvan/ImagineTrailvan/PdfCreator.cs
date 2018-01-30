@@ -23,7 +23,7 @@ namespace ImagineTrailvan
         //dataTables sending 1) inventory details for order, 2)Supplier details for this order
         //also, consider sending suggested  FILENAME in method as well (filename: tipe of doc, and number. eg> Order Number IT-17-EE-002, or> Invoice Number IT17-12345
         //the final total will have to be calculated here, with all the VAT details as well.
-
+       
         //A4 dimensions are *'width x height = 595 x 842 pt'. 72pts ==1inch, 1inch==25.4mm
         public PdfCreator()
         {
@@ -67,14 +67,16 @@ namespace ImagineTrailvan
         {
             //this method makes it possible to draw the total multiple times for when more than one page is used- dynamic
             XFont fontFoot = new XFont("Sans-serif", 8, XFontStyle.Regular);
-            graph.DrawString("R " + total, fontFoot, XBrushes.Black, new XRect(500, 685, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-        }//end of private void DrawTotal(PdfPage pdfpage, XGraphics graph, double total)
+            graph.DrawString((total).ToString("C"), fontFoot, XBrushes.Black, new XRect(508, 667, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString((total * 0.14).ToString("C"), fontFoot, XBrushes.Black, new XRect(508, 677, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString((total * 1.14).ToString("C"), fontFoot, XBrushes.Black, new XRect(508, 687, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
 
+        }//end of private void DrawTotal(PdfPage pdfpage, XGraphics graph, double total)
         #region Fixed Stock Order PDF
         //this is Orders' umbrella method
         public void CreateOrderPDF(DataTable dtInvValues, DataTable dtSupValues, string fileName)
         {
-            //this will have to work as the main class for the calling of methods
+            //this will have to work as the main-umbrella-method for the calling of methods
             //create a pdf file
             PdfDocument pdf = new PdfDocument();
             pdf.Info.Title = fileName;
@@ -108,15 +110,17 @@ namespace ImagineTrailvan
             //get footer
             DrawOrderFooter(pdfpage, graph);
 
-            //get the order details and the totals
-            double tot = DrawStockOrderDetails(pdf, pdfpage, graph, dtInvValues, dtSupValues, fileName);
-            DrawTotal(pdfpage, graph, tot);
+            //get the order details and the totals  string.Format("{0:c}", 5.05)
+            DrawStockOrderDetails(pdf, pdfpage, graph, dtInvValues, dtSupValues, fileName); //double tot =
 
             //save the pdf....
-            //this line now creates the path, and adds the extention to the file
-            fileName = @"C:\Users\Carolien\Desktop\" + fileName + ".pdf"; //create the pdf's name, and adding the pdf extention-otherwise program doesn't know how to open it.
-            pdf.Save(fileName);
-            Process.Start(fileName);
+            //these lines now create the path, and adds the extention to the file
+            fileName = fileName + ".pdf";
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);//Desktop);
+            string filePath = Path.Combine(path, fileName);
+            //   fileName = @"C:\Users\Carolien\Desktop\" + fileName + ".pdf"; //create the pdf's name, and adding the pdf extention-otherwise program doesn't know how to open it.
+            pdf.Save(filePath);
+            Process.Start(filePath);
         }//end of public void CreateOrderPDF(DataTable dtInvValues, DataTable dtSupValues, string fileName, string title)
         private void DrawSupDetails(PdfPage pdfpage, XGraphics graph, DataTable dtSupValues)
         {
@@ -142,7 +146,7 @@ namespace ImagineTrailvan
             graph.DrawString("TEL: " + dtSupValues.Rows[0][5].ToString(), fontHead, XBrushes.Black, new XRect(40, 166, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             graph.DrawString("CELL: " + dtSupValues.Rows[0][4].ToString(), fontHead, XBrushes.Black, new XRect(40, 174, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             graph.DrawString("EMAIL: " + dtSupValues.Rows[0][6].ToString(), fontHead, XBrushes.Black, new XRect(40, 182, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-            graph.DrawString(payTerm.ToUpper(), fontFoot, XBrushes.Black, new XRect(130, 685, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString(payTerm.ToUpper(), fontFoot, XBrushes.Black, new XRect(130, 667, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             #endregion
         }//end of private void DrawSupDetails()
         private void DrawOrderTableHead(PdfPage pdfpage, XGraphics graph)
@@ -153,44 +157,53 @@ namespace ImagineTrailvan
             graph.DrawString("PART CODE", fontBoldTableHead, XBrushes.Black, new XRect(55, 210, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             graph.DrawString("ITEM", fontBoldTableHead, XBrushes.Black, new XRect(120, 210, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             graph.DrawString("DESCRIPTION", fontBoldTableHead, XBrushes.Black, new XRect(275, 210, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-            graph.DrawString("LENGTH", fontBoldTableHead, XBrushes.Black, new XRect(375, 210, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-            graph.DrawString("QUANTITY", fontBoldTableHead, XBrushes.Black, new XRect(415, 210, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString("LENGTH", fontBoldTableHead, XBrushes.Black, new XRect(380, 210, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString("QUANTITY", fontBoldTableHead, XBrushes.Black, new XRect(417, 210, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             graph.DrawString("PRICE/UNIT", fontBoldTableHead, XBrushes.Black, new XRect(460, 210, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             graph.DrawString("TOTAL", fontBoldTableHead, XBrushes.Black, new XRect(510, 210, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             //  graph.DrawString(itemCount.ToString(), fontHead, XBrushes.Black, new XRect(40, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             #endregion
         }//end of private void DrawOrderTableHead(PdfPage pdfpage, XGraphics graph)
-        private double DrawStockOrderDetails(PdfDocument pdf, PdfPage pdfpage, XGraphics graph, DataTable dtInvValues, DataTable dtSupValues, string fileName)
+        private void DrawStockOrderDetails(PdfDocument pdf, PdfPage pdfpage, XGraphics graph, DataTable dtInvValues, DataTable dtSupValues, string fileName)
         {
             //this gets and orders the details gotten for the order: the items
             int ypoint = 0;
             int itemCount = 1;
             double total = 0.00;
             int lineCount = 0;
-
+            int pageNum =1;
             XFont font = new XFont("Arial", 8, XFontStyle.Regular);
             XFont fontHead = new XFont("Sans-serif", 6, XFontStyle.Regular);
+            XFont fontFoot = new XFont("Sans-serif", 8, XFontStyle.Regular);
 
             #region TableValues
             ypoint = 230;
+            graph.DrawString(pageNum.ToString(), fontFoot, XBrushes.Black, new XRect(300, 800, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            //DrawTotal(pdfpage, graph, total);
             for (int i = 0; i < dtInvValues.Rows.Count; i++)
-            {//INCLUDE LENGTH?
+            {
+                total += (int.Parse(dtInvValues.Rows[i][6].ToString()) * double.Parse(dtInvValues.Rows[i][7].ToString()));
+            }//end of for (int i = 0; i < dtInvValues.Rows.Count; i++)
+            DrawTotal(pdfpage, graph, total);
+
+            for (int i = 0; i < dtInvValues.Rows.Count; i++)
+            {
                 if (lineCount < 29)
                 {
                     graph.DrawString(itemCount.ToString(), fontHead, XBrushes.Black, new XRect(40, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
                     graph.DrawString(dtInvValues.Rows[i][1].ToString(), font, XBrushes.Black, new XRect(55, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
                     graph.DrawString(dtInvValues.Rows[i][2].ToString(), font, XBrushes.Black, new XRect(120, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
                     graph.DrawString(dtInvValues.Rows[i][3].ToString(), font, XBrushes.Black, new XRect(275, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    graph.DrawString(dtInvValues.Rows[i][5].ToString(), font, XBrushes.Black, new XRect(380, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    graph.DrawString(dtInvValues.Rows[i][6].ToString(), font, XBrushes.Black, new XRect(420, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    graph.DrawString(dtInvValues.Rows[i][7].ToString(), font, XBrushes.Black, new XRect(465, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    graph.DrawString((int.Parse(dtInvValues.Rows[i][6].ToString()) * double.Parse(dtInvValues.Rows[i][7].ToString())).ToString(), font, XBrushes.Black, new XRect(510, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString(dtInvValues.Rows[i][5].ToString(), font, XBrushes.Black, new XRect(387, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString(dtInvValues.Rows[i][6].ToString(), font, XBrushes.Black, new XRect(425, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString(double.Parse(dtInvValues.Rows[i][7].ToString()).ToString("C"), font, XBrushes.Black, new XRect(465, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString((int.Parse(dtInvValues.Rows[i][6].ToString()) * double.Parse(dtInvValues.Rows[i][7].ToString())).ToString("C"), font, XBrushes.Black, new XRect(510, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
 
                     ypoint = ypoint + 15;
                     itemCount += 1;
                     lineCount += 1;
-                    total += (int.Parse(dtInvValues.Rows[i][6].ToString()) * double.Parse(dtInvValues.Rows[i][7].ToString()));
                 }
+
                 else
                 {
                     pdfpage = pdf.AddPage();
@@ -216,27 +229,27 @@ namespace ImagineTrailvan
 
                     lineCount = 1;
                     ypoint = 230;
-
+                    pageNum = pageNum + 1;
                     //do the next page
                     graph.DrawString(itemCount.ToString(), fontHead, XBrushes.Black, new XRect(40, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
                     graph.DrawString(dtInvValues.Rows[i][1].ToString(), font, XBrushes.Black, new XRect(55, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
                     graph.DrawString(dtInvValues.Rows[i][2].ToString(), font, XBrushes.Black, new XRect(120, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
                     graph.DrawString(dtInvValues.Rows[i][3].ToString(), font, XBrushes.Black, new XRect(275, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    graph.DrawString(dtInvValues.Rows[i][5].ToString(), font, XBrushes.Black, new XRect(380, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    graph.DrawString(dtInvValues.Rows[i][6].ToString(), font, XBrushes.Black, new XRect(420, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    graph.DrawString(dtInvValues.Rows[i][7].ToString(), font, XBrushes.Black, new XRect(465, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-                    graph.DrawString((int.Parse(dtInvValues.Rows[i][6].ToString()) * double.Parse(dtInvValues.Rows[i][7].ToString())).ToString(), font, XBrushes.Black, new XRect(510, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString(dtInvValues.Rows[i][5].ToString(), font, XBrushes.Black, new XRect(387, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString(dtInvValues.Rows[i][6].ToString(), font, XBrushes.Black, new XRect(425, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString(double.Parse(dtInvValues.Rows[i][7].ToString()).ToString("C"), font, XBrushes.Black, new XRect(465, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    graph.DrawString((int.Parse(dtInvValues.Rows[i][6].ToString()) * double.Parse(dtInvValues.Rows[i][7].ToString())).ToString("C"), font, XBrushes.Black, new XRect(510, ypoint, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
 
                     ypoint = ypoint + 15;
                     itemCount += 1;
-                    total += (int.Parse(dtInvValues.Rows[i][6].ToString()) * double.Parse(dtInvValues.Rows[i][7].ToString()));
+                  //  total += (int.Parse(dtInvValues.Rows[i][6].ToString()) * double.Parse(dtInvValues.Rows[i][7].ToString()));
+                    graph.DrawString(pageNum.ToString(), fontFoot, XBrushes.Black, new XRect(300, 800, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+                    DrawTotal(pdfpage, graph, total);
                 }
             }//end of for (int i = 0; i < tableValues.Rows.Count; i++)
             //send the total to the last page
-            DrawTotal(pdfpage, graph, total);
+             DrawTotal(pdfpage, graph, total);
             #endregion
-
-            return total;// this magic line makes it possible to get the total on the first page too!
         }//end of private void DrawStockOrderDetails(PdfPage pdfpage, XGraphics graph, DataTable dtInvValues)
         private void DrawOrderFooter(PdfPage pdfpage, XGraphics graph)
         {//this draws the entire footer.
@@ -245,8 +258,8 @@ namespace ImagineTrailvan
             XPen dashpen = new XPen(Color.Black, 0.8);
             dashpen.DashStyle= XDashStyle.Dot;
            
-            Rectangle recTotal = new Rectangle(487, 680, 60, 18);
-            Rectangle recPayment = new Rectangle(35, 680, 450, 18);
+            Rectangle recTotal = new Rectangle(500, 665, 63, 33);
+            Rectangle recPayment = new Rectangle(35, 665, 463, 33);
 
             graph.DrawRectangle(pen, recTotal);
             recTotal.Inflate(-1, -1);                       //inflating the rectangle and drawing it once again, creates the double line border effect
@@ -264,8 +277,12 @@ namespace ImagineTrailvan
             graph.DrawLine(dashpen, 75, 743, 160, 743);//branch line
             graph.DrawLine(dashpen, 220, 743, 300, 743);//bank code line
 
-            graph.DrawString("Terms of payment:", fontFoot, XBrushes.Black, new XRect(40, 685, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-            graph.DrawString("Total: ", fontFoot, XBrushes.Black, new XRect(450, 685, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString("Terms of payment:", fontFoot, XBrushes.Black, new XRect(40, 667, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString("Total excluding VAT: ", fontFoot, XBrushes.Black, new XRect(420, 667, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+           // graph.DrawString("Less Discount: ", fontFoot, XBrushes.Black, new XRect(420, 685, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString("Add 14% VAT: ", fontFoot, XBrushes.Black, new XRect(420, 677, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+            graph.DrawString("Total including VAT: ", fontFoot, XBrushes.Black, new XRect(420, 687, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+           
             graph.DrawString("YOUR BANKING DETAILS FOR ELECTRONIC TRANSFER:", fontFoot, XBrushes.Black, new XRect(40, 705, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             graph.DrawString("ACCOUNT NAME: ", fontFoot, XBrushes.Black, new XRect(40, 715, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             graph.DrawString("BANK: ", fontFoot, XBrushes.Black, new XRect(40, 725, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
@@ -274,6 +291,8 @@ namespace ImagineTrailvan
             graph.DrawString("BANK CODE: ", fontFoot, XBrushes.Black, new XRect(170, 735, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             graph.DrawString("SPECIAL ARRANGEMENTS: ", fontFoot, XBrushes.Black, new XRect(40, 745, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             graph.DrawString("Authorized signature ", fontFoot, XBrushes.Black, new XRect(415, 775, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+         //   graph.DrawString(pageNum.ToString(), fontFoot, XBrushes.Black, new XRect(515, 800, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
+
         }//end of private void DrawOrderFooter(PdfPage pdfpage, XGraphics graph, string payTerm,double total)
         private void DrawDelivery(PdfPage pdfpage, XGraphics graph)
         {
@@ -340,6 +359,7 @@ namespace ImagineTrailvan
             PdfDocument pdf = new PdfDocument();
             pdf.Info.Title = "Inventory Test PDF";
             PdfPage pdfpage = pdf.AddPage();
+            
 
             XGraphics graph = XGraphics.FromPdfPage(pdfpage);
             XFont font = new XFont("Arial", 8, XFontStyle.Regular);
@@ -502,8 +522,7 @@ namespace ImagineTrailvan
            // pdf.Save(fileName);//somehow, this little line shoud be able to create a file path
             pdf.Save(fileName);
             Process.Start(fileName);
-        }//end of public void PDForderForm()
-
+        }//end of public void PDForderForm(DataTable dtInvValues, DataTable dtSupValues, string fileName)
 
         //create a method here for orders to suppliers
 
@@ -517,6 +536,32 @@ namespace ImagineTrailvan
 
         //create a method here for custom invoices/ orders with only a header and footer
 
-
     }//end of class PdfCreator
 }//end of namespace ImagineTrailvan
+
+// PDF SHARP copyright
+// Authors:
+//   Stefan Lange (mailto:Stefan.Lange@pdfsharp.com)
+//
+// Copyright (c) 2005-2009 empira Software GmbH, Cologne (Germany)
+//
+// http://www.pdfsharp.com
+// http://sourceforge.net/projects/pdfsharp
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+// DEALINGS IN THE SOFTWARE.
