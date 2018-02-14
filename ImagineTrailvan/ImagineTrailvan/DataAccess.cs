@@ -285,7 +285,7 @@ namespace ImagineTrailvan
              {
                  DataTable result = new DataTable();
                  // "SubStockINID", "InventoryID", "SSIQuantityIN", "SSIPrice", "ISIID", "SSIStockLeft"
-                 cmd = new SqlCommand("SELECT inv.InventoryID, inv.InvCode, inv.InvItem, ssi.SSIQuantityIN, ssi.SSIPrice, inv.InvReorderLevel, ssi.SubStockINID, isi.ISIID FROM InvoiceStockIN isi, SubStockIN ssi, Inventory inv  WHERE ssi.ISIID='" + isiID + "' AND isi.ISIID='" + isiID + "' AND ssi.InventoryID=inv.InventoryID", conn);
+                 cmd = new SqlCommand("SELECT inv.InventoryID, inv.InvCode, inv.InvItem,inv.InvDescription,inv.InvSupplierDescription, inv.InvCategory, ssi.SSIQuantityIN, ssi.SSIPrice, inv.InvReorderLevel, ssi.SubStockINID, isi.ISIID FROM InvoiceStockIN isi, SubStockIN ssi, Inventory inv  WHERE ssi.ISIID='" + isiID + "' AND isi.ISIID='" + isiID + "' AND ssi.InventoryID=inv.InventoryID", conn);
                  adapter = new SqlDataAdapter(cmd);
                  SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
                  conn.Open();

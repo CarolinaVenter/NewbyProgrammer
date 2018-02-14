@@ -74,7 +74,7 @@ namespace ImagineTrailvan
         }//end of private void DrawTotal(PdfPage pdfpage, XGraphics graph, double total)
         #region Fixed Stock Order PDF
         //this is Orders' umbrella method
-        public void CreateOrderPDF(DataTable dtInvValues, DataTable dtSupValues, string fileName)
+        public void CreateOrderPDF(DataTable dtInvValues, DataTable dtSupValues, string fileName,string targetpath)
         {
             //this will have to work as the main-umbrella-method for the calling of methods
             //create a pdf file
@@ -116,11 +116,11 @@ namespace ImagineTrailvan
             //save the pdf....
             //these lines now create the path, and adds the extention to the file
             fileName = fileName + ".pdf";
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);//Desktop);
-            string filePath = Path.Combine(path, fileName);
+            string tagetpath = targetpath;// Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);//Desktop);
+           // string filePath = Path.Combine(tagetpath, fileName);
             //   fileName = @"C:\Users\Carolien\Desktop\" + fileName + ".pdf"; //create the pdf's name, and adding the pdf extention-otherwise program doesn't know how to open it.
-            pdf.Save(filePath);
-            Process.Start(filePath);
+            pdf.Save(tagetpath);
+            Process.Start(tagetpath);
         }//end of public void CreateOrderPDF(DataTable dtInvValues, DataTable dtSupValues, string fileName, string title)
         private void DrawSupDetails(PdfPage pdfpage, XGraphics graph, DataTable dtSupValues)
         {
