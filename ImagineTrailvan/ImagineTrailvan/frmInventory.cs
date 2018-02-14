@@ -431,418 +431,6 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
         #endregion
 
         #region tabStockIN
-        private void btnISIsave_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                #region Variables
-                //datatables
-                DataTable dtInvoiceIN = new DataTable();
-                DataTable dtAllInvoices = new DataTable();
-                //arraylists
-                ArrayList invoiceValues = new ArrayList();
-                ArrayList totalStockChanged = new ArrayList();
-                ArrayList stockINValues = new ArrayList();
-                ArrayList getIDValue = new ArrayList();
-                ArrayList invValues = new ArrayList(); //make arrayList to store all values of current record
-                //arrays
-                string[] fieldFilter = { "ISIInvoiceNo", "SupplierID" };//cant work with this guy "ISIInvoiceTotalIncl"
-                //variables
-                Boolean exists = new Boolean();
-                Boolean flag = new Boolean();
-               
-
-                                //datatables
-              //  DataTable dtInvoiceIN = new DataTable();
-              // DataTable dtAllInvoices = new DataTable();
-                DataTable dtGetNewItemID = new DataTable();
-                //arraylists
-                ArrayList values = new ArrayList(); //make arrayList to store all values of current record
-                ArrayList createTotalStock = new ArrayList();
-                ArrayList createNewItemStockIN = new ArrayList();
-              //  ArrayList invoiceValues = new ArrayList();
-              //  ArrayList totalStockChanged = new ArrayList();
-              //  ArrayList stockINValues = new ArrayList();
-                ArrayList getNewItemDetails = new ArrayList();
-              //  ArrayList getIDValue = new ArrayList();
-                //arrays
-              //  string[] fieldFilter = { "ISIInvoiceNo", "SupplierID" };//cant work with this guy "ISIInvoiceTotalIncl"
-                string[] fieldNewItemID = { "InvItem" };
-                //variables
-                Boolean newexists = new Boolean();
-                Boolean newflag = new Boolean();
-                //double totalStockValue = 0.00;
-
-                #endregion
-
-                if (txtISIinvID.Text != "")
-                {
-                    //update any inventory details
-                    invValues.Add(txtISIinvID.Text);          //store textBox / comboBox value in the ArrayList
-                    invValues.Add(txtISIinvCode.Text);
-                    invValues.Add(txtISIinvItem.Text.ToUpper());
-                    invValues.Add(txtISIinvDescription.Text.ToUpper());
-                    invValues.Add(txtISIinvCategory.Text.ToUpper());
-                    invValues.Add(txtISIinvReLevel.Text);
-                    invValues.Add(cmbISIinvMarkup.Text);
-                    invValues.Add("false");
-
-                    datac.updateRecCmd("Inventory", fieldInv[0], txtISIinvID.Text, fieldInv, invValues);        //Send values in fieldInv string format from textBox/ comboBox through updateCmd query to database table using InvID as key            
-                    dtgStockIn.DataSource = datac.getTable("Inventory");
-                    flag = false;
-                    if (txtInvoiceNo.Text != "")//this if makes it invoice based, invoice reference made-else is for recirculation
-                    {
-                        if (dtpInvoiceDate.Text != "")
-                        {
-                            dtAllInvoices = datac.getTable("InvoiceStockIN");
-
-                            for (int i = 0; i < dtAllInvoices.Rows.Count; i++)
-                            {
-                                if (exists == false)
-                                {
-                                    if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())//&& dtAllInvoices.Rows[i][4].ToString() == txtISITotal.Text
-                                    {
-                                        exists = true;
-                                        flag = true;
-                                    }//end of if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())
-                                    else
-                                    {
-                                        exists = false;
-
-                                    }//end of else, if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString()) 
-                                }//end of if (exists == false)
-                                else
-                                {
-                                    //this will be my flag to signal if it exists, since the first part of exist will only test each row and then move on, thus not stopping if it exists
-                                    flag = true;
-                                }//end of else of if (exists == false)
-                            }//end of for (int i = 0; i < dtAllInvoices.Rows.Count; i++)
-                            //   MessageBox.Show("Exists value: " + flag, "Testing complete");
-                            if (flag == true)
-                            {
-                                // MessageBox.Show("This invoice already exists. ", "Testing complete");
-                                DialogResult result = MessageBox.Show("This invoice already exists: Do you wish to add items to it?", "Invoice Exists", MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question);
-
-                                //make fancy pop-up to state that invoice exists, want to add to invoice
-                                if (result == DialogResult.Yes)
-                                {
-                                    getIDValue.Add(" LIKE '" + txtInvoiceNo.Text + "'");
-                                    // getIDValue.Add("='" + dtpInvoiceDate.Text+"00:00:00.000'");
-                                    getIDValue.Add("=" + cmbISISupplier.SelectedValue);
-                                    // getIDValue.Add("=" + txtISITotal.Text + "00");
-
-                                    dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, getIDValue);  //save invoice details in this dataTable, to get the precise ISIID
-
-                                    stockINValues.Add(0);
-                                    stockINValues.Add(txtISIinvID.Text);
-                                    stockINValues.Add(txtISIstockReceived.Text);
-                                    stockINValues.Add(txtISIstockPrice.Text);
-                                    stockINValues.Add(dtInvoiceIN.Rows[0][0].ToString());//use dtInvoiceIN for the reference to the invoice received
-                                    stockINValues.Add(txtISIstockReceived.Text);
-                                    datac.insertCmd("SubStockIN", fieldStockIN, stockINValues);// a new transaction with a reference to an invoice is created and inserted
-
-                                    totalStockChanged.Add(0);
-                                    totalStockChanged.Add(txtISIinvID.Text);
-                                    totalStockChanged.Add((int.Parse(txtISIstockReceived.Text) + int.Parse(txtISIstockTotal.Text)));
-                                    datac.updateRecCmd("InventoryStock", fieldTotalStock[0].ToString(), txtISIinvID.Text, fieldTotalStock, totalStockChanged);//string tblName, string idField, string ID, string[] fields, ArrayList values
-
-                                    dtgStockIn.DataSource = datac.getTable("Inventory");
-                                }//end of if (result == DialogResult.Yes)
-                                else if ((result == DialogResult.No))
-                                {
-                                    MessageBox.Show("Please enter a new invoice number value in the Invoice Number field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    txtInvoiceNo.Clear();
-                                    txtISITotal.Clear();
-                                    btnISIpreviewCurrent.Enabled = false;
-
-                                    dtgStockIn.DataSource = datac.getTable("Inventory");
-                                }//end of else if (result == DialogResult.No)
-                            }//end of if (flag == true)
-                            else
-                            {//make new invoice thingy
-                                invoiceValues.Add(0);
-                                invoiceValues.Add(txtInvoiceNo.Text);
-                                invoiceValues.Add(dtpInvoiceDate.Text);
-                                invoiceValues.Add(cmbISISupplier.SelectedValue);
-                                invoiceValues.Add(txtISITotal.Text);
-                                datac.insertCmd("InvoiceStockIN", fieldInvoiceStockIN, invoiceValues);// do an insert to record the invoice received
-
-                                getIDValue.Add(" LIKE '" + txtInvoiceNo.Text + "'");
-                                getIDValue.Add("=" + cmbISISupplier.SelectedValue);
-                                dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, getIDValue);  //save invoice details in this dataTable, to get the precise ISIID
-
-                                stockINValues.Add(0);
-                                stockINValues.Add(txtISIinvID.Text);
-                                stockINValues.Add(txtISIstockReceived.Text);
-                                stockINValues.Add(txtISIstockPrice.Text);
-                                stockINValues.Add(dtInvoiceIN.Rows[0][0].ToString());//use dtInvoiceIN for the reference to the invoice received
-                                stockINValues.Add(txtISIstockReceived.Text);
-                                datac.insertCmd("SubStockIN", fieldStockIN, stockINValues);// a new transaction with a reference to an invoice is created and inserted
-                                dtgStockIn.DataSource = datac.getStockInInvoice(dtInvoiceIN.Rows[0][0].ToString());//declare new datasource with updated data
-
-                                totalStockChanged.Add(0);
-                                totalStockChanged.Add(txtISIinvID.Text);
-                                totalStockChanged.Add((int.Parse(txtISIstockReceived.Text) + int.Parse(txtISIstockTotal.Text)));
-                                datac.updateRecCmd("InventoryStock", fieldTotalStock[0].ToString(), txtISIinvID.Text, fieldTotalStock, totalStockChanged);//string tblName, string idField, string ID, string[] fields, ArrayList values
-                            }//end of else of if (newflag == true)
-                        }//end of if (dtpInvoiceDate.Text!="")
-                        else
-                        {
-                            MessageBox.Show("Please enter a date value in the Invoice Date field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }//end of else if (dtpInvoiceDate.Text!="")
-                    }//end of if (txtISIinvoiceNr.Text != "")
-                    else
-                    {
-                        //no reference to invoice is made - stock can go back into circulation here
-                        //therefore, it runs an update, NOT an insert
-                        dtInvoiceIN = datac.getFIFODatedPrice(txtISIinvID.Text);//get the first dated price of this item
-
-                        totalStockChanged.Add(0);
-                        totalStockChanged.Add(txtISIinvID.Text);
-                        totalStockChanged.Add((int.Parse(txtISIstockReceived.Text) + int.Parse(txtISIstockTotal.Text)));
-                        datac.updateRecCmd("InventoryStock", fieldTotalStock[1].ToString(), txtISIinvID.Text, fieldTotalStock, totalStockChanged);//changing totalStock
-                        for (int i = 0; i < int.Parse(txtISIstockReceived.Text) - 1; i++)
-                        {
-                            stockINValues.Add(dtInvoiceIN.Rows[0][0].ToString());
-                            stockINValues.Add(dtInvoiceIN.Rows[0][1].ToString());
-                            stockINValues.Add(dtInvoiceIN.Rows[0][3].ToString());
-                            stockINValues.Add(dtInvoiceIN.Rows[0][4].ToString());
-                            stockINValues.Add(dtInvoiceIN.Rows[0][5].ToString());
-                            stockINValues.Add(int.Parse(dtInvoiceIN.Rows[0][6].ToString()) + 1);
-                            datac.updateRecCmd("SubStockIN", fieldStockIN[0], dtInvoiceIN.Rows[0][0].ToString(), fieldStockIN, stockINValues);//update existing record
-
-                            dtgStockIn.DataSource = datac.getTable("Inventory");
-                            dtInvoiceIN = datac.getFIFODatedPrice(txtISIinvID.Text);
-                            stockINValues = new ArrayList();//clear the arraylist to be able to record next item
-                        }//end of for (int i = 0; i < int.Parse(txtISIquantityIn.Text-1); i++)    
-                        string getID = dtInvoiceIN.Rows[0][5].ToString();               //what is the idea of this variable? Do i use it?
-                        //dtgStockIn.DataSource = datac.getCurrentInvoice(getID);
-                    }//end of else if (txtInvoiceNo.Text != "")
-                }//end of if (txtISIinvID.Text!="")
-                else
-                {
-                    if (txtISIinvItem.Text != "")
-                    {
-                        values.Add("0");          //store textBox / comboBox value in the ArrayList
-                        values.Add(txtISIinvCode.Text);
-                        values.Add(txtISIinvItem.Text.ToUpper());
-                        values.Add(txtISIinvDescription.Text.ToUpper());
-                        values.Add("");
-                        values.Add(txtISIinvCategory.Text.ToUpper());
-
-                        if (txtISIinvReLevel.Text != "")     //See if user gave value for reorderLevel, and use value
-                        {
-                            values.Add(txtISIinvReLevel.Text);
-                        }//end of if (txtInvReLeveli.Text!="")
-                        else
-                        {
-                            values.Add("0");            //if user gave no value, make default 0: for prototyping purposes
-                        }//end of else, if (txtInvReLeveli.Text!="")
-                        if (cmbISIinvMarkup.Text != "")
-                        {
-                            values.Add(cmbISIinvMarkup.Text);       //if user gave value, use value
-                        }//end of if (cmbInvMarkupi.Text!="")
-                        else
-                        {
-                            values.Add("25");                   //if user gave no value for markup%, then make 25% default
-                        }//end of else, if (cmbInvMarkupi.Text!="")
-                        values.Add("false");
-
-                        newflag = false;
-
-                        datac.insertCmd("Inventory", fieldInvAll, values);       ////Send values in fieldInv string format through insertCmd query to database table
-                        dtgStockIn.DataSource = datac.getTable("Inventory");
-
-                        getNewItemDetails.Add(txtISIinvItem.Text.ToUpper());//consider more than 1 search field to ensure there is NO other record close to it ( ref male/ female door retainer rubber)
-                        dtGetNewItemID = datac.getRecord("Inventory", fieldNewItemID, getNewItemDetails);
-                        //make reference for a new item to call other tables from
-                        if (txtISIstockReceived.Text != "")
-                        {//create instance for this new item to have a reference to StockIN and a StockTotal
-                            if (txtInvoiceNo.Text != "")//this if makes it invoice based, invoice reference made-else is for recirculation
-                            {
-                                if (dtpInvoiceDate.Text != "")
-                                {
-                                    dtAllInvoices = datac.getTable("InvoiceStockIN");
-                                    if (txtISIstockPrice.Text != "")
-                                    {
-                                        for (int i = 0; i < dtAllInvoices.Rows.Count; i++)
-                                        {
-                                            if (newexists == false)
-                                            {
-                                                if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())//&& dtAllInvoices.Rows[i][4].ToString() == txtISITotal.Text
-                                                {
-                                                    newexists = true;
-                                                    newflag = true;
-                                                }//end of  if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())//&& dtAllInvoices.Rows[i][4].ToString() == txtISITotal.Text
-                                                else
-                                                {
-                                                    newexists = false;
-                                                }//end of else
-                                            }//end of if (newexists == false)
-                                            else
-                                            {
-                                                //this will be my flag to signal if it exists, since the first part of exist will only test each row and then move on, thus not stopping if it exists
-                                                newflag = true;
-                                            }//end of else of if (exists == false)
-                                        }//end of for (int i = 0; i < dtAllInvoices.Rows.Count; i++)
-                                        //   MessageBox.Show("Exists value: " + exists, "Testing complete");
-                                        if (newflag == true)
-                                        {
-                                            getIDValue.Add(" LIKE '" + txtInvoiceNo.Text + "'");
-                                            // getIDValue.Add("='" + dtpInvoiceDate.Text+"00:00:00.000'");
-                                            getIDValue.Add("=" + cmbISISupplier.SelectedValue);
-                                            // getIDValue.Add("=" + txtISITotal.Text + "00");
-                                            dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, getIDValue);  //save invoice details in this dataTable, to get the precise ISIID
-
-                                            // createNewItemStockIN.Add();
-                                            stockINValues.Add(0);
-                                            stockINValues.Add(dtGetNewItemID.Rows[0][0].ToString());
-                                            stockINValues.Add(txtISIstockReceived.Text);
-                                            stockINValues.Add(txtISIstockPrice.Text);
-                                            stockINValues.Add(dtInvoiceIN.Rows[0][0].ToString());//use dtInvoiceIN for the reference to the invoice received
-                                            stockINValues.Add(txtISIstockReceived.Text);
-                                            datac.insertCmd("SubStockIN", fieldStockIN, stockINValues);// a new transaction with a reference to an invoice is created and inserted
-
-                                            totalStockChanged.Add(0);
-                                            totalStockChanged.Add(dtGetNewItemID.Rows[0][0].ToString());
-                                            totalStockChanged.Add(txtISIstockReceived.Text);
-                                            datac.insertCmd("InventoryStock", fieldTotalStock, totalStockChanged);//create a reference to totalStock with first stock
-
-                                            // dtgStockIn.DataSource = datac.getAllInvoice();
-                                            dtgStockIn.DataSource = datac.getTable("Inventory");
-                                        }//end of if (newflag = true)
-
-                                        else
-                                        {//make new invoice thingy
-                                            invoiceValues.Add(0);
-                                            invoiceValues.Add(txtInvoiceNo.Text);
-                                            invoiceValues.Add(dtpInvoiceDate.Text);
-                                            invoiceValues.Add(cmbISISupplier.SelectedValue);
-                                            invoiceValues.Add(txtISITotal.Text);
-                                            datac.insertCmd("InvoiceStockIN", fieldInvoiceStockIN, invoiceValues);
-
-                                            getIDValue.Add(" LIKE '" + txtInvoiceNo.Text + "'");
-                                            getIDValue.Add("=" + cmbISISupplier.SelectedValue);
-                                            dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, getIDValue);  //save invoice details in this dataTable, to get the precise ISIID
-
-
-                                            stockINValues.Add(0);
-                                            stockINValues.Add(dtGetNewItemID.Rows[0][0].ToString());
-                                            stockINValues.Add(txtISIstockReceived.Text);
-                                            stockINValues.Add(txtISIstockPrice.Text);
-                                            stockINValues.Add(dtInvoiceIN.Rows[0][0].ToString());//use dtInvoiceIN for the reference to the invoice received
-                                            stockINValues.Add(txtISIstockReceived.Text);
-                                            datac.insertCmd("SubStockIN", fieldStockIN, stockINValues);// a new transaction with a reference to an invoice is created and inserted
-                                            dtgStockIn.DataSource = datac.getTable("Inventory");
-
-                                            totalStockChanged.Add(0);
-                                            totalStockChanged.Add(dtGetNewItemID.Rows[0][0].ToString());
-                                            totalStockChanged.Add(txtISIstockReceived.Text);
-                                            datac.insertCmd("InventoryStock", fieldTotalStock, totalStockChanged);//create a reference to totalStock with first stock
-                                        }//end of else, if (flag == true)
-                                    }//end of if (txtISIstockPrice.Text!="")
-                                    else
-                                    {
-                                        MessageBox.Show("Please enter a Price/Unit value in the <Price/ Unit excl VAT> field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    }//end of else, if (txtISIstockPrice.Text!="")
-                                }//end of if (dtpInvoiceDate.Text!="")
-                                else
-                                {
-                                    MessageBox.Show("Please enter a date value in the Invoice Date field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                }//end of else if (dtpInvoiceDate.Text!="")
-                            }//end of if (txtISIinvoiceNr.Text != "")
-                            else
-                            {//since no invoiceNo is given, make it a STOCK invoice             //cant make a stock item if item is entered for the very first time!!!!!
-                                invoiceValues.Add(0);
-                                invoiceValues.Add("STOCK " + (emptySupplier += 1));
-                                invoiceValues.Add(dtpInvoiceDate.Text);
-                                invoiceValues.Add("1");
-                                invoiceValues.Add("0.00");
-                                datac.insertCmd("InvoiceStockIN", fieldInvoiceStockIN, invoiceValues);
-
-                                getIDValue.Add(" LIKE 'STOCK " + (emptySupplier += 1) + "'");
-                                getIDValue.Add("= 1");
-                                dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, getIDValue);  //save invoice details in this dataTable, to get the precise ISIID
-
-                                stockINValues.Add(0);
-                                stockINValues.Add(dtGetNewItemID.Rows[0][0].ToString());
-                                if (txtISIstockReceived.Text != "")
-                                {
-                                    stockINValues.Add(txtISIstockReceived.Text);
-                                }//end of if (txtISIstockReceived.Text!="")
-                                else
-                                {
-                                    MessageBox.Show("Please enter a Quantity Received value in the <Quantity Received> field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    stockINValues.Add(txtISIstockReceived.Text);
-                                }//end of else, if (txtISIstockReceived.Text!="")
-                                if (txtISIstockPrice.Text != "")
-                                {
-                                    stockINValues.Add(txtISIstockPrice.Text);
-                                }//end of if (xtISIstockPrice.Text!="")
-                                else
-                                {
-                                    MessageBox.Show("Please enter a Price/Unit value in the <Price/ Unit excl VAT> field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    stockINValues.Add(txtISIstockPrice.Text);
-                                }//end of else, if (xtISIstockPrice.Text!="")
-
-                                stockINValues.Add(dtInvoiceIN.Rows[0][0].ToString());//use dtInvoiceIN for the reference to the invoice received
-                                stockINValues.Add(txtISIstockReceived.Text);
-                                datac.insertCmd("SubStockIN", fieldStockIN, stockINValues);// a new transaction with a reference to an invoice is created and inserted
-                                dtgStockIn.DataSource = datac.getTable("Inventory");
-
-                                totalStockChanged.Add(0);
-                                totalStockChanged.Add(dtGetNewItemID.Rows[0][0].ToString());
-                                totalStockChanged.Add(txtISIstockReceived.Text);
-                                datac.insertCmd("InventoryStock", fieldTotalStock, totalStockChanged);//create a reference to totalStock with first stock
-                            }//end of if (txtISIinvoiceNr.Text != "")
-                        }//end of if (txtISIstockReceived.Text!="")
-                    }//end of  if (txtISIinvItem.Text != "")
-                    else
-                    {
-                        MessageBox.Show("No record was added: Item Field is empty. Please provide an item's name to add.", "New record unsuccessful!");
-                    }//end of else, if (txtISIinvItem.Text!="")
-                }//end of else  if (txtISIinvID.Text != "")
-
-
-                dtgStockIn.DataSource = datac.getTable("Inventory");
-                dtgCheckStock.DataSource = datac.getTable("Inventory");
-                dtgSupOrderList.DataSource = datac.getLowStock();
-                dtgInventoryValue.DataSource = datac.getInventoryValue();
-               //btnISIpreviewCurrent.Enabled = false;
-
-
-
-
-
-               // dtgInvoiceHistory.DataSource = datac.getAllInvoice();
-           //     dtgInventoryValue.DataSource = datac.getInventoryValue();
-
-                //to calculate total value of stock based on quantity and price on inventoryValue tab****
-                displayInventoryValue();
-
-                txtISIinvID.Clear();        //clear txtboxes for next search/ item or whichever
-                txtISIinvCode.Clear();
-                txtISIinvItem.Clear();
-                txtISIinvDescription.Clear();
-                txtISIinvCategory.Clear();
-                txtISIstockReceived.Clear();
-                txtISIstockPrice.Clear();
-                txtISIstockTotal.Clear();
-
-                btnISIclear.Enabled = true;
-                btnISIinvDeleteItem.Enabled = false;
-                btnISIrecordNewInvoice.Enabled = true;
-                btnISIsave.Enabled = false;
-                btnISIpreviewCurrent.Enabled = true;
-                btnISIdelItemInvoice.Enabled = true;
-            }//end of try
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error saving invoice details : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }//end of catch(Exception ex)
-        }//end of private void btnISIsave_Click(object sender, EventArgs e) 
-
         private void dtgStockIn_Click(object sender, EventArgs e)
         {
             try
@@ -856,7 +444,6 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 string[] fieldTotal = { "InventoryID" };
                 //variables
                 Boolean exists = new Boolean();
-               // Boolean flag = new Boolean();
                 #endregion
            
                 txtISIinvID.Text = dtgStockIn.SelectedRows[0].Cells[0].Value.ToString();
@@ -871,32 +458,10 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 txtISIstockPrice.Clear();
              //   flag = false;
                 dtStockIN = datac.getTable("InventoryStock");
-
-                        //for (int i = 0; i < dtStockIN.Rows.Count+1; i++)
-                        //{
-                        //     if (exists == false)
-                        //    {
-                        //        if (dtStockIN.Rows[i][1].ToString() == txtISIinvID.Text)
-                        //        {
-                        //            exists = true;
-                        //        }//end of if (dtStockIN.Rows[i][1].ToString() == txtISIinvID.Text)
-                        //        else
-                        //        {
-                        //            exists = false;
-                        //        }//end of else, if (dtStockIN.Rows[i][1].ToString() == txtISIinvID.Text)
-                        //    }//end of if (exists == false)
-                        //    else
-                        //    {
-                        //        //this will be my flag to signal if it exists, since the first part of exist will only test each row and then move on, thus not stopping if it exists
-                        //        flag = true;
-                        //    }//end of else of if (exists == false)
-                        //}//end of for (int i = 0; i < dtStockIN.Rows.Count; i++)
-                 
                 exists = testDTIfExist(dtStockIN, 1, txtISIinvID.Text);
                      //   MessageBox.Show("Exists value: " + flag, "Testing complete");
                 if (exists == true)
-                {
-                    //****************Get the stock total quantity from InventoryStock table, relevant to the InventoryID******************
+                { //****************Get the stock total quantity from InventoryStock table, relevant to the InventoryID******************
                     getIDValue.Add("=" + txtISIinvID.Text);
                     dtStockIN = datac.getMathRecord("InventoryStock", fieldTotal, getIDValue);//get the stock totals using the inventory ID reference
                     txtISIstockTotal.Text = dtStockIN.Rows[0][2].ToString();
@@ -905,9 +470,8 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 else
                 {
                     MessageBox.Show("No reference to stock on hand was found. The default value '0' will be used, until stock was inserted.", "Load unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    txtISIstockTotal.Text = "0";
+                    txtISIstockTotal.Text = "0.00";
                 }//end of else, if (flag == true)
-                btnISInewItem.Enabled = false;
                 btnISIsearchItem.Enabled = false;
                 btnISIinvDeleteItem.Enabled = true;
             }//end of try
@@ -926,7 +490,6 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 #endregion
 
                 btnISIclear.Enabled = true;
-                btnISInewItem.Enabled = false;
                 //  btnISIdeleteItem.Enabled = true;
                 btnISIinvDeleteItem.Enabled = true;
                 btnISIsave.Enabled = true;
@@ -979,8 +542,7 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
         {
             try
             {
-                btnISIsave.Enabled = false;
-                btnISInewItem.Enabled = true;
+                btnISIsave.Enabled = true;
 
                 txtISIinvID.Clear();        //clear txtboxes for next search/ item
                 txtISIinvCode.Clear();
@@ -995,7 +557,6 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 dtgStockIn.DataSource = datac.getTable("Inventory");
                 btnISIinvDeleteItem.Enabled = false;
                 btnISIdelItemInvoice.Enabled = false;
-                btnISInewItem.Enabled = true;
             }//end of try
             catch (Exception ex)
             {
@@ -1276,7 +837,6 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 #endregion
 
                 btnISIinvDeleteItem.Enabled = false;
-                btnISInewItem.Enabled = false;
                 btnISIsave.Enabled = false;
 
                 getIDValue.Add(" LIKE '" + txtInvoiceNo.Text+"'");
@@ -1359,13 +919,601 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 dtgStockIn.DataSource = datac.getTable("Inventory");//refresh the dtg datasource
                 dtgInvoiceHistory.DataSource = datac.getAllInvoice();//refresh the dtg datasource
                 btnISIdelItemInvoice.Enabled = false;
-                btnISInewItem.Enabled = true;
             }//end of try
             catch (Exception ex)
             {
                 MessageBox.Show("Error creating New Invoice record: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }//end of catch (Exception ex)
         }//end of private void btnISIrecordNewInvoice_Click(object sender, EventArgs e)
+        #region tabStockIn_Save Controls
+        private string getInventoryID()
+        {
+            string getInvID = "";
+            DataTable dtGetInventory = new DataTable();
+            string[] fieldInv = { "InvCode", "InvItem", "InvDescription" };
+            ArrayList arGetInventory = new ArrayList();
+
+            arGetInventory.Add(txtISIinvCode.Text);
+            arGetInventory.Add(txtISIinvItem.Text);
+            arGetInventory.Add(txtISIinvDescription.Text);
+
+            dtGetInventory = datac.getRecord("Inventory", fieldInv, arGetInventory);
+            getInvID = dtGetInventory.Rows[0][0].ToString();
+
+            txtISIinvID.Text = getInvID;
+
+            return getInvID;
+        }//end of private int getInventoryID()
+        private Boolean testNewItemExist()
+        {
+            //my dynamic way to see if the record (or the reference thereof) exists within the table within the database
+            #region Variables
+            DataTable dtAllItems = new DataTable();
+            Boolean exists = false;
+            Boolean flag = false;
+            #endregion
+
+            dtAllItems = datac.getTable("Inventory");
+
+            for (int i = 0; i < dtAllItems.Rows.Count; i++)
+            {
+                if (exists == false)
+                {
+                    if (dtAllItems.Rows[i][2].ToString() == txtISIinvItem.Text)
+                    {
+                        exists = true;
+                        flag = true;
+                    }//end of if (dtAllItems.Rows[i][2].ToString() == txtISIinvItem.Text)
+                    else
+                    {
+                        exists = false;
+                    }//end of else, if (dtAllItems.Rows[i][2].ToString() == txtISIinvItem.Text)
+                }//end of if (exists == false)
+                else
+                {
+                    //this will be my flag to signal if it exists, since the first part of exist will only test each row and then move on, thus not stopping if it exists
+                    flag = true;
+                }//end of else of if (exists == false)
+            }//end of for (int i = 0; i < dtAllItems.Rows.Count; i++)
+            return flag;
+        }//end of  private Boolean testNewItemExist()
+        private Boolean testInvoiceExist()
+        {
+            //my dynamic way to see if the record (or the reference thereof) exists within the table within the database
+            #region Variables
+            DataTable dtAllInvoices = new DataTable();
+            Boolean exists = false;
+            Boolean flag = false;
+            #endregion
+
+            dtAllInvoices = datac.getTable("InvoiceStockIN");
+
+            for (int i = 0; i < dtAllInvoices.Rows.Count; i++)
+            {
+                if (exists == false)
+                {
+                    if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())//&& dtAllInvoices.Rows[i][4].ToString() == txtISITotal.Text
+                    {
+                        exists = true;
+                        flag = true;
+                    }//end of if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())
+                    else
+                    {
+                        exists = false;
+                    }//end of else, if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString()) 
+                }//end of if (exists == false)
+                else
+                {
+                    //this will be my flag to signal if it exists, since the first part of exist will only test each row and then move on, thus not stopping if it exists
+                    flag = true;
+                }//end of else of if (exists == false)
+            }//end of for (int i = 0; i < dtAllInvoices.Rows.Count; i++)
+            return flag;
+        }//end of  private Boolean testInvoiceExist()
+        private void insertRECEIVEDIntoInventoryStock()
+        {
+            DataTable dtGetNewItem = new DataTable();
+            ArrayList arTotalStock = new ArrayList();
+            ArrayList arNewItem = new ArrayList();
+            string[] filterField = { "InvItem" };
+
+            arNewItem.Add(txtISIinvItem.Text.ToUpper());//consider more than 1 search field to ensure there is NO other record close to it ( ref male/ female door retainer rubber)
+            dtGetNewItem = datac.getRecord("Inventory", filterField, arNewItem);
+
+            arTotalStock.Add(0);
+            arTotalStock.Add(dtGetNewItem.Rows[0][0].ToString());
+            arTotalStock.Add(txtISIstockReceived.Text);
+            datac.insertCmd("InventoryStock", fieldTotalStock, arTotalStock);//create a reference to totalStock with first stock
+
+        }//end of private void insertRECEIVEDIntoInventoryStock()
+        private void insertRECEIVEDIntoStockIn(string getItemID)
+        {
+            DataTable dtInvoiceIN = new DataTable();
+            ArrayList arGetInvoice = new ArrayList();
+            ArrayList arStockIn = new ArrayList();
+            string[] fieldFilter = { "ISIInvoiceNo", "SupplierID" };//cant work with this guy "ISIInvoiceTotalIncl"
+
+            arGetInvoice.Add(" LIKE '" + txtInvoiceNo.Text + "'");
+            arGetInvoice.Add("=" + cmbISISupplier.SelectedValue);
+            dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, arGetInvoice);  //save invoice details in this dataTable, to get the precise ISIID
+
+            arStockIn.Add(0);
+            arStockIn.Add(getItemID);
+            //  arStockIn.Add(txtISIstockReceived.Text);
+            if (txtISIstockReceived.Text != "")
+            {
+                arStockIn.Add(txtISIstockReceived.Text);
+            }//end of if (txtISIstockReceived.Text!="")
+            else
+            {
+                MessageBox.Show("Please enter a Quantity Received value in the <Quantity Received> field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                arStockIn.Add(txtISIstockReceived.Text);
+            }//end of else, if (txtISIstockReceived.Text!="")
+            //arStockIn.Add(txtISIstockPrice.Text);
+            if (txtISIstockPrice.Text != "")
+            {
+                arStockIn.Add(txtISIstockPrice.Text);
+            }//end of if (xtISIstockPrice.Text!="")
+            else
+            {
+                MessageBox.Show("Please enter a Price/Unit value in the <Price/ Unit excl VAT> field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                arStockIn.Add(txtISIstockPrice.Text);
+            }//end of else, if (xtISIstockPrice.Text!="")
+            arStockIn.Add(dtInvoiceIN.Rows[0][0].ToString());//use dtInvoiceIN for the reference to the invoice received
+            arStockIn.Add(txtISIstockReceived.Text);
+            datac.insertCmd("SubStockIN", fieldStockIN, arStockIn);// a new transaction with a reference to an invoice is created and inserted
+            // dtgStockIn.DataSource = datac.getTable("Inventory");
+        }//end of private void insertRECEIVEDIntoStockIn()
+        private void insertRECEIVEDIntoInvoiceIn()
+        {
+            ArrayList arInvoiceIn = new ArrayList();
+            DataTable dtInvoiceIN = new DataTable();
+            ArrayList arGetInvoice = new ArrayList();
+            string[] fieldFilter = { "ISIInvoiceNo", "SupplierID" };//cant work with this guy "ISIInvoiceTotalIncl"
+
+            arInvoiceIn.Add(0);
+            arInvoiceIn.Add(txtInvoiceNo.Text);
+            arInvoiceIn.Add(dtpInvoiceDate.Text);
+            arInvoiceIn.Add(cmbISISupplier.SelectedValue);
+            arInvoiceIn.Add(txtISITotal.Text);
+            datac.insertCmd("InvoiceStockIN", fieldInvoiceStockIN, arInvoiceIn);
+        }//end of private void insertRECEIVEDIntoInvoiceIn()
+        private void insertRECEIVEDIntoInventory()
+        {
+            ArrayList arInventory = new ArrayList();
+            arInventory.Add("0");          //store textBox / comboBox value in the ArrayList
+            arInventory.Add(txtISIinvCode.Text);
+            arInventory.Add(txtISIinvItem.Text.ToUpper());
+            arInventory.Add(txtISIinvDescription.Text.ToUpper());
+            arInventory.Add("");//supplierDescription
+            arInventory.Add(txtISIinvCategory.Text.ToUpper());
+            if (txtISIinvReLevel.Text != "")     //See if user gave value for reorderLevel, and use value
+            {
+                arInventory.Add(txtISIinvReLevel.Text);
+            }//end of if (txtInvReLeveli.Text!="")
+            else
+            {
+                arInventory.Add("0");            //if user gave no value, make default 0: for prototyping purposes
+            }//end of else, if (txtInvReLeveli.Text!="")
+            if (cmbISIinvMarkup.Text != "")
+            {
+                arInventory.Add(cmbISIinvMarkup.Text);       //if user gave value, use value
+            }//end of if (cmbInvMarkupi.Text!="")
+            else
+            {
+                arInventory.Add("25");                   //if user gave no value for markup%, then make 25% default
+            }//end of else, if (cmbInvMarkupi.Text!="")
+            arInventory.Add("false");
+            datac.insertCmd("Inventory", fieldInvAll, arInventory);       ////Send values in fieldInv string format through insertCmd query to database table
+        }//end of private void insertRECEIVEDIntoInventory()
+        private void insertRECEIVEDIntoInvoiceIn_Stock()
+        {
+            ArrayList arInvoiceIn = new ArrayList();
+            ArrayList arGetInvoiceID = new ArrayList();
+            string[] fieldFilter = { "ISIInvoiceNo", "SupplierID" };//cant work with this guy "ISIInvoiceTotalIncl"
+
+            emptySupplier += 1;
+            arInvoiceIn.Add(0);
+            arInvoiceIn.Add("STOCK " + (emptySupplier));
+            arInvoiceIn.Add(dtpInvoiceDate.Text);
+            arInvoiceIn.Add(cmbISISupplier.SelectedValue);
+            if (txtISITotal.Text != "")
+            {
+                arInvoiceIn.Add(txtISITotal.Text);
+            }//end of if (txtISITotal.Text!="")
+            else
+            {
+                arInvoiceIn.Add("0.00");
+            }//end of else, if (txtISITotal.Text!="")
+            arInvoiceIn.Add(txtISITotal.Text);
+            datac.insertCmd("InvoiceStockIN", fieldInvoiceStockIN, arInvoiceIn);
+
+            txtInvoiceNo.Text = "STOCK " + emptySupplier;
+        }//end of private void insertRECEIVEDIntoInvoiceIn_Stock()
+        private void updateRECEIVEDInventoryStock()
+        {
+            ArrayList arTotalStock = new ArrayList();
+            arTotalStock.Add(0);
+            arTotalStock.Add(txtISIinvID.Text);
+            arTotalStock.Add((int.Parse(txtISIstockReceived.Text) + int.Parse(txtISIstockTotal.Text)));
+            datac.updateRecCmd("InventoryStock", fieldTotalStock[1].ToString(), txtISIinvID.Text, fieldTotalStock, arTotalStock);//changing totalStock
+        }//end of private void updateRECEIVEDInventoryStock()
+        private void updateRECEIVEDStockIn()
+        {
+            DataTable dtFIFOInvoice = new DataTable();
+            ArrayList arStockIn = new ArrayList();
+
+            dtFIFOInvoice = datac.getFIFODatedPrice(txtISIinvID.Text);
+
+            arStockIn.Add(dtFIFOInvoice.Rows[0][0].ToString());
+            arStockIn.Add(dtFIFOInvoice.Rows[0][1].ToString());
+            arStockIn.Add(dtFIFOInvoice.Rows[0][3].ToString());
+            arStockIn.Add(dtFIFOInvoice.Rows[0][4].ToString());
+            arStockIn.Add(dtFIFOInvoice.Rows[0][5].ToString());
+            arStockIn.Add(int.Parse(dtFIFOInvoice.Rows[0][6].ToString()) + 1);
+            datac.updateRecCmd("SubStockIN", fieldStockIN[0], dtFIFOInvoice.Rows[0][0].ToString(), fieldStockIN, arStockIn);//update existing record
+        }//end of private void updateRECEIVEDStockIn()
+        private void updateRECEIVEDInventory()
+        {
+            ArrayList arInvValues = new ArrayList();
+            arInvValues.Add(txtISIinvID.Text);          //store textBox / comboBox value in the ArrayList
+            arInvValues.Add(txtISIinvCode.Text);
+            arInvValues.Add(txtISIinvItem.Text.ToUpper());
+            arInvValues.Add(txtISIinvDescription.Text.ToUpper());
+            arInvValues.Add(txtISIinvCategory.Text.ToUpper());
+            arInvValues.Add(txtISIinvReLevel.Text);
+            arInvValues.Add(cmbISIinvMarkup.Text);
+            arInvValues.Add("false");
+
+            datac.updateRecCmd("Inventory", fieldInv[0], txtISIinvID.Text, fieldInv, arInvValues);        //Send values in fieldInv string format from textBox/ comboBox through updateCmd query to database table using InvID as key            
+            //  dtgStockIn.DataSource = datac.getTable("Inventory");
+        }//end of private void updateRECEIVEDInventory()
+        private void invoiceExist_IDexists()
+        {
+            DataTable dtGetStock = new DataTable();
+            Boolean stockIDExists = false;
+            dtGetStock = datac.getTable("InventoryStock");
+            stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
+            if (stockIDExists == true)
+            {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
+                updateRECEIVEDInventoryStock();
+            }//end of if (stockIDExists == true)
+            else
+            {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
+                insertRECEIVEDIntoInventoryStock();
+            }//end of else if (stockIDExists == true)
+            insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+        }//end of private void invoiceExist_IDexists()
+        private void invoiceExist_LookupID()
+        {
+            string getInvID = "";
+            Boolean stockIDExists = false;
+            DataTable dtGetStock = new DataTable();
+            DataTable dtGetInventory = new DataTable();
+            Boolean invIDExists = false;
+
+            dtGetInventory = datac.getTable("Inventory");
+            dtGetStock = datac.getTable("InventoryStock");
+
+            invIDExists = testDTIfExist(dtGetInventory, 2, txtISIinvItem.Text);//see if the item is present
+            if (invIDExists == true)
+            {//when item exists but ID is wrong, get correct ID
+                getInvID = getInventoryID();
+                stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
+                if (stockIDExists == true)
+                {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
+                    updateRECEIVEDInventoryStock();
+                }//end of if (stockIDExists == true)
+                else
+                {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
+                    insertRECEIVEDIntoInventoryStock();
+                }//end of else if (stockIDExists == true)
+                insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+            }//end of if (invIDExists == true)
+            else
+            {
+                MessageBox.Show("ID could not be found.");
+            }//end of else if (invIDExists == true)
+        }//end of  private void invoiceExist_LookupID()
+        private void invoiceExist_IDnotExist()
+        {
+            Boolean invIDExists = false;
+            Boolean stockIDExists = false;
+            string getInvID = "";
+            DataTable dtGetInventory = new DataTable();
+            DataTable dtGetStock = new DataTable();
+            DataTable dtGetInvoice = new DataTable();
+            dtGetInventory = datac.getTable("Inventory");
+            dtGetStock = datac.getTable("InventoryStock");
+            invIDExists = testNewItemExist();
+            if (invIDExists == true)
+            {//if the item was found, get the correct ID
+                getInvID = getInventoryID();
+                stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
+                if (stockIDExists == true)
+                {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
+                    updateRECEIVEDInventoryStock();
+                }//end of if (stockIDExists == true)
+                else
+                {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
+                    insertRECEIVEDIntoInventoryStock();
+                }//end of else if (stockIDExists == true)
+                insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+            }//end of if (invIDExists == true)
+            else
+            {//no id found for this item
+                MessageBox.Show("ID could not found. Creating new");
+                insertRECEIVEDIntoInventory();
+                getInvID = getInventoryID();
+                insertRECEIVEDIntoInventoryStock();
+                insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+            }//end of else if (invIDExists == true)
+        }//end of  private void invoiceExist_IDnotExist()
+        private void invoiceNOTexist_IDexist()
+        {
+            Boolean stockIDExists = false;
+            DataTable dtGetStock = new DataTable();
+            dtGetStock = datac.getTable("InventoryStock");
+            stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
+            if (stockIDExists == true)
+            {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
+                updateRECEIVEDInventoryStock();
+            }//end of if (stockIDExists == true)
+            else
+            {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
+                insertRECEIVEDIntoInventoryStock();
+            }//end of else if (stockIDExists == true)
+            insertRECEIVEDIntoInvoiceIn();
+            insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+        }//end of private void invoiceNOTexist_IDexist()
+        private void invoiceNOTexist_LookupID()
+        {
+            Boolean invIDExists = false;
+            Boolean stockIDExists = false;
+            string getInvID = "";
+            DataTable dtGetInventory = new DataTable();
+            DataTable dtGetStock = new DataTable();
+            //do stuff
+            dtGetInventory = datac.getTable("Inventory");
+            dtGetStock = datac.getTable("InventoryStock");
+
+            invIDExists = testDTIfExist(dtGetInventory, 2, txtISIinvItem.Text);//see if the item is present
+            if (invIDExists == true)
+            {//when item exists but ID is wrong, get correct ID
+                getInvID = getInventoryID();
+                stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
+                if (stockIDExists == true)
+                {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
+                    updateRECEIVEDInventoryStock();
+                }//end of if (stockIDExists == true)
+                else
+                {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
+                    insertRECEIVEDIntoInventoryStock();
+                }//end of else if (stockIDExists == true)
+                insertRECEIVEDIntoInvoiceIn();
+                insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+            }//end of if (invIDExists == true)
+            else
+            {
+                MessageBox.Show("ID could not be found.");
+            }//end of else if (invIDExists == true)
+        }//end of  private void invoiceNOTexist_LookupID()
+        private void invoiceNOTexist_IDnotExist()
+        {
+            Boolean invIDExists = false;
+            Boolean stockIDExists = false;
+            string getInvID = "";
+            DataTable dtGetInventory = new DataTable();
+            DataTable dtGetStock = new DataTable();
+            //do stuff
+            dtGetInventory = datac.getTable("Inventory");
+            dtGetStock = datac.getTable("InventoryStock");
+            invIDExists = testNewItemExist();
+            if (invIDExists == true)
+            {//when item exists but ID is wrong, get correct ID
+                getInvID = getInventoryID();
+                stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
+                if (stockIDExists == true)
+                {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
+                    updateRECEIVEDInventoryStock();
+                }//end of if (stockIDExists == true)
+                else
+                {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
+                    insertRECEIVEDIntoInventoryStock();
+                }//end of else if (stockIDExists == true)
+                insertRECEIVEDIntoInvoiceIn();
+                insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+            }//end of if (invIDExists == true)
+            else
+            {
+                MessageBox.Show("Making new item.");
+                //item is new
+                insertRECEIVEDIntoInventory();
+                getInvID = getInventoryID();
+                insertRECEIVEDIntoInventoryStock();
+                insertRECEIVEDIntoInvoiceIn();
+                insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+            }//end of else if (invIDExists == true)
+        }//end of  private void invoiceNOTexist_IDnotExist()
+        private void invoiceEmpty_IDexist()
+        {
+            Boolean stockIDExists = false;
+            DataTable dtGetInventory = new DataTable();
+            DataTable dtGetStock = new DataTable();
+            //do stuff
+            dtGetInventory = datac.getTable("Inventory");
+            dtGetStock = datac.getTable("InventoryStock");
+            stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
+            if (stockIDExists == true)
+            {
+                updateRECEIVEDInventoryStock();
+            }//end of if (stockIDExists == true)
+            else
+            {
+                insertRECEIVEDIntoInventoryStock();
+            }//end of else if (stockIDExists == true)
+            insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+            insertRECEIVEDIntoInvoiceIn_Stock();
+            insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+        }//end of private void invoiceEmpty_IDexist()
+        private void invoiceEmpty_LookupID()
+        {
+            Boolean invIDExists = false;
+            Boolean stockIDExists = false;
+            string getInvID = "";
+            DataTable dtGetInventory = new DataTable();
+            DataTable dtGetStock = new DataTable();
+            //do stuff
+            dtGetInventory = datac.getTable("Inventory");
+            dtGetStock = datac.getTable("InventoryStock");
+            invIDExists = testDTIfExist(dtGetInventory, 2, txtISIinvItem.Text);
+            if (invIDExists == true)
+            {//if id exist for item, give correct id
+                if (stockIDExists == true)
+                {//see if the inventory ID was found in the inventoryStock table                                 
+                    stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
+                    if (stockIDExists == true)
+                    {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
+                        updateRECEIVEDInventoryStock();
+                    }//end of if (stockIDExists == true)
+                    else
+                    {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
+                        insertRECEIVEDIntoInventoryStock();
+                    }//end of else if (stockIDExists == true)
+                    insertRECEIVEDIntoInvoiceIn();
+                    insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+                }//end of if (stockIDExists == true)
+                else
+                {//this is where the ID is found as non existant, but consider that the ID is only wrong and item might exist
+                    invIDExists = testDTIfExist(dtGetInventory, 2, txtISIinvItem.Text);//see if the item is present
+                    if (invIDExists == true)
+                    {//when item exists but ID is wrong, get correct ID
+                        getInvID = getInventoryID();
+                        stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
+                        if (stockIDExists == true)
+                        {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
+                            updateRECEIVEDInventoryStock();
+                        }//end of if (stockIDExists == true)
+                        else
+                        {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
+                            insertRECEIVEDIntoInventoryStock();
+                        }//end of else if (stockIDExists == true)
+                        insertRECEIVEDIntoInvoiceIn();
+                        insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+                    }//end of if (invIDExists == true)
+                    else
+                    {
+                        MessageBox.Show("ID could not be found.");
+                    }//end of else if (invIDExists == true)
+                }//end of else if (stockIDExists == true)
+            }//end of  if (invIDExists == true)
+            else
+            {//error
+                MessageBox.Show("ID could not be found.");
+            }//end of else  if (invIDExists == true)
+        }//end of  private void invoiceEmpty_LookupID()
+        private void invoiceEmpty_IDnotExist()
+        {//item is new
+            string getInvID = "";
+
+            insertRECEIVEDIntoInventory();
+            getInvID = getInventoryID();
+            insertRECEIVEDIntoInventoryStock();
+            insertRECEIVEDIntoInvoiceIn_Stock();
+            insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+        }//end of  private void invoiceEmpty_IDnotExist()
+        private void btnISIDUMMY_Click(object sender, EventArgs e)
+        {
+            //variables
+            Boolean invoiceExists = false;
+            Boolean invIDExists = false;
+            Boolean stockIDExists = false;
+            DataTable dtGetInventory = new DataTable();
+            //do stuff
+            dtGetInventory = datac.getTable("Inventory");
+            if (txtInvoiceNo.Text != "")
+            {//invoice number NOT empty
+                invoiceExists = testInvoiceExist();
+                if (invoiceExists == true)
+                {//when invoice is looked up and was found as existed
+                    DialogResult result = MessageBox.Show("this exists, add to it?", "exists", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
+                    {//clicked yes to use this invoice and add to it
+                        if (txtISIinvID.Text != "")
+                        {//the inventory ID is NOT empty
+                            invIDExists = testDTIfExist(dtGetInventory, 0, txtISIinvID.Text);
+                            if (invIDExists == true)
+                            {//see if the inventory ID was found in the inventoryStock table
+                                invoiceExist_IDexists();
+                            }//end of if (stockIDExists == true)
+                            else
+                            {//this is where the ID is found as non existant, but consider that the ID is only wrong and item might exist
+                                invoiceExist_LookupID();
+                            }//end of else if (stockIDExists == true)
+                        }//end of  if (txtISIinvID.Text != "")
+                        else
+                        {//if the ID textfield is completely empty, for example for new item
+                            invoiceExist_IDnotExist();
+                        }//end of else if (txtISIinvID.Text != "")
+                    }//end of if (result == DialogResult.Yes)
+                    else
+                    {//result is NO to exist invoice, clear to make possible for new invoice
+                        MessageBox.Show("Give new invoice ref");
+                        txtInvoiceNo.Clear();
+                        txtISITotal.Clear();
+                        btnISIpreviewCurrent.Enabled = false;
+                    }//end of else if (result == DialogResult.Yes)
+                }//end of  if (invoiceExists == true)
+                else
+                {//invoice not exist
+                    if (txtISIinvID.Text != "")
+                    {//the inventory ID is NOT empty
+                        invIDExists = testDTIfExist(dtGetInventory, 0, txtISIinvID.Text);
+                        if (stockIDExists == true)
+                        {//see if the inventory ID was found in the inventoryStock table
+                            invoiceNOTexist_IDexist();
+                        }//end of if (stockIDExists == true)
+                        else
+                        {//this is where the ID is found as non existant, but consider that the ID is only wrong and item might exist
+                            invoiceNOTexist_LookupID();
+                        }//end of else if (stockIDExists == true)
+                    }//end of  if (txtISIinvID.Text != "")
+                    else
+                    {//if the ID textfield is completely empty, for example for new item
+                        invoiceNOTexist_IDnotExist();
+                    }//end of else if (txtISIinvID.Text != "")
+                }//end of else if (invoiceExists == true)
+            }//end of if (txtInvoiceNo.Text != "")
+            else
+            {//empty invoice
+                DialogResult resultStock = MessageBox.Show("Make stock?", "Empty invoice", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (resultStock == DialogResult.Yes)
+                {
+                    if (txtISIinvID.Text != "")
+                    {
+                        invIDExists = testDTIfExist(dtGetInventory, 0, txtISIinvID.Text);
+                        if (invIDExists == true)
+                        {
+                            invoiceEmpty_IDexist();
+                        }//end of if (invIDExists == true)
+                        else
+                        {//look for correct id, is id is wrong
+                            invoiceEmpty_LookupID();
+                        }//end of else if (invIDExists == true)
+                    }//end of  if (txtISIinvID.Text != "")
+                    else
+                    { //item is new
+                        invoiceEmpty_IDnotExist();
+                    }//end of else  if (txtISIinvID.Text != "")
+                }//end of if (resultStock == DialogResult.Yes)
+                else
+                {//result click no, message
+                    MessageBox.Show("Please provide an invoice number.");
+                }//end of else if (resultStock == DialogResult.Yes)
+            }//end of else if (txtInvoiceNo.Text != "")
+            dtgStockIn.DataSource = datac.getTable("Inventory");//to do a datasource update after any modifications made to inventory
+        }//end of  private void btnISIDUMMY_Click(object sender, EventArgs e)
+        #endregion
         #endregion
 
         #region tabSupplier Controls
@@ -2576,7 +2724,6 @@ Please ensure prices are updated regularly.", "Price Update Reminder", MessageBo
         }//end of private string savePDFfileDialog(string fileName)
         #endregion
 
-        #region tabStockIn_Save Controls
         private void displayInventoryValue()
         {
             double totalStockValue = 0.00;
@@ -2586,613 +2733,7 @@ Please ensure prices are updated regularly.", "Price Update Reminder", MessageBo
             }//end of for (int i = 0; i < dtgInventoryValue.Rows.Count - 1; i++)
             txtStockValue.Text = double.Parse(totalStockValue.ToString()).ToString("C");
         }//end of private void displayInventoryValue()
-        private string getInventoryID()
-        {
-            string getInvID = "";
-            DataTable dtGetInventory = new DataTable();
-            string[] fieldInv = { "InvCode", "InvItem", "InvDescription" };
-            ArrayList arGetInventory = new ArrayList();
 
-            arGetInventory.Add(txtISIinvCode.Text);
-            arGetInventory.Add(txtISIinvItem.Text);
-            arGetInventory.Add(txtISIinvDescription.Text);
-
-            dtGetInventory = datac.getRecord("Inventory", fieldInv, arGetInventory);
-            getInvID = dtGetInventory.Rows[0][0].ToString();
-
-            txtISIinvID.Text = getInvID;
-
-            return getInvID;
-        }//end of private int getInventoryID()
-
-        private Boolean testNewItemExist()
-        {
-            //my dynamic way to see if the record (or the reference thereof) exists within the table within the database
-            #region Variables
-            DataTable dtAllItems = new DataTable();
-            Boolean exists = false;
-            Boolean flag = false;
-            #endregion
-
-            dtAllItems = datac.getTable("Inventory");
-
-            for (int i = 0; i < dtAllItems.Rows.Count; i++)
-            {
-                if (exists == false)
-                {
-                    if (dtAllItems.Rows[i][2].ToString() == txtISIinvItem.Text)
-                    {
-                        exists = true;
-                        flag = true;
-                    }//end of if (dtAllItems.Rows[i][2].ToString() == txtISIinvItem.Text)
-                    else
-                    {
-                        exists = false;
-                    }//end of else, if (dtAllItems.Rows[i][2].ToString() == txtISIinvItem.Text)
-                }//end of if (exists == false)
-                else
-                {
-                    //this will be my flag to signal if it exists, since the first part of exist will only test each row and then move on, thus not stopping if it exists
-                    flag = true;
-                }//end of else of if (exists == false)
-            }//end of for (int i = 0; i < dtAllItems.Rows.Count; i++)
-            return flag;
-        }//end of  private Boolean testNewItemExist()
-        private Boolean testInvoiceExist()
-        {
-            //my dynamic way to see if the record (or the reference thereof) exists within the table within the database
-            #region Variables
-            DataTable dtAllInvoices = new DataTable();
-            Boolean exists = false;
-            Boolean flag = false;
-            #endregion
-
-            dtAllInvoices = datac.getTable("InvoiceStockIN");
-
-            for (int i = 0; i < dtAllInvoices.Rows.Count; i++)
-            {
-                if (exists == false)
-                {
-                    if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())//&& dtAllInvoices.Rows[i][4].ToString() == txtISITotal.Text
-                    {
-                        exists = true;
-                        flag = true;
-                    }//end of if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())
-                    else
-                    {
-                        exists = false;
-                    }//end of else, if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString()) 
-                }//end of if (exists == false)
-                else
-                {
-                    //this will be my flag to signal if it exists, since the first part of exist will only test each row and then move on, thus not stopping if it exists
-                    flag = true;
-                }//end of else of if (exists == false)
-            }//end of for (int i = 0; i < dtAllInvoices.Rows.Count; i++)
-            return flag;
-        }//end of  private Boolean testInvoiceExist()
-        private void insertRECEIVEDIntoInventoryStock()
-        {
-            DataTable dtGetNewItem = new DataTable();
-            ArrayList arTotalStock = new ArrayList();
-            ArrayList arNewItem = new ArrayList();
-            string[] filterField = { "InvItem" };
-
-            arNewItem.Add(txtISIinvItem.Text.ToUpper());//consider more than 1 search field to ensure there is NO other record close to it ( ref male/ female door retainer rubber)
-            dtGetNewItem = datac.getRecord("Inventory", filterField, arNewItem);
-
-            arTotalStock.Add(0);
-            arTotalStock.Add(dtGetNewItem.Rows[0][0].ToString());
-            arTotalStock.Add(txtISIstockReceived.Text);
-            datac.insertCmd("InventoryStock", fieldTotalStock, arTotalStock);//create a reference to totalStock with first stock
-
-        }//end of private void insertRECEIVEDIntoInventoryStock()
-        private void insertRECEIVEDIntoStockIn(string getItemID)
-        {
-            DataTable dtInvoiceIN = new DataTable();
-            ArrayList arGetInvoice = new ArrayList();
-            ArrayList arStockIn = new ArrayList();
-            string[] fieldFilter = { "ISIInvoiceNo", "SupplierID" };//cant work with this guy "ISIInvoiceTotalIncl"
-
-            arGetInvoice.Add(" LIKE '" + txtInvoiceNo.Text + "'");
-            arGetInvoice.Add("=" + cmbISISupplier.SelectedValue);
-            dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, arGetInvoice);  //save invoice details in this dataTable, to get the precise ISIID
-
-            arStockIn.Add(0);
-            arStockIn.Add(getItemID);
-          //  arStockIn.Add(txtISIstockReceived.Text);
-            if (txtISIstockReceived.Text != "")
-            {
-                arStockIn.Add(txtISIstockReceived.Text);
-            }//end of if (txtISIstockReceived.Text!="")
-            else
-            {
-                MessageBox.Show("Please enter a Quantity Received value in the <Quantity Received> field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                arStockIn.Add(txtISIstockReceived.Text);
-            }//end of else, if (txtISIstockReceived.Text!="")
-            //arStockIn.Add(txtISIstockPrice.Text);
-            if (txtISIstockPrice.Text != "")
-            {
-                arStockIn.Add(txtISIstockPrice.Text);
-            }//end of if (xtISIstockPrice.Text!="")
-            else
-            {
-                MessageBox.Show("Please enter a Price/Unit value in the <Price/ Unit excl VAT> field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                arStockIn.Add(txtISIstockPrice.Text);
-            }//end of else, if (xtISIstockPrice.Text!="")
-            arStockIn.Add(dtInvoiceIN.Rows[0][0].ToString());//use dtInvoiceIN for the reference to the invoice received
-            arStockIn.Add(txtISIstockReceived.Text);
-            datac.insertCmd("SubStockIN", fieldStockIN, arStockIn);// a new transaction with a reference to an invoice is created and inserted
-            // dtgStockIn.DataSource = datac.getTable("Inventory");
-        }//end of private void insertRECEIVEDIntoStockIn()
-        private DataTable insertRECEIVEDIntoInvoiceIn()
-        {
-            ArrayList arInvoiceIn = new ArrayList();
-            DataTable dtInvoiceIN = new DataTable();
-            ArrayList arGetInvoice = new ArrayList();
-            string[] fieldFilter = { "ISIInvoiceNo", "SupplierID" };//cant work with this guy "ISIInvoiceTotalIncl"
-
-            arInvoiceIn.Add(0);
-            arInvoiceIn.Add(txtInvoiceNo.Text);
-            arInvoiceIn.Add(dtpInvoiceDate.Text);
-            arInvoiceIn.Add(cmbISISupplier.SelectedValue);
-            arInvoiceIn.Add(txtISITotal.Text);
-            datac.insertCmd("InvoiceStockIN", fieldInvoiceStockIN, arInvoiceIn);
-
-            arGetInvoice.Add(" LIKE '" + txtInvoiceNo.Text + "'");
-            arGetInvoice.Add("=" + cmbISISupplier.SelectedValue);
-            dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, arGetInvoice);  //save invoice details in this dataTable, to get the precise ISIID
-            return dtInvoiceIN;
-        }//end of private void insertRECEIVEDIntoInvoiceIn()
-        private void insertRECEIVEDIntoInventory()
-        {
-            ArrayList arInventory = new ArrayList();
-            arInventory.Add("0");          //store textBox / comboBox value in the ArrayList
-            arInventory.Add(txtISIinvCode.Text);
-            arInventory.Add(txtISIinvItem.Text.ToUpper());
-            arInventory.Add(txtISIinvDescription.Text.ToUpper());
-            arInventory.Add("");//supplierDescription
-            arInventory.Add(txtISIinvCategory.Text.ToUpper());
-            if (txtISIinvReLevel.Text != "")     //See if user gave value for reorderLevel, and use value
-            {
-                arInventory.Add(txtISIinvReLevel.Text);
-            }//end of if (txtInvReLeveli.Text!="")
-            else
-            {
-                arInventory.Add("0");            //if user gave no value, make default 0: for prototyping purposes
-            }//end of else, if (txtInvReLeveli.Text!="")
-            if (cmbISIinvMarkup.Text != "")
-            {
-                arInventory.Add(cmbISIinvMarkup.Text);       //if user gave value, use value
-            }//end of if (cmbInvMarkupi.Text!="")
-            else
-            {
-                arInventory.Add("25");                   //if user gave no value for markup%, then make 25% default
-            }//end of else, if (cmbInvMarkupi.Text!="")
-            arInventory.Add("false");
-            datac.insertCmd("Inventory", fieldInvAll, arInventory);       ////Send values in fieldInv string format through insertCmd query to database table
-        }//end of private void insertRECEIVEDIntoInventory()
-        private DataTable insertRECEIVEDIntoInvoiceIn_Stock()
-        {
-            DataTable dtInvoiceIN = new DataTable();
-            ArrayList arInvoiceIn = new ArrayList();
-            ArrayList arGetInvoiceID = new ArrayList();
-            string[] fieldFilter = { "ISIInvoiceNo", "SupplierID" };//cant work with this guy "ISIInvoiceTotalIncl"
-
-            arInvoiceIn.Add(0);
-            arInvoiceIn.Add("STOCK " + (emptySupplier += 1));
-            arInvoiceIn.Add(dtpInvoiceDate.Text);
-            arInvoiceIn.Add(cmbISISupplier.SelectedValue);
-            if (txtISITotal.Text != "")
-            {
-                arInvoiceIn.Add(txtISITotal.Text);
-            }//end of if (txtISITotal.Text!="")
-            else
-            {
-                arInvoiceIn.Add("0.00");
-            }//end of else, if (txtISITotal.Text!="")
-            arInvoiceIn.Add(txtISITotal.Text);
-            datac.insertCmd("InvoiceStockIN", fieldInvoiceStockIN, arInvoiceIn);
-
-            txtInvoiceNo.Text = "STOCK " + emptySupplier;
-
-            arGetInvoiceID.Add(" LIKE 'STOCK " + (emptySupplier) + "'");
-            arGetInvoiceID.Add(cmbISISupplier.SelectedValue);
-            dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, arGetInvoiceID);  //save invoice details in this dataTable, to get the precise ISIID
-            return dtInvoiceIN;
-        }//end of private void insertRECEIVEDIntoInvoiceIn_Stock()
-
-        private void updateRECEIVEDInventoryStock()
-        {
-            ArrayList arTotalStock = new ArrayList();
-            arTotalStock.Add(0);
-            arTotalStock.Add(txtISIinvID.Text);
-            arTotalStock.Add((int.Parse(txtISIstockReceived.Text) + int.Parse(txtISIstockTotal.Text)));
-            datac.updateRecCmd("InventoryStock", fieldTotalStock[1].ToString(), txtISIinvID.Text, fieldTotalStock, arTotalStock);//changing totalStock
-        }//end of private void updateRECEIVEDInventoryStock()
-        private void updateRECEIVEDStockIn()
-        {
-            DataTable dtFIFOInvoice = new DataTable();
-            ArrayList arStockIn = new ArrayList();
-
-            dtFIFOInvoice = datac.getFIFODatedPrice(txtISIinvID.Text);
-
-            arStockIn.Add(dtFIFOInvoice.Rows[0][0].ToString());
-            arStockIn.Add(dtFIFOInvoice.Rows[0][1].ToString());
-            arStockIn.Add(dtFIFOInvoice.Rows[0][3].ToString());
-            arStockIn.Add(dtFIFOInvoice.Rows[0][4].ToString());
-            arStockIn.Add(dtFIFOInvoice.Rows[0][5].ToString());
-            arStockIn.Add(int.Parse(dtFIFOInvoice.Rows[0][6].ToString()) + 1);
-            datac.updateRecCmd("SubStockIN", fieldStockIN[0], dtFIFOInvoice.Rows[0][0].ToString(), fieldStockIN, arStockIn);//update existing record
-        }//end of private void updateRECEIVEDStockIn()
-        private void updateRECEIVEDInventory()
-        {
-            ArrayList arInvValues = new ArrayList();
-            arInvValues.Add(txtISIinvID.Text);          //store textBox / comboBox value in the ArrayList
-            arInvValues.Add(txtISIinvCode.Text);
-            arInvValues.Add(txtISIinvItem.Text.ToUpper());
-            arInvValues.Add(txtISIinvDescription.Text.ToUpper());
-            arInvValues.Add(txtISIinvCategory.Text.ToUpper());
-            arInvValues.Add(txtISIinvReLevel.Text);
-            arInvValues.Add(cmbISIinvMarkup.Text);
-            arInvValues.Add("false");
-
-            datac.updateRecCmd("Inventory", fieldInv[0], txtISIinvID.Text, fieldInv, arInvValues);        //Send values in fieldInv string format from textBox/ comboBox through updateCmd query to database table using InvID as key            
-          //  dtgStockIn.DataSource = datac.getTable("Inventory");
-        }//end of private void updateRECEIVEDInventory()
-
-
-        private void invoiceExist_IDexists()
-        {
-            DataTable dtGetStock = new DataTable();
-            Boolean stockIDExists = false;
-            dtGetStock = datac.getTable("InventoryStock");
-            stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
-            if (stockIDExists == true)
-            {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
-                updateRECEIVEDInventoryStock();
-            }//end of if (stockIDExists == true)
-            else
-            {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
-                insertRECEIVEDIntoInventoryStock();
-            }//end of else if (stockIDExists == true)
-            insertRECEIVEDIntoStockIn(txtISIinvID.Text);
-        }//end of private void invoiceExist_IDexists()
-        private void invoiceExist_LookupID()
-        {
-            string getInvID = "";
-            Boolean stockIDExists = false;
-            DataTable dtGetStock = new DataTable();
-            DataTable dtGetInventory = new DataTable();
-            Boolean invIDExists = false;
-
-            dtGetInventory = datac.getTable("Inventory");
-            dtGetStock = datac.getTable("InventoryStock");
-
-            invIDExists = testDTIfExist(dtGetInventory, 2, txtISIinvItem.Text);//see if the item is present
-            if (invIDExists == true)
-            {//when item exists but ID is wrong, get correct ID
-                getInvID = getInventoryID();
-                stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
-                if (stockIDExists == true)
-                {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
-                    updateRECEIVEDInventoryStock();
-                }//end of if (stockIDExists == true)
-                else
-                {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
-                    insertRECEIVEDIntoInventoryStock();
-                }//end of else if (stockIDExists == true)
-                insertRECEIVEDIntoStockIn(txtISIinvID.Text);
-            }//end of if (invIDExists == true)
-            else
-            {
-                MessageBox.Show("ID could not be found.");
-            }//end of else if (invIDExists == true)
-        }//end of  private void invoiceExist_LookupID()
-        private void invoiceExist_IDnotExist()
-        {
-            Boolean invIDExists = false;
-            Boolean stockIDExists = false;
-            string getInvID = "";
-            DataTable dtGetInventory = new DataTable();
-            DataTable dtGetStock = new DataTable();
-            DataTable dtGetInvoice = new DataTable();
-            dtGetInventory = datac.getTable("Inventory");
-            dtGetStock = datac.getTable("InventoryStock");
-            invIDExists = testNewItemExist();
-            if (invIDExists == true)
-            {//if the item was found, get the correct ID
-                getInvID = getInventoryID();
-                stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
-                if (stockIDExists == true)
-                {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
-                    updateRECEIVEDInventoryStock();
-                }//end of if (stockIDExists == true)
-                else
-                {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
-                    insertRECEIVEDIntoInventoryStock();
-                }//end of else if (stockIDExists == true)
-                insertRECEIVEDIntoStockIn(txtISIinvID.Text);
-            }//end of if (invIDExists == true)
-            else
-            {//no id found for this item
-                MessageBox.Show("ID could not be found.");
-            }//end of else if (invIDExists == true)
-        }//end of  private void invoiceExist_IDnotExist()
-
-        private void invoiceNOTexist_IDexist()
-        {
-            Boolean stockIDExists = false;
-            DataTable dtGetStock = new DataTable();
-            DataTable dtGetInvoice = new DataTable();
-            dtGetStock = datac.getTable("InventoryStock");
-            stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
-            if (stockIDExists == true)
-            {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
-                updateRECEIVEDInventoryStock();
-            }//end of if (stockIDExists == true)
-            else
-            {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
-                insertRECEIVEDIntoInventoryStock();
-            }//end of else if (stockIDExists == true)
-            dtGetInvoice = insertRECEIVEDIntoInvoiceIn();
-            insertRECEIVEDIntoStockIn(txtISIinvID.Text);
-        }//end of private void invoiceNOTexist_IDexist()
-        private void invoiceNOTexist_LookupID()
-        {
-            Boolean invIDExists = false;
-            Boolean stockIDExists = false;
-            string getInvID = "";
-            DataTable dtGetInventory = new DataTable();
-            DataTable dtGetStock = new DataTable();
-            DataTable dtGetInvoice = new DataTable();
-            //do stuff
-            dtGetInventory = datac.getTable("Inventory");
-            dtGetStock = datac.getTable("InventoryStock");
-
-            invIDExists = testDTIfExist(dtGetInventory, 2, txtISIinvItem.Text);//see if the item is present
-            if (invIDExists == true)
-            {//when item exists but ID is wrong, get correct ID
-                getInvID = getInventoryID();
-                stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
-                if (stockIDExists == true)
-                {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
-                    updateRECEIVEDInventoryStock();
-                }//end of if (stockIDExists == true)
-                else
-                {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
-                    insertRECEIVEDIntoInventoryStock();
-                }//end of else if (stockIDExists == true)
-                dtGetInvoice = insertRECEIVEDIntoInvoiceIn();
-                insertRECEIVEDIntoStockIn(txtISIinvID.Text);
-            }//end of if (invIDExists == true)
-            else
-            {
-                MessageBox.Show("ID could not be found.");
-            }//end of else if (invIDExists == true)
-        }//end of  private void invoiceNOTexist_LookupID()
-        private void invoiceNOTexist_IDnotExist()
-        {
-            Boolean invIDExists = false;
-            Boolean stockIDExists = false;
-            string getInvID = "";
-            DataTable dtGetInventory = new DataTable();
-            DataTable dtGetStock = new DataTable();
-            DataTable dtGetInvoice = new DataTable();
-            //do stuff
-            dtGetInventory = datac.getTable("Inventory");
-            dtGetStock = datac.getTable("InventoryStock");
-            invIDExists = testNewItemExist();
-            if (invIDExists == true)
-            {//when item exists but ID is wrong, get correct ID
-                getInvID = getInventoryID();
-                stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
-                if (stockIDExists == true)
-                {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
-                    updateRECEIVEDInventoryStock();
-                }//end of if (stockIDExists == true)
-                else
-                {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
-                    insertRECEIVEDIntoInventoryStock();
-                }//end of else if (stockIDExists == true)
-                dtGetInvoice = insertRECEIVEDIntoInvoiceIn();
-                insertRECEIVEDIntoStockIn(txtISIinvID.Text);
-            }//end of if (invIDExists == true)
-            else
-            {
-                // MessageBox.Show("Making new item.");
-                //item is new
-                insertRECEIVEDIntoInventory();
-                getInvID = getInventoryID();
-                insertRECEIVEDIntoInventoryStock();
-                dtGetInvoice = insertRECEIVEDIntoInvoiceIn();
-                insertRECEIVEDIntoStockIn(txtISIinvID.Text);
-            }//end of else if (invIDExists == true)
-        }//end of  private void invoiceNOTexist_IDnotExist()
-        private void invoiceEmpty_IDexist()
-        {
-            Boolean stockIDExists = false;
-            DataTable dtGetInventory = new DataTable();
-            DataTable dtGetStock = new DataTable();
-            DataTable dtGetInvoice = new DataTable();
-            //do stuff
-            dtGetInventory = datac.getTable("Inventory");
-            dtGetStock = datac.getTable("InventoryStock");
-            stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
-            if (stockIDExists == true)
-            {
-                updateRECEIVEDInventoryStock();
-            }//end of if (stockIDExists == true)
-            else
-            {
-                insertRECEIVEDIntoInventoryStock();
-            }//end of else if (stockIDExists == true)
-            insertRECEIVEDIntoStockIn(txtISIinvID.Text);
-            dtGetInvoice = insertRECEIVEDIntoInvoiceIn_Stock();
-            insertRECEIVEDIntoStockIn(txtISIinvID.Text);
-        }//end of private void invoiceEmpty_IDexist()
-        private void invoiceEmpty_LookupID()
-        {
-            Boolean invIDExists = false;
-            Boolean stockIDExists = false;
-            string getInvID = "";
-            DataTable dtGetInventory = new DataTable();
-            DataTable dtGetStock = new DataTable();
-            DataTable dtGetInvoice = new DataTable();
-            //do stuff
-            dtGetInventory = datac.getTable("Inventory");
-            dtGetStock = datac.getTable("InventoryStock");
-            invIDExists = testDTIfExist(dtGetInventory, 2, txtISIinvItem.Text);
-            if (invIDExists == true)
-            {//if id exist for item, give correct id
-                if (stockIDExists == true)
-                {//see if the inventory ID was found in the inventoryStock table                                 
-                    stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
-                    if (stockIDExists == true)
-                    {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
-                        updateRECEIVEDInventoryStock();
-                    }//end of if (stockIDExists == true)
-                    else
-                    {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
-                        insertRECEIVEDIntoInventoryStock();
-                    }//end of else if (stockIDExists == true)
-                    dtGetInvoice = insertRECEIVEDIntoInvoiceIn();
-                    insertRECEIVEDIntoStockIn(txtISIinvID.Text);
-                }//end of if (stockIDExists == true)
-                else
-                {//this is where the ID is found as non existant, but consider that the ID is only wrong and item might exist
-                    invIDExists = testDTIfExist(dtGetInventory, 2, txtISIinvItem.Text);//see if the item is present
-                    if (invIDExists == true)
-                    {//when item exists but ID is wrong, get correct ID
-                        getInvID = getInventoryID();
-                        stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
-                        if (stockIDExists == true)
-                        {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
-                            updateRECEIVEDInventoryStock();
-                        }//end of if (stockIDExists == true)
-                        else
-                        {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
-                            insertRECEIVEDIntoInventoryStock();
-                        }//end of else if (stockIDExists == true)
-                        dtGetInvoice = insertRECEIVEDIntoInvoiceIn();
-                        insertRECEIVEDIntoStockIn(txtISIinvID.Text);
-                    }//end of if (invIDExists == true)
-                    else
-                    {
-                        MessageBox.Show("ID could not be found.");
-                    }//end of else if (invIDExists == true)
-                }//end of else if (stockIDExists == true)
-            }//end of  if (invIDExists == true)
-            else
-            {//error
-                MessageBox.Show("ID could not be found.");
-            }//end of else  if (invIDExists == true)
-        }//end of  private void invoiceEmpty_LookupID()
-        private void invoiceEmpty_IDnotExist()
-        {//item is new
-            string getInvID = "";
-            DataTable dtGetInvoice = new DataTable();
-
-            insertRECEIVEDIntoInventory();
-            getInvID = getInventoryID();
-            insertRECEIVEDIntoInventoryStock();
-            dtGetInvoice = insertRECEIVEDIntoInvoiceIn_Stock();
-            insertRECEIVEDIntoStockIn(txtISIinvID.Text);
-        }//end of  private void invoiceEmpty_IDnotExist()
-
-        private void btnISIDUMMY_Click(object sender, EventArgs e)
-        {
-            //variables
-            Boolean invoiceExists = false;
-            Boolean invIDExists = false;
-            Boolean stockIDExists = false;
-            DataTable dtGetInventory = new DataTable();
-            //do stuff
-            dtGetInventory = datac.getTable("Inventory");
-            if (txtInvoiceNo.Text != "")
-            {//invoice number NOT empty
-                invoiceExists = testInvoiceExist();
-                if (invoiceExists == true)
-                {//when invoice is looked up and was found as existed
-                    DialogResult result = MessageBox.Show("this exists, add to it?", "exists", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                    if (result == DialogResult.Yes)
-                    {//clicked yes to use this invoice and add to it
-                        if (txtISIinvID.Text != "")
-                        {//the inventory ID is NOT empty
-                            invIDExists = testDTIfExist(dtGetInventory, 0, txtISIinvID.Text);
-                            if (invIDExists == true)
-                            {//see if the inventory ID was found in the inventoryStock table
-                                invoiceExist_IDexists();
-                            }//end of if (stockIDExists == true)
-                            else
-                            {//this is where the ID is found as non existant, but consider that the ID is only wrong and item might exist
-                                invoiceExist_LookupID();
-                            }//end of else if (stockIDExists == true)
-                        }//end of  if (txtISIinvID.Text != "")
-                        else
-                        {//if the ID textfield is completely empty, for example for new item
-                            invoiceExist_IDnotExist();
-                        }//end of else if (txtISIinvID.Text != "")
-                    }//end of if (result == DialogResult.Yes)
-                    else
-                    {//result is NO to exist invoice, clear to make possible for new invoice
-                        MessageBox.Show("Give new invoice ref");
-                        txtInvoiceNo.Clear();
-                        txtISITotal.Clear();
-                        btnISIpreviewCurrent.Enabled = false;
-                    }//end of else if (result == DialogResult.Yes)
-                }//end of  if (invoiceExists == true)
-                else
-                {//invoice not exist
-                    if (txtISIinvID.Text != "")
-                    {//the inventory ID is NOT empty
-                        invIDExists = testDTIfExist(dtGetInventory, 0, txtISIinvID.Text);
-                        if (stockIDExists == true)
-                        {//see if the inventory ID was found in the inventoryStock table
-                            invoiceNOTexist_IDexist();
-                        }//end of if (stockIDExists == true)
-                        else
-                        {//this is where the ID is found as non existant, but consider that the ID is only wrong and item might exist
-                            invoiceNOTexist_LookupID();
-                        }//end of else if (stockIDExists == true)
-                    }//end of  if (txtISIinvID.Text != "")
-                    else
-                    {//if the ID textfield is completely empty, for example for new item
-                        invoiceNOTexist_IDnotExist();
-                    }//end of else if (txtISIinvID.Text != "")
-                }//end of else if (invoiceExists == true)
-            }//end of if (txtInvoiceNo.Text != "")
-            else
-            {//empty invoice
-                //if (txtISIinvID.Text != "")
-                //{
-                DialogResult resultStock = MessageBox.Show("Make stock?", "Empty invoice", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (resultStock == DialogResult.Yes)
-                {
-                    if (txtISIinvID.Text != "")
-                    {
-                        invIDExists = testDTIfExist(dtGetInventory, 0, txtISIinvID.Text);
-                        if (invIDExists == true)
-                        {
-                            invoiceEmpty_IDexist();
-                        }//end of if (invIDExists == true)
-                        else
-                        {//look for correct id, is id is wrong
-                            invoiceEmpty_LookupID();
-                        }//end of else if (invIDExists == true)
-                    }//end of  if (txtISIinvID.Text != "")
-                    else
-                    { //item is new
-                        invoiceEmpty_IDnotExist();
-                    }//end of else  if (txtISIinvID.Text != "")
-                }//end of if (resultStock == DialogResult.Yes)
-                else
-                {//result click no, message
-                    MessageBox.Show("Please provide an invoice number.");
-                }//end of else if (resultStock == DialogResult.Yes)
-            }//end of else if (txtInvoiceNo.Text != "")
-        }//end of  private void btnISIDUMMY_Click(object sender, EventArgs e)
-        #endregion
         private Boolean testDTIfExist(DataTable testDatatable, int colIndexnumber, string findText)
         {
             //my dynamic way to see if the record (or the reference thereof) exists within the table within the database
@@ -3220,11 +2761,8 @@ Please ensure prices are updated regularly.", "Price Update Reminder", MessageBo
                     flag = true;
                 }//end of else of if (exists == false)
             }//end of  for (int i = 0; i < testDatatable.Rows.Count + 1; i++)
-
             return flag;
         }//end of private Boolean testIfExist(DataTable testDatatable)
-     
-
     }//end of public partial class frmInventory : Form
 }//end of namespace ImagineTrailvan
 
@@ -3315,4 +2853,418 @@ Please ensure prices are updated regularly.", "Price Update Reminder", MessageBo
 //{
 //    MessageBox.Show(ex.ToString());
 //}//end of catch
+#endregion
+
+#region old stockIn
+        //private void btnISIsave_Click(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        #region Variables
+        //        //datatables
+        //        DataTable dtInvoiceIN = new DataTable();
+        //        DataTable dtAllInvoices = new DataTable();
+        //        //arraylists
+        //        ArrayList invoiceValues = new ArrayList();
+        //        ArrayList totalStockChanged = new ArrayList();
+        //        ArrayList stockINValues = new ArrayList();
+        //        ArrayList getIDValue = new ArrayList();
+        //        ArrayList invValues = new ArrayList(); //make arrayList to store all values of current record
+        //        //arrays
+        //        string[] fieldFilter = { "ISIInvoiceNo", "SupplierID" };//cant work with this guy "ISIInvoiceTotalIncl"
+        //        //variables
+        //        Boolean exists = new Boolean();
+        //        Boolean flag = new Boolean();
+               
+
+        //                        //datatables
+        //      //  DataTable dtInvoiceIN = new DataTable();
+        //      // DataTable dtAllInvoices = new DataTable();
+        //        DataTable dtGetNewItemID = new DataTable();
+        //        //arraylists
+        //        ArrayList values = new ArrayList(); //make arrayList to store all values of current record
+        //        ArrayList createTotalStock = new ArrayList();
+        //        ArrayList createNewItemStockIN = new ArrayList();
+        //      //  ArrayList invoiceValues = new ArrayList();
+        //      //  ArrayList totalStockChanged = new ArrayList();
+        //      //  ArrayList stockINValues = new ArrayList();
+        //        ArrayList getNewItemDetails = new ArrayList();
+        //      //  ArrayList getIDValue = new ArrayList();
+        //        //arrays
+        //      //  string[] fieldFilter = { "ISIInvoiceNo", "SupplierID" };//cant work with this guy "ISIInvoiceTotalIncl"
+        //        string[] fieldNewItemID = { "InvItem" };
+        //        //variables
+        //        Boolean newexists = new Boolean();
+        //        Boolean newflag = new Boolean();
+        //        //double totalStockValue = 0.00;
+
+        //        #endregion
+
+        //        if (txtISIinvID.Text != "")
+        //        {
+        //            //update any inventory details
+        //            invValues.Add(txtISIinvID.Text);          //store textBox / comboBox value in the ArrayList
+        //            invValues.Add(txtISIinvCode.Text);
+        //            invValues.Add(txtISIinvItem.Text.ToUpper());
+        //            invValues.Add(txtISIinvDescription.Text.ToUpper());
+        //            invValues.Add(txtISIinvCategory.Text.ToUpper());
+        //            invValues.Add(txtISIinvReLevel.Text);
+        //            invValues.Add(cmbISIinvMarkup.Text);
+        //            invValues.Add("false");
+
+        //            datac.updateRecCmd("Inventory", fieldInv[0], txtISIinvID.Text, fieldInv, invValues);        //Send values in fieldInv string format from textBox/ comboBox through updateCmd query to database table using InvID as key            
+        //            dtgStockIn.DataSource = datac.getTable("Inventory");
+        //            flag = false;
+        //            if (txtInvoiceNo.Text != "")//this if makes it invoice based, invoice reference made-else is for recirculation
+        //            {
+        //                if (dtpInvoiceDate.Text != "")
+        //                {
+        //                    dtAllInvoices = datac.getTable("InvoiceStockIN");
+
+        //                    for (int i = 0; i < dtAllInvoices.Rows.Count; i++)
+        //                    {
+        //                        if (exists == false)
+        //                        {
+        //                            if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())//&& dtAllInvoices.Rows[i][4].ToString() == txtISITotal.Text
+        //                            {
+        //                                exists = true;
+        //                                flag = true;
+        //                            }//end of if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())
+        //                            else
+        //                            {
+        //                                exists = false;
+
+        //                            }//end of else, if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString()) 
+        //                        }//end of if (exists == false)
+        //                        else
+        //                        {
+        //                            //this will be my flag to signal if it exists, since the first part of exist will only test each row and then move on, thus not stopping if it exists
+        //                            flag = true;
+        //                        }//end of else of if (exists == false)
+        //                    }//end of for (int i = 0; i < dtAllInvoices.Rows.Count; i++)
+        //                    //   MessageBox.Show("Exists value: " + flag, "Testing complete");
+        //                    if (flag == true)
+        //                    {
+        //                        // MessageBox.Show("This invoice already exists. ", "Testing complete");
+        //                        DialogResult result = MessageBox.Show("This invoice already exists: Do you wish to add items to it?", "Invoice Exists", MessageBoxButtons.YesNo,
+        //            MessageBoxIcon.Question);
+
+        //                        //make fancy pop-up to state that invoice exists, want to add to invoice
+        //                        if (result == DialogResult.Yes)
+        //                        {
+        //                            getIDValue.Add(" LIKE '" + txtInvoiceNo.Text + "'");
+        //                            // getIDValue.Add("='" + dtpInvoiceDate.Text+"00:00:00.000'");
+        //                            getIDValue.Add("=" + cmbISISupplier.SelectedValue);
+        //                            // getIDValue.Add("=" + txtISITotal.Text + "00");
+
+        //                            dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, getIDValue);  //save invoice details in this dataTable, to get the precise ISIID
+
+        //                            stockINValues.Add(0);
+        //                            stockINValues.Add(txtISIinvID.Text);
+        //                            stockINValues.Add(txtISIstockReceived.Text);
+        //                            stockINValues.Add(txtISIstockPrice.Text);
+        //                            stockINValues.Add(dtInvoiceIN.Rows[0][0].ToString());//use dtInvoiceIN for the reference to the invoice received
+        //                            stockINValues.Add(txtISIstockReceived.Text);
+        //                            datac.insertCmd("SubStockIN", fieldStockIN, stockINValues);// a new transaction with a reference to an invoice is created and inserted
+
+        //                            totalStockChanged.Add(0);
+        //                            totalStockChanged.Add(txtISIinvID.Text);
+        //                            totalStockChanged.Add((int.Parse(txtISIstockReceived.Text) + int.Parse(txtISIstockTotal.Text)));
+        //                            datac.updateRecCmd("InventoryStock", fieldTotalStock[0].ToString(), txtISIinvID.Text, fieldTotalStock, totalStockChanged);//string tblName, string idField, string ID, string[] fields, ArrayList values
+
+        //                            dtgStockIn.DataSource = datac.getTable("Inventory");
+        //                        }//end of if (result == DialogResult.Yes)
+        //                        else if ((result == DialogResult.No))
+        //                        {
+        //                            MessageBox.Show("Please enter a new invoice number value in the Invoice Number field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //                            txtInvoiceNo.Clear();
+        //                            txtISITotal.Clear();
+        //                            btnISIpreviewCurrent.Enabled = false;
+
+        //                            dtgStockIn.DataSource = datac.getTable("Inventory");
+        //                        }//end of else if (result == DialogResult.No)
+        //                    }//end of if (flag == true)
+        //                    else
+        //                    {//make new invoice thingy
+        //                        invoiceValues.Add(0);
+        //                        invoiceValues.Add(txtInvoiceNo.Text);
+        //                        invoiceValues.Add(dtpInvoiceDate.Text);
+        //                        invoiceValues.Add(cmbISISupplier.SelectedValue);
+        //                        invoiceValues.Add(txtISITotal.Text);
+        //                        datac.insertCmd("InvoiceStockIN", fieldInvoiceStockIN, invoiceValues);// do an insert to record the invoice received
+
+        //                        getIDValue.Add(" LIKE '" + txtInvoiceNo.Text + "'");
+        //                        getIDValue.Add("=" + cmbISISupplier.SelectedValue);
+        //                        dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, getIDValue);  //save invoice details in this dataTable, to get the precise ISIID
+
+        //                        stockINValues.Add(0);
+        //                        stockINValues.Add(txtISIinvID.Text);
+        //                        stockINValues.Add(txtISIstockReceived.Text);
+        //                        stockINValues.Add(txtISIstockPrice.Text);
+        //                        stockINValues.Add(dtInvoiceIN.Rows[0][0].ToString());//use dtInvoiceIN for the reference to the invoice received
+        //                        stockINValues.Add(txtISIstockReceived.Text);
+        //                        datac.insertCmd("SubStockIN", fieldStockIN, stockINValues);// a new transaction with a reference to an invoice is created and inserted
+        //                        dtgStockIn.DataSource = datac.getStockInInvoice(dtInvoiceIN.Rows[0][0].ToString());//declare new datasource with updated data
+
+        //                        totalStockChanged.Add(0);
+        //                        totalStockChanged.Add(txtISIinvID.Text);
+        //                        totalStockChanged.Add((int.Parse(txtISIstockReceived.Text) + int.Parse(txtISIstockTotal.Text)));
+        //                        datac.updateRecCmd("InventoryStock", fieldTotalStock[0].ToString(), txtISIinvID.Text, fieldTotalStock, totalStockChanged);//string tblName, string idField, string ID, string[] fields, ArrayList values
+        //                    }//end of else of if (newflag == true)
+        //                }//end of if (dtpInvoiceDate.Text!="")
+        //                else
+        //                {
+        //                    MessageBox.Show("Please enter a date value in the Invoice Date field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //                }//end of else if (dtpInvoiceDate.Text!="")
+        //            }//end of if (txtISIinvoiceNr.Text != "")
+        //            else
+        //            {
+        //                //no reference to invoice is made - stock can go back into circulation here
+        //                //therefore, it runs an update, NOT an insert
+        //                dtInvoiceIN = datac.getFIFODatedPrice(txtISIinvID.Text);//get the first dated price of this item
+
+        //                totalStockChanged.Add(0);
+        //                totalStockChanged.Add(txtISIinvID.Text);
+        //                totalStockChanged.Add((int.Parse(txtISIstockReceived.Text) + int.Parse(txtISIstockTotal.Text)));
+        //                datac.updateRecCmd("InventoryStock", fieldTotalStock[1].ToString(), txtISIinvID.Text, fieldTotalStock, totalStockChanged);//changing totalStock
+        //                for (int i = 0; i < int.Parse(txtISIstockReceived.Text) - 1; i++)
+        //                {
+        //                    stockINValues.Add(dtInvoiceIN.Rows[0][0].ToString());
+        //                    stockINValues.Add(dtInvoiceIN.Rows[0][1].ToString());
+        //                    stockINValues.Add(dtInvoiceIN.Rows[0][3].ToString());
+        //                    stockINValues.Add(dtInvoiceIN.Rows[0][4].ToString());
+        //                    stockINValues.Add(dtInvoiceIN.Rows[0][5].ToString());
+        //                    stockINValues.Add(int.Parse(dtInvoiceIN.Rows[0][6].ToString()) + 1);
+        //                    datac.updateRecCmd("SubStockIN", fieldStockIN[0], dtInvoiceIN.Rows[0][0].ToString(), fieldStockIN, stockINValues);//update existing record
+
+        //                    dtgStockIn.DataSource = datac.getTable("Inventory");
+        //                    dtInvoiceIN = datac.getFIFODatedPrice(txtISIinvID.Text);
+        //                    stockINValues = new ArrayList();//clear the arraylist to be able to record next item
+        //                }//end of for (int i = 0; i < int.Parse(txtISIquantityIn.Text-1); i++)    
+        //                string getID = dtInvoiceIN.Rows[0][5].ToString();               //what is the idea of this variable? Do i use it?
+        //                //dtgStockIn.DataSource = datac.getCurrentInvoice(getID);
+        //            }//end of else if (txtInvoiceNo.Text != "")
+        //        }//end of if (txtISIinvID.Text!="")
+        //        else
+        //        {
+        //            if (txtISIinvItem.Text != "")
+        //            {
+        //                values.Add("0");          //store textBox / comboBox value in the ArrayList
+        //                values.Add(txtISIinvCode.Text);
+        //                values.Add(txtISIinvItem.Text.ToUpper());
+        //                values.Add(txtISIinvDescription.Text.ToUpper());
+        //                values.Add("");
+        //                values.Add(txtISIinvCategory.Text.ToUpper());
+
+        //                if (txtISIinvReLevel.Text != "")     //See if user gave value for reorderLevel, and use value
+        //                {
+        //                    values.Add(txtISIinvReLevel.Text);
+        //                }//end of if (txtInvReLeveli.Text!="")
+        //                else
+        //                {
+        //                    values.Add("0");            //if user gave no value, make default 0: for prototyping purposes
+        //                }//end of else, if (txtInvReLeveli.Text!="")
+        //                if (cmbISIinvMarkup.Text != "")
+        //                {
+        //                    values.Add(cmbISIinvMarkup.Text);       //if user gave value, use value
+        //                }//end of if (cmbInvMarkupi.Text!="")
+        //                else
+        //                {
+        //                    values.Add("25");                   //if user gave no value for markup%, then make 25% default
+        //                }//end of else, if (cmbInvMarkupi.Text!="")
+        //                values.Add("false");
+
+        //                newflag = false;
+
+        //                datac.insertCmd("Inventory", fieldInvAll, values);       ////Send values in fieldInv string format through insertCmd query to database table
+        //                dtgStockIn.DataSource = datac.getTable("Inventory");
+
+        //                getNewItemDetails.Add(txtISIinvItem.Text.ToUpper());//consider more than 1 search field to ensure there is NO other record close to it ( ref male/ female door retainer rubber)
+        //                dtGetNewItemID = datac.getRecord("Inventory", fieldNewItemID, getNewItemDetails);
+        //                //make reference for a new item to call other tables from
+        //                if (txtISIstockReceived.Text != "")
+        //                {//create instance for this new item to have a reference to StockIN and a StockTotal
+        //                    if (txtInvoiceNo.Text != "")//this if makes it invoice based, invoice reference made-else is for recirculation
+        //                    {
+        //                        if (dtpInvoiceDate.Text != "")
+        //                        {
+        //                            dtAllInvoices = datac.getTable("InvoiceStockIN");
+        //                            if (txtISIstockPrice.Text != "")
+        //                            {
+        //                                for (int i = 0; i < dtAllInvoices.Rows.Count; i++)
+        //                                {
+        //                                    if (newexists == false)
+        //                                    {
+        //                                        if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())//&& dtAllInvoices.Rows[i][4].ToString() == txtISITotal.Text
+        //                                        {
+        //                                            newexists = true;
+        //                                            newflag = true;
+        //                                        }//end of  if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())//&& dtAllInvoices.Rows[i][4].ToString() == txtISITotal.Text
+        //                                        else
+        //                                        {
+        //                                            newexists = false;
+        //                                        }//end of else
+        //                                    }//end of if (newexists == false)
+        //                                    else
+        //                                    {
+        //                                        //this will be my flag to signal if it exists, since the first part of exist will only test each row and then move on, thus not stopping if it exists
+        //                                        newflag = true;
+        //                                    }//end of else of if (exists == false)
+        //                                }//end of for (int i = 0; i < dtAllInvoices.Rows.Count; i++)
+        //                                //   MessageBox.Show("Exists value: " + exists, "Testing complete");
+        //                                if (newflag == true)
+        //                                {
+        //                                    getIDValue.Add(" LIKE '" + txtInvoiceNo.Text + "'");
+        //                                    // getIDValue.Add("='" + dtpInvoiceDate.Text+"00:00:00.000'");
+        //                                    getIDValue.Add("=" + cmbISISupplier.SelectedValue);
+        //                                    // getIDValue.Add("=" + txtISITotal.Text + "00");
+        //                                    dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, getIDValue);  //save invoice details in this dataTable, to get the precise ISIID
+
+        //                                    // createNewItemStockIN.Add();
+        //                                    stockINValues.Add(0);
+        //                                    stockINValues.Add(dtGetNewItemID.Rows[0][0].ToString());
+        //                                    stockINValues.Add(txtISIstockReceived.Text);
+        //                                    stockINValues.Add(txtISIstockPrice.Text);
+        //                                    stockINValues.Add(dtInvoiceIN.Rows[0][0].ToString());//use dtInvoiceIN for the reference to the invoice received
+        //                                    stockINValues.Add(txtISIstockReceived.Text);
+        //                                    datac.insertCmd("SubStockIN", fieldStockIN, stockINValues);// a new transaction with a reference to an invoice is created and inserted
+
+        //                                    totalStockChanged.Add(0);
+        //                                    totalStockChanged.Add(dtGetNewItemID.Rows[0][0].ToString());
+        //                                    totalStockChanged.Add(txtISIstockReceived.Text);
+        //                                    datac.insertCmd("InventoryStock", fieldTotalStock, totalStockChanged);//create a reference to totalStock with first stock
+
+        //                                    // dtgStockIn.DataSource = datac.getAllInvoice();
+        //                                    dtgStockIn.DataSource = datac.getTable("Inventory");
+        //                                }//end of if (newflag = true)
+
+        //                                else
+        //                                {//make new invoice thingy
+        //                                    invoiceValues.Add(0);
+        //                                    invoiceValues.Add(txtInvoiceNo.Text);
+        //                                    invoiceValues.Add(dtpInvoiceDate.Text);
+        //                                    invoiceValues.Add(cmbISISupplier.SelectedValue);
+        //                                    invoiceValues.Add(txtISITotal.Text);
+        //                                    datac.insertCmd("InvoiceStockIN", fieldInvoiceStockIN, invoiceValues);
+
+        //                                    getIDValue.Add(" LIKE '" + txtInvoiceNo.Text + "'");
+        //                                    getIDValue.Add("=" + cmbISISupplier.SelectedValue);
+        //                                    dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, getIDValue);  //save invoice details in this dataTable, to get the precise ISIID
+
+
+        //                                    stockINValues.Add(0);
+        //                                    stockINValues.Add(dtGetNewItemID.Rows[0][0].ToString());
+        //                                    stockINValues.Add(txtISIstockReceived.Text);
+        //                                    stockINValues.Add(txtISIstockPrice.Text);
+        //                                    stockINValues.Add(dtInvoiceIN.Rows[0][0].ToString());//use dtInvoiceIN for the reference to the invoice received
+        //                                    stockINValues.Add(txtISIstockReceived.Text);
+        //                                    datac.insertCmd("SubStockIN", fieldStockIN, stockINValues);// a new transaction with a reference to an invoice is created and inserted
+        //                                    dtgStockIn.DataSource = datac.getTable("Inventory");
+
+        //                                    totalStockChanged.Add(0);
+        //                                    totalStockChanged.Add(dtGetNewItemID.Rows[0][0].ToString());
+        //                                    totalStockChanged.Add(txtISIstockReceived.Text);
+        //                                    datac.insertCmd("InventoryStock", fieldTotalStock, totalStockChanged);//create a reference to totalStock with first stock
+        //                                }//end of else, if (flag == true)
+        //                            }//end of if (txtISIstockPrice.Text!="")
+        //                            else
+        //                            {
+        //                                MessageBox.Show("Please enter a Price/Unit value in the <Price/ Unit excl VAT> field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //                            }//end of else, if (txtISIstockPrice.Text!="")
+        //                        }//end of if (dtpInvoiceDate.Text!="")
+        //                        else
+        //                        {
+        //                            MessageBox.Show("Please enter a date value in the Invoice Date field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //                        }//end of else if (dtpInvoiceDate.Text!="")
+        //                    }//end of if (txtISIinvoiceNr.Text != "")
+        //                    else
+        //                    {//since no invoiceNo is given, make it a STOCK invoice             //cant make a stock item if item is entered for the very first time!!!!!
+        //                        invoiceValues.Add(0);
+        //                        invoiceValues.Add("STOCK " + (emptySupplier += 1));
+        //                        invoiceValues.Add(dtpInvoiceDate.Text);
+        //                        invoiceValues.Add("1");
+        //                        invoiceValues.Add("0.00");
+        //                        datac.insertCmd("InvoiceStockIN", fieldInvoiceStockIN, invoiceValues);
+
+        //                        getIDValue.Add(" LIKE 'STOCK " + (emptySupplier += 1) + "'");
+        //                        getIDValue.Add("= 1");
+        //                        dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, getIDValue);  //save invoice details in this dataTable, to get the precise ISIID
+
+        //                        stockINValues.Add(0);
+        //                        stockINValues.Add(dtGetNewItemID.Rows[0][0].ToString());
+        //                        if (txtISIstockReceived.Text != "")
+        //                        {
+        //                            stockINValues.Add(txtISIstockReceived.Text);
+        //                        }//end of if (txtISIstockReceived.Text!="")
+        //                        else
+        //                        {
+        //                            MessageBox.Show("Please enter a Quantity Received value in the <Quantity Received> field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //                            stockINValues.Add(txtISIstockReceived.Text);
+        //                        }//end of else, if (txtISIstockReceived.Text!="")
+        //                        if (txtISIstockPrice.Text != "")
+        //                        {
+        //                            stockINValues.Add(txtISIstockPrice.Text);
+        //                        }//end of if (xtISIstockPrice.Text!="")
+        //                        else
+        //                        {
+        //                            MessageBox.Show("Please enter a Price/Unit value in the <Price/ Unit excl VAT> field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //                            stockINValues.Add(txtISIstockPrice.Text);
+        //                        }//end of else, if (xtISIstockPrice.Text!="")
+
+        //                        stockINValues.Add(dtInvoiceIN.Rows[0][0].ToString());//use dtInvoiceIN for the reference to the invoice received
+        //                        stockINValues.Add(txtISIstockReceived.Text);
+        //                        datac.insertCmd("SubStockIN", fieldStockIN, stockINValues);// a new transaction with a reference to an invoice is created and inserted
+        //                        dtgStockIn.DataSource = datac.getTable("Inventory");
+
+        //                        totalStockChanged.Add(0);
+        //                        totalStockChanged.Add(dtGetNewItemID.Rows[0][0].ToString());
+        //                        totalStockChanged.Add(txtISIstockReceived.Text);
+        //                        datac.insertCmd("InventoryStock", fieldTotalStock, totalStockChanged);//create a reference to totalStock with first stock
+        //                    }//end of if (txtISIinvoiceNr.Text != "")
+        //                }//end of if (txtISIstockReceived.Text!="")
+        //            }//end of  if (txtISIinvItem.Text != "")
+        //            else
+        //            {
+        //                MessageBox.Show("No record was added: Item Field is empty. Please provide an item's name to add.", "New record unsuccessful!");
+        //            }//end of else, if (txtISIinvItem.Text!="")
+        //        }//end of else  if (txtISIinvID.Text != "")
+
+
+        //        dtgStockIn.DataSource = datac.getTable("Inventory");
+        //        dtgCheckStock.DataSource = datac.getTable("Inventory");
+        //        dtgSupOrderList.DataSource = datac.getLowStock();
+        //        dtgInventoryValue.DataSource = datac.getInventoryValue();
+        //       //btnISIpreviewCurrent.Enabled = false;
+
+
+
+
+
+        //       // dtgInvoiceHistory.DataSource = datac.getAllInvoice();
+        //   //     dtgInventoryValue.DataSource = datac.getInventoryValue();
+
+        //        //to calculate total value of stock based on quantity and price on inventoryValue tab****
+        //        displayInventoryValue();
+
+        //        txtISIinvID.Clear();        //clear txtboxes for next search/ item or whichever
+        //        txtISIinvCode.Clear();
+        //        txtISIinvItem.Clear();
+        //        txtISIinvDescription.Clear();
+        //        txtISIinvCategory.Clear();
+        //        txtISIstockReceived.Clear();
+        //        txtISIstockPrice.Clear();
+        //        txtISIstockTotal.Clear();
+
+        //        btnISIclear.Enabled = true;
+        //        btnISIinvDeleteItem.Enabled = false;
+        //        btnISIrecordNewInvoice.Enabled = true;
+        //        btnISIsave.Enabled = false;
+        //        btnISIpreviewCurrent.Enabled = true;
+        //        btnISIdelItemInvoice.Enabled = true;
+        //    }//end of try
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Error saving invoice details : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }//end of catch(Exception ex)
+        //}//end of private void btnISIsave_Click(object sender, EventArgs e) 
 #endregion

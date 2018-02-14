@@ -16,10 +16,9 @@ namespace ImagineTrailvan
          SqlCommand cmd;
          SqlDataAdapter adapter;
          DataSet ds;
-     //    DataTable datab;
+
          public DataAccess()
          {
-
          }//end of public DataAccess()
          #region Dynamic GetQueries
          public DataTable getTable(string tblName)
@@ -269,7 +268,7 @@ namespace ImagineTrailvan
              {
                  DataTable result = new DataTable();
                  //  DataSet getds; "ISIID", "ISIInvoiceNo", "ISIDateReceived", "SupplierID", "ISIInvoiceTotalIncl" 
-                 cmd = new SqlCommand("SELECT isi.ISIID, isi.ISIInvoiceNo, isi.ISIDateReceived, sup.SupName, isi.ISIInvoiceTotalIncl FROM InvoiceStockIN isi, Supplier sup WHERE isi.SupplierID=sup.SupplierID", conn);
+                 cmd = new SqlCommand("SELECT isi.ISIID, isi.ISIInvoiceNo, isi.ISIDateReceived, sup.SupName, isi.ISIInvoiceTotalIncl FROM InvoiceStockIN isi, Supplier sup WHERE isi.SupplierID=sup.SupplierID ORDER BY isi.ISIDateReceived DESC", conn);
                  adapter = new SqlDataAdapter(cmd);
                  SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
                  conn.Open();
