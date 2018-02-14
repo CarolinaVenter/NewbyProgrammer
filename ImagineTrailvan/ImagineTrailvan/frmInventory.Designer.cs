@@ -95,7 +95,6 @@
             this.btnISIpreviewCurrent = new System.Windows.Forms.Button();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.btnISIinvDeleteItem = new System.Windows.Forms.Button();
-            this.btnISInewItem = new System.Windows.Forms.Button();
             this.btnISIclear = new System.Windows.Forms.Button();
             this.label49 = new System.Windows.Forms.Label();
             this.btnISIdelItemInvoice = new System.Windows.Forms.Button();
@@ -929,7 +928,6 @@
             // groupBox6
             // 
             this.groupBox6.Controls.Add(this.btnISIinvDeleteItem);
-            this.groupBox6.Controls.Add(this.btnISInewItem);
             this.groupBox6.Controls.Add(this.btnISIclear);
             this.groupBox6.Controls.Add(this.label49);
             this.groupBox6.Controls.Add(this.btnISIdelItemInvoice);
@@ -952,23 +950,13 @@
             // 
             // btnISIinvDeleteItem
             // 
-            this.btnISIinvDeleteItem.Location = new System.Drawing.Point(428, 93);
+            this.btnISIinvDeleteItem.Location = new System.Drawing.Point(630, 93);
             this.btnISIinvDeleteItem.Name = "btnISIinvDeleteItem";
             this.btnISIinvDeleteItem.Size = new System.Drawing.Size(114, 23);
             this.btnISIinvDeleteItem.TabIndex = 42;
             this.btnISIinvDeleteItem.Text = "Delete Existing Item";
             this.btnISIinvDeleteItem.UseVisualStyleBackColor = true;
             this.btnISIinvDeleteItem.Click += new System.EventHandler(this.btnISIinvDeleteItem_Click);
-            // 
-            // btnISInewItem
-            // 
-            this.btnISInewItem.Location = new System.Drawing.Point(231, 93);
-            this.btnISInewItem.Name = "btnISInewItem";
-            this.btnISInewItem.Size = new System.Drawing.Size(166, 23);
-            this.btnISInewItem.TabIndex = 41;
-            this.btnISInewItem.Text = "Create and Save New Item";
-            this.btnISInewItem.UseVisualStyleBackColor = true;
-            this.btnISInewItem.Click += new System.EventHandler(this.btnISInewItem_Click);
             // 
             // btnISIclear
             // 
@@ -991,7 +979,7 @@
             // 
             // btnISIdelItemInvoice
             // 
-            this.btnISIdelItemInvoice.Location = new System.Drawing.Point(573, 93);
+            this.btnISIdelItemInvoice.Location = new System.Drawing.Point(231, 93);
             this.btnISIdelItemInvoice.Name = "btnISIdelItemInvoice";
             this.btnISIdelItemInvoice.Size = new System.Drawing.Size(173, 23);
             this.btnISIdelItemInvoice.TabIndex = 36;
@@ -1056,7 +1044,7 @@
             // txtISIinvDescription
             // 
             this.txtISIinvDescription.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.txtISIinvDescription.Location = new System.Drawing.Point(231, 51);
+            this.txtISIinvDescription.Location = new System.Drawing.Point(231, 50);
             this.txtISIinvDescription.Name = "txtISIinvDescription";
             this.txtISIinvDescription.Size = new System.Drawing.Size(407, 20);
             this.txtISIinvDescription.TabIndex = 5;
@@ -2569,7 +2557,6 @@
         private System.Windows.Forms.Button btnISIpreviewCurrent;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.Button btnISIinvDeleteItem;
-        private System.Windows.Forms.Button btnISInewItem;
         private System.Windows.Forms.Button btnISIclear;
         private System.Windows.Forms.Label label49;
         private System.Windows.Forms.Button btnISIdelItemInvoice;
