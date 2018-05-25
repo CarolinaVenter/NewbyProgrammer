@@ -65,6 +65,7 @@
             this.txtInvID = new System.Windows.Forms.TextBox();
             this.dtgInventory = new System.Windows.Forms.DataGridView();
             this.tabStockIN = new System.Windows.Forms.TabPage();
+            this.btnISIinvoiceClear = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.dtgInvoiceHistory = new System.Windows.Forms.DataGridView();
             this.btnISIsave = new System.Windows.Forms.Button();
@@ -94,6 +95,8 @@
             this.txtISIstockPrice = new System.Windows.Forms.TextBox();
             this.btnISIpreviewCurrent = new System.Windows.Forms.Button();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtISISupDescription = new System.Windows.Forms.TextBox();
             this.btnISIinvDeleteItem = new System.Windows.Forms.Button();
             this.btnISIclear = new System.Windows.Forms.Button();
             this.label49 = new System.Windows.Forms.Label();
@@ -133,6 +136,8 @@
             this.txtSCinvID = new System.Windows.Forms.TextBox();
             this.dtgCheckStock = new System.Windows.Forms.DataGridView();
             this.tabSuppliers = new System.Windows.Forms.TabPage();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtsupDiscount = new System.Windows.Forms.TextBox();
             this.label39 = new System.Windows.Forms.Label();
             this.cmbSupPayTerm = new System.Windows.Forms.ComboBox();
             this.btnSupClear = new System.Windows.Forms.Button();
@@ -164,12 +169,23 @@
             this.txtSID = new System.Windows.Forms.TextBox();
             this.dtgSuppliers = new System.Windows.Forms.DataGridView();
             this.tabInventoryValue = new System.Windows.Forms.TabPage();
+            this.label24 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.textBox7 = new System.Windows.Forms.TextBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.supplierBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.supInvValueDBDataSet = new ImagineTrailvan.SupInvValueDBDataSet();
             this.label12 = new System.Windows.Forms.Label();
             this.lblInventoryValue = new System.Windows.Forms.Label();
             this.txtStockValue = new System.Windows.Forms.TextBox();
             this.dtgInventoryValue = new System.Windows.Forms.DataGridView();
             this.tabOrderStock = new System.Windows.Forms.TabPage();
+            this.btnShowAllItems = new System.Windows.Forms.Button();
             this.cbxOrderSup = new System.Windows.Forms.ComboBox();
+            this.supplierBindingSource2 = new System.Windows.Forms.BindingSource(this.components);
+            this.supplierOrderDataSet = new ImagineTrailvan.supplierOrderDataSet();
             this.btnOrderSupGO = new System.Windows.Forms.Button();
             this.btnOrderFilter = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
@@ -200,19 +216,6 @@
             this.orderQuantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.orderPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dtgSupOrderList = new System.Windows.Forms.DataGridView();
-            this.tabOrderInventory = new System.Windows.Forms.TabPage();
-            this.txtOrderID = new System.Windows.Forms.TextBox();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.cmbOrderSupplier = new System.Windows.Forms.ComboBox();
-            this.dtgNewInvOrderDetails = new System.Windows.Forms.DataGridView();
-            this.dtgInvOrderDetails = new System.Windows.Forms.DataGridView();
-            this.dtgInvOrderHistory = new System.Windows.Forms.DataGridView();
             this.tabSupplierSummary = new System.Windows.Forms.TabPage();
             this.btnSearchClear = new System.Windows.Forms.Button();
             this.btnSearchGO = new System.Windows.Forms.Button();
@@ -233,6 +236,8 @@
             this.txtSearchSupplier = new System.Windows.Forms.TextBox();
             this.dtgSupplierSearch = new System.Windows.Forms.DataGridView();
             this.supplierTableAdapter = new ImagineTrailvan.SupplierDataSetTableAdapters.SupplierTableAdapter();
+            this.supplierTableAdapter1 = new ImagineTrailvan.SupInvValueDBDataSetTableAdapters.SupplierTableAdapter();
+            this.supplierTableAdapter2 = new ImagineTrailvan.supplierOrderDataSetTableAdapters.SupplierTableAdapter();
             this.tConInventory.SuspendLayout();
             this.tabStockOUT.SuspendLayout();
             this.gboxPrice.SuspendLayout();
@@ -257,15 +262,16 @@
             this.grbSAddress.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgSuppliers)).BeginInit();
             this.tabInventoryValue.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.supplierBindingSource1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.supInvValueDBDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgInventoryValue)).BeginInit();
             this.tabOrderStock.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.supplierBindingSource2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.supplierOrderDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgSupOrderHistory)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgOrderInvList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgSupOrderList)).BeginInit();
-            this.tabOrderInventory.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dtgNewInvOrderDetails)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dtgInvOrderDetails)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dtgInvOrderHistory)).BeginInit();
             this.tabSupplierSummary.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgInventorySummary)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgSupplierSearch)).BeginInit();
@@ -279,7 +285,6 @@
             this.tConInventory.Controls.Add(this.tabSuppliers);
             this.tConInventory.Controls.Add(this.tabInventoryValue);
             this.tConInventory.Controls.Add(this.tabOrderStock);
-            this.tConInventory.Controls.Add(this.tabOrderInventory);
             this.tConInventory.Controls.Add(this.tabSupplierSummary);
             this.tConInventory.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tConInventory.Location = new System.Drawing.Point(0, 0);
@@ -617,6 +622,7 @@
             // 
             // tabStockIN
             // 
+            this.tabStockIN.Controls.Add(this.btnISIinvoiceClear);
             this.tabStockIN.Controls.Add(this.label1);
             this.tabStockIN.Controls.Add(this.dtgInvoiceHistory);
             this.tabStockIN.Controls.Add(this.btnISIsave);
@@ -635,11 +641,22 @@
             this.tabStockIN.Text = "STOCK IN";
             this.tabStockIN.UseVisualStyleBackColor = true;
             // 
+            // btnISIinvoiceClear
+            // 
+            this.btnISIinvoiceClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnISIinvoiceClear.Location = new System.Drawing.Point(439, 118);
+            this.btnISIinvoiceClear.Name = "btnISIinvoiceClear";
+            this.btnISIinvoiceClear.Size = new System.Drawing.Size(75, 23);
+            this.btnISIinvoiceClear.TabIndex = 62;
+            this.btnISIinvoiceClear.Text = "Clear";
+            this.btnISIinvoiceClear.UseVisualStyleBackColor = true;
+            this.btnISIinvoiceClear.Click += new System.EventHandler(this.btnISIinvoiceClear_Click);
+            // 
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(445, 11);
+            this.label1.Location = new System.Drawing.Point(517, 11);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(77, 13);
             this.label1.TabIndex = 43;
@@ -650,9 +667,9 @@
             this.dtgInvoiceHistory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.dtgInvoiceHistory.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dtgInvoiceHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dtgInvoiceHistory.Location = new System.Drawing.Point(448, 27);
+            this.dtgInvoiceHistory.Location = new System.Drawing.Point(520, 27);
             this.dtgInvoiceHistory.Name = "dtgInvoiceHistory";
-            this.dtgInvoiceHistory.Size = new System.Drawing.Size(584, 119);
+            this.dtgInvoiceHistory.Size = new System.Drawing.Size(512, 119);
             this.dtgInvoiceHistory.TabIndex = 61;
             // 
             // btnISIsave
@@ -664,7 +681,7 @@
             this.btnISIsave.TabIndex = 60;
             this.btnISIsave.Text = "Save Details";
             this.btnISIsave.UseVisualStyleBackColor = true;
-            this.btnISIsave.Click += new System.EventHandler(this.btnISIDUMMY_Click);
+            this.btnISIsave.Click += new System.EventHandler(this.btnISISave_Click);
             // 
             // btnISIrecordNewInvoice
             // 
@@ -735,7 +752,7 @@
             this.groupBox4.Controls.Add(this.txtInvoiceNo);
             this.groupBox4.Location = new System.Drawing.Point(4, 11);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(429, 90);
+            this.groupBox4.Size = new System.Drawing.Size(507, 90);
             this.groupBox4.TabIndex = 58;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Invoice Details";
@@ -775,7 +792,7 @@
             this.dtpInvoiceDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtpInvoiceDate.Location = new System.Drawing.Point(160, 40);
             this.dtpInvoiceDate.Name = "dtpInvoiceDate";
-            this.dtpInvoiceDate.Size = new System.Drawing.Size(253, 20);
+            this.dtpInvoiceDate.Size = new System.Drawing.Size(331, 20);
             this.dtpInvoiceDate.TabIndex = 4;
             this.dtpInvoiceDate.Value = new System.DateTime(2017, 10, 16, 15, 24, 7, 0);
             // 
@@ -785,8 +802,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtISITotal.Location = new System.Drawing.Point(287, 64);
             this.txtISITotal.Name = "txtISITotal";
-            this.txtISITotal.Size = new System.Drawing.Size(126, 20);
+            this.txtISITotal.Size = new System.Drawing.Size(204, 20);
             this.txtISITotal.TabIndex = 1;
+            this.txtISITotal.Text = "0.00";
             // 
             // txtInvoiceNo
             // 
@@ -794,7 +812,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtInvoiceNo.Location = new System.Drawing.Point(160, 16);
             this.txtInvoiceNo.Name = "txtInvoiceNo";
-            this.txtInvoiceNo.Size = new System.Drawing.Size(253, 20);
+            this.txtInvoiceNo.Size = new System.Drawing.Size(331, 20);
             this.txtInvoiceNo.TabIndex = 0;
             // 
             // groupBox5
@@ -927,6 +945,8 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.label5);
+            this.groupBox6.Controls.Add(this.txtISISupDescription);
             this.groupBox6.Controls.Add(this.btnISIinvDeleteItem);
             this.groupBox6.Controls.Add(this.btnISIclear);
             this.groupBox6.Controls.Add(this.label49);
@@ -947,6 +967,23 @@
             this.groupBox6.TabIndex = 56;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Inventory Details";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(124, 75);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(101, 13);
+            this.label5.TabIndex = 44;
+            this.label5.Text = "Supplier Description";
+            // 
+            // txtISISupDescription
+            // 
+            this.txtISISupDescription.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.txtISISupDescription.Location = new System.Drawing.Point(231, 72);
+            this.txtISISupDescription.Name = "txtISISupDescription";
+            this.txtISISupDescription.Size = new System.Drawing.Size(407, 20);
+            this.txtISISupDescription.TabIndex = 43;
             // 
             // btnISIinvDeleteItem
             // 
@@ -971,7 +1008,7 @@
             // label49
             // 
             this.label49.AutoSize = true;
-            this.label49.Location = new System.Drawing.Point(176, 74);
+            this.label49.Location = new System.Drawing.Point(176, 96);
             this.label49.Name = "label49";
             this.label49.Size = new System.Drawing.Size(49, 13);
             this.label49.TabIndex = 20;
@@ -979,7 +1016,7 @@
             // 
             // btnISIdelItemInvoice
             // 
-            this.btnISIdelItemInvoice.Location = new System.Drawing.Point(231, 93);
+            this.btnISIdelItemInvoice.Location = new System.Drawing.Point(451, 93);
             this.btnISIdelItemInvoice.Name = "btnISIdelItemInvoice";
             this.btnISIdelItemInvoice.Size = new System.Drawing.Size(173, 23);
             this.btnISIdelItemInvoice.TabIndex = 36;
@@ -1000,11 +1037,11 @@
             // label50
             // 
             this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(165, 54);
+            this.label50.Location = new System.Drawing.Point(136, 54);
             this.label50.Name = "label50";
-            this.label50.Size = new System.Drawing.Size(60, 13);
+            this.label50.Size = new System.Drawing.Size(89, 13);
             this.label50.TabIndex = 19;
-            this.label50.Text = "Description";
+            this.label50.Text = "Local Description";
             // 
             // label51
             // 
@@ -1036,15 +1073,15 @@
             // txtISIinvCategory
             // 
             this.txtISIinvCategory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.txtISIinvCategory.Location = new System.Drawing.Point(231, 70);
+            this.txtISIinvCategory.Location = new System.Drawing.Point(231, 93);
             this.txtISIinvCategory.Name = "txtISIinvCategory";
-            this.txtISIinvCategory.Size = new System.Drawing.Size(278, 20);
+            this.txtISIinvCategory.Size = new System.Drawing.Size(214, 20);
             this.txtISIinvCategory.TabIndex = 8;
             // 
             // txtISIinvDescription
             // 
             this.txtISIinvDescription.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.txtISIinvDescription.Location = new System.Drawing.Point(231, 50);
+            this.txtISIinvDescription.Location = new System.Drawing.Point(231, 51);
             this.txtISIinvDescription.Name = "txtISIinvDescription";
             this.txtISIinvDescription.Size = new System.Drawing.Size(407, 20);
             this.txtISIinvDescription.TabIndex = 5;
@@ -1328,6 +1365,8 @@
             // 
             // tabSuppliers
             // 
+            this.tabSuppliers.Controls.Add(this.label4);
+            this.tabSuppliers.Controls.Add(this.txtsupDiscount);
             this.tabSuppliers.Controls.Add(this.label39);
             this.tabSuppliers.Controls.Add(this.cmbSupPayTerm);
             this.tabSuppliers.Controls.Add(this.btnSupClear);
@@ -1352,6 +1391,23 @@
             this.tabSuppliers.TabIndex = 1;
             this.tabSuppliers.Text = "SUPPLIERS";
             this.tabSuppliers.UseVisualStyleBackColor = true;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(778, 180);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(131, 13);
+            this.label4.TabIndex = 48;
+            this.label4.Text = "Discount received % :";
+            // 
+            // txtsupDiscount
+            // 
+            this.txtsupDiscount.Location = new System.Drawing.Point(914, 177);
+            this.txtsupDiscount.Name = "txtsupDiscount";
+            this.txtsupDiscount.Size = new System.Drawing.Size(116, 20);
+            this.txtsupDiscount.TabIndex = 47;
             // 
             // label39
             // 
@@ -1440,7 +1496,7 @@
             // btnDeleteSup
             // 
             this.btnDeleteSup.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.btnDeleteSup.Location = new System.Drawing.Point(82, 180);
+            this.btnDeleteSup.Location = new System.Drawing.Point(79, 212);
             this.btnDeleteSup.Name = "btnDeleteSup";
             this.btnDeleteSup.Size = new System.Drawing.Size(209, 23);
             this.btnDeleteSup.TabIndex = 37;
@@ -1451,7 +1507,7 @@
             // btnSupINSERT
             // 
             this.btnSupINSERT.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.btnSupINSERT.Location = new System.Drawing.Point(724, 180);
+            this.btnSupINSERT.Location = new System.Drawing.Point(509, 212);
             this.btnSupINSERT.Name = "btnSupINSERT";
             this.btnSupINSERT.Size = new System.Drawing.Size(209, 23);
             this.btnSupINSERT.TabIndex = 36;
@@ -1462,7 +1518,7 @@
             // btnSupUPDATE
             // 
             this.btnSupUPDATE.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.btnSupUPDATE.Location = new System.Drawing.Point(403, 180);
+            this.btnSupUPDATE.Location = new System.Drawing.Point(294, 212);
             this.btnSupUPDATE.Name = "btnSupUPDATE";
             this.btnSupUPDATE.Size = new System.Drawing.Size(209, 23);
             this.btnSupUPDATE.TabIndex = 25;
@@ -1624,15 +1680,21 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dtgSuppliers.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dtgSuppliers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dtgSuppliers.Location = new System.Drawing.Point(6, 209);
+            this.dtgSuppliers.Location = new System.Drawing.Point(6, 241);
             this.dtgSuppliers.Name = "dtgSuppliers";
             this.dtgSuppliers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtgSuppliers.Size = new System.Drawing.Size(1024, 220);
+            this.dtgSuppliers.Size = new System.Drawing.Size(1024, 245);
             this.dtgSuppliers.TabIndex = 0;
             this.dtgSuppliers.Click += new System.EventHandler(this.dtgSuppliers_Click);
             // 
             // tabInventoryValue
             // 
+            this.tabInventoryValue.Controls.Add(this.label24);
+            this.tabInventoryValue.Controls.Add(this.label7);
+            this.tabInventoryValue.Controls.Add(this.label6);
+            this.tabInventoryValue.Controls.Add(this.dataGridView1);
+            this.tabInventoryValue.Controls.Add(this.textBox7);
+            this.tabInventoryValue.Controls.Add(this.comboBox1);
             this.tabInventoryValue.Controls.Add(this.label12);
             this.tabInventoryValue.Controls.Add(this.lblInventoryValue);
             this.tabInventoryValue.Controls.Add(this.txtStockValue);
@@ -1645,10 +1707,79 @@
             this.tabInventoryValue.Text = "INVENTORY VALUE";
             this.tabInventoryValue.UseVisualStyleBackColor = true;
             // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(756, 22);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(48, 13);
+            this.label24.TabIndex = 9;
+            this.label24.Text = "Supplier:";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(885, 69);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(143, 13);
+            this.label7.TabIndex = 8;
+            this.label7.Text = "(Based on FIFO PRINCIPLE)";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(595, 49);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(209, 13);
+            this.label6.TabIndex = 7;
+            this.label6.Text = "Total Value of Stock From Supplier:";
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(573, 109);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.Size = new System.Drawing.Size(455, 413);
+            this.dataGridView1.TabIndex = 6;
+            // 
+            // textBox7
+            // 
+            this.textBox7.Location = new System.Drawing.Point(810, 46);
+            this.textBox7.Name = "textBox7";
+            this.textBox7.ReadOnly = true;
+            this.textBox7.Size = new System.Drawing.Size(218, 20);
+            this.textBox7.TabIndex = 5;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.DataBindings.Add(new System.Windows.Forms.Binding("SelectedValue", this.supplierBindingSource1, "SupName", true));
+            this.comboBox1.DataSource = this.supplierBindingSource1;
+            this.comboBox1.DisplayMember = "SupName";
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(810, 19);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(218, 21);
+            this.comboBox1.TabIndex = 4;
+            this.comboBox1.ValueMember = "SupplierID";
+            // 
+            // supplierBindingSource1
+            // 
+            this.supplierBindingSource1.DataMember = "Supplier";
+            this.supplierBindingSource1.DataSource = this.supInvValueDBDataSet;
+            // 
+            // supInvValueDBDataSet
+            // 
+            this.supInvValueDBDataSet.DataSetName = "SupInvValueDBDataSet";
+            this.supInvValueDBDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            // 
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(791, 43);
+            this.label12.Location = new System.Drawing.Point(315, 69);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(143, 13);
             this.label12.TabIndex = 3;
@@ -1658,7 +1789,7 @@
             // 
             this.lblInventoryValue.AutoSize = true;
             this.lblInventoryValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblInventoryValue.Location = new System.Drawing.Point(346, 43);
+            this.lblInventoryValue.Location = new System.Drawing.Point(8, 49);
             this.lblInventoryValue.Name = "lblInventoryValue";
             this.lblInventoryValue.Size = new System.Drawing.Size(180, 13);
             this.lblInventoryValue.TabIndex = 2;
@@ -1666,7 +1797,7 @@
             // 
             // txtStockValue
             // 
-            this.txtStockValue.Location = new System.Drawing.Point(539, 40);
+            this.txtStockValue.Location = new System.Drawing.Point(267, 46);
             this.txtStockValue.Name = "txtStockValue";
             this.txtStockValue.ReadOnly = true;
             this.txtStockValue.Size = new System.Drawing.Size(191, 20);
@@ -1676,15 +1807,15 @@
             // 
             this.dtgInventoryValue.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dtgInventoryValue.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dtgInventoryValue.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.dtgInventoryValue.Location = new System.Drawing.Point(3, 156);
+            this.dtgInventoryValue.Location = new System.Drawing.Point(3, 109);
             this.dtgInventoryValue.Name = "dtgInventoryValue";
             this.dtgInventoryValue.ReadOnly = true;
-            this.dtgInventoryValue.Size = new System.Drawing.Size(1030, 366);
+            this.dtgInventoryValue.Size = new System.Drawing.Size(455, 413);
             this.dtgInventoryValue.TabIndex = 0;
             // 
             // tabOrderStock
             // 
+            this.tabOrderStock.Controls.Add(this.btnShowAllItems);
             this.tabOrderStock.Controls.Add(this.cbxOrderSup);
             this.tabOrderStock.Controls.Add(this.btnOrderSupGO);
             this.tabOrderStock.Controls.Add(this.btnOrderFilter);
@@ -1717,10 +1848,20 @@
             this.tabOrderStock.Text = "ORDER STOCK";
             this.tabOrderStock.UseVisualStyleBackColor = true;
             // 
+            // btnShowAllItems
+            // 
+            this.btnShowAllItems.Location = new System.Drawing.Point(386, 158);
+            this.btnShowAllItems.Name = "btnShowAllItems";
+            this.btnShowAllItems.Size = new System.Drawing.Size(75, 23);
+            this.btnShowAllItems.TabIndex = 71;
+            this.btnShowAllItems.Text = "ALL ITEMS";
+            this.btnShowAllItems.UseVisualStyleBackColor = true;
+            this.btnShowAllItems.Click += new System.EventHandler(this.btnShowAllItems_Click);
+            // 
             // cbxOrderSup
             // 
-            this.cbxOrderSup.DataBindings.Add(new System.Windows.Forms.Binding("SelectedValue", this.supplierBindingSource, "SupName", true));
-            this.cbxOrderSup.DataSource = this.supplierBindingSource;
+            this.cbxOrderSup.DataBindings.Add(new System.Windows.Forms.Binding("SelectedValue", this.supplierBindingSource2, "SupName", true));
+            this.cbxOrderSup.DataSource = this.supplierBindingSource2;
             this.cbxOrderSup.DisplayMember = "SupName";
             this.cbxOrderSup.FormattingEnabled = true;
             this.cbxOrderSup.Location = new System.Drawing.Point(77, 9);
@@ -1728,6 +1869,16 @@
             this.cbxOrderSup.Size = new System.Drawing.Size(366, 21);
             this.cbxOrderSup.TabIndex = 70;
             this.cbxOrderSup.ValueMember = "SupplierID";
+            // 
+            // supplierBindingSource2
+            // 
+            this.supplierBindingSource2.DataMember = "Supplier";
+            this.supplierBindingSource2.DataSource = this.supplierOrderDataSet;
+            // 
+            // supplierOrderDataSet
+            // 
+            this.supplierOrderDataSet.DataSetName = "supplierOrderDataSet";
+            this.supplierOrderDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
             // btnOrderSupGO
             // 
@@ -1829,17 +1980,17 @@
             // 
             this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(829, 467);
+            this.label9.Location = new System.Drawing.Point(875, 463);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(68, 13);
+            this.label9.Size = new System.Drawing.Size(45, 13);
             this.label9.TabIndex = 55;
-            this.label9.Text = "14% VAT  R:";
+            this.label9.Text = "VAT  R:";
             // 
             // label8
             // 
             this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(834, 441);
+            this.label8.Location = new System.Drawing.Point(861, 437);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(59, 13);
             this.label8.TabIndex = 54;
@@ -2035,118 +2186,6 @@
             this.dtgSupOrderList.Size = new System.Drawing.Size(455, 231);
             this.dtgSupOrderList.TabIndex = 0;
             // 
-            // tabOrderInventory
-            // 
-            this.tabOrderInventory.Controls.Add(this.txtOrderID);
-            this.tabOrderInventory.Controls.Add(this.textBox6);
-            this.tabOrderInventory.Controls.Add(this.textBox5);
-            this.tabOrderInventory.Controls.Add(this.textBox4);
-            this.tabOrderInventory.Controls.Add(this.textBox3);
-            this.tabOrderInventory.Controls.Add(this.textBox2);
-            this.tabOrderInventory.Controls.Add(this.textBox1);
-            this.tabOrderInventory.Controls.Add(this.label13);
-            this.tabOrderInventory.Controls.Add(this.cmbOrderSupplier);
-            this.tabOrderInventory.Controls.Add(this.dtgNewInvOrderDetails);
-            this.tabOrderInventory.Controls.Add(this.dtgInvOrderDetails);
-            this.tabOrderInventory.Controls.Add(this.dtgInvOrderHistory);
-            this.tabOrderInventory.Location = new System.Drawing.Point(4, 22);
-            this.tabOrderInventory.Name = "tabOrderInventory";
-            this.tabOrderInventory.Padding = new System.Windows.Forms.Padding(3);
-            this.tabOrderInventory.Size = new System.Drawing.Size(1036, 525);
-            this.tabOrderInventory.TabIndex = 6;
-            this.tabOrderInventory.Text = "ORDER INVENTORY";
-            this.tabOrderInventory.UseVisualStyleBackColor = true;
-            // 
-            // txtOrderID
-            // 
-            this.txtOrderID.Location = new System.Drawing.Point(580, 318);
-            this.txtOrderID.Name = "txtOrderID";
-            this.txtOrderID.Size = new System.Drawing.Size(46, 20);
-            this.txtOrderID.TabIndex = 11;
-            // 
-            // textBox6
-            // 
-            this.textBox6.Location = new System.Drawing.Point(928, 394);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(100, 20);
-            this.textBox6.TabIndex = 10;
-            // 
-            // textBox5
-            // 
-            this.textBox5.Location = new System.Drawing.Point(738, 394);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(100, 20);
-            this.textBox5.TabIndex = 9;
-            // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(632, 394);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(100, 20);
-            this.textBox4.TabIndex = 8;
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(632, 368);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(396, 20);
-            this.textBox3.TabIndex = 7;
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(632, 342);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(396, 20);
-            this.textBox2.TabIndex = 6;
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(632, 318);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(259, 20);
-            this.textBox1.TabIndex = 5;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(37, 37);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(105, 13);
-            this.label13.TabIndex = 4;
-            this.label13.Text = "Choose the Supplier:";
-            // 
-            // cmbOrderSupplier
-            // 
-            this.cmbOrderSupplier.FormattingEnabled = true;
-            this.cmbOrderSupplier.Location = new System.Drawing.Point(181, 34);
-            this.cmbOrderSupplier.Name = "cmbOrderSupplier";
-            this.cmbOrderSupplier.Size = new System.Drawing.Size(270, 21);
-            this.cmbOrderSupplier.TabIndex = 3;
-            // 
-            // dtgNewInvOrderDetails
-            // 
-            this.dtgNewInvOrderDetails.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dtgNewInvOrderDetails.Location = new System.Drawing.Point(8, 318);
-            this.dtgNewInvOrderDetails.Name = "dtgNewInvOrderDetails";
-            this.dtgNewInvOrderDetails.Size = new System.Drawing.Size(443, 166);
-            this.dtgNewInvOrderDetails.TabIndex = 2;
-            // 
-            // dtgInvOrderDetails
-            // 
-            this.dtgInvOrderDetails.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dtgInvOrderDetails.Location = new System.Drawing.Point(588, 73);
-            this.dtgInvOrderDetails.Name = "dtgInvOrderDetails";
-            this.dtgInvOrderDetails.Size = new System.Drawing.Size(440, 224);
-            this.dtgInvOrderDetails.TabIndex = 1;
-            // 
-            // dtgInvOrderHistory
-            // 
-            this.dtgInvOrderHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dtgInvOrderHistory.Location = new System.Drawing.Point(8, 73);
-            this.dtgInvOrderHistory.Name = "dtgInvOrderHistory";
-            this.dtgInvOrderHistory.Size = new System.Drawing.Size(443, 224);
-            this.dtgInvOrderHistory.TabIndex = 0;
-            // 
             // tabSupplierSummary
             // 
             this.tabSupplierSummary.Controls.Add(this.btnSearchClear);
@@ -2328,6 +2367,14 @@
             // 
             this.supplierTableAdapter.ClearBeforeFill = true;
             // 
+            // supplierTableAdapter1
+            // 
+            this.supplierTableAdapter1.ClearBeforeFill = true;
+            // 
+            // supplierTableAdapter2
+            // 
+            this.supplierTableAdapter2.ClearBeforeFill = true;
+            // 
             // frmInventory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2376,17 +2423,17 @@
             ((System.ComponentModel.ISupportInitialize)(this.dtgSuppliers)).EndInit();
             this.tabInventoryValue.ResumeLayout(false);
             this.tabInventoryValue.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.supplierBindingSource1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.supInvValueDBDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgInventoryValue)).EndInit();
             this.tabOrderStock.ResumeLayout(false);
             this.tabOrderStock.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.supplierBindingSource2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.supplierOrderDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgSupOrderHistory)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgOrderInvList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgSupOrderList)).EndInit();
-            this.tabOrderInventory.ResumeLayout(false);
-            this.tabOrderInventory.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dtgNewInvOrderDetails)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dtgInvOrderDetails)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dtgInvOrderHistory)).EndInit();
             this.tabSupplierSummary.ResumeLayout(false);
             this.tabSupplierSummary.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgInventorySummary)).EndInit();
@@ -2493,7 +2540,6 @@
         private System.Windows.Forms.TextBox txtSupPrefix;
         private System.Windows.Forms.Label lblBusnr;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.TabPage tabOrderInventory;
         private System.Windows.Forms.TabPage tabStockCheck;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox txtSCinvRelevel;
@@ -2524,10 +2570,6 @@
         private System.Windows.Forms.Label label37;
         private System.Windows.Forms.Label label36;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.ComboBox cmbOrderSupplier;
-        private System.Windows.Forms.DataGridView dtgNewInvOrderDetails;
-        private System.Windows.Forms.DataGridView dtgInvOrderDetails;
-        private System.Windows.Forms.DataGridView dtgInvOrderHistory;
         private System.Windows.Forms.Label label39;
         private System.Windows.Forms.ComboBox cmbSupPayTerm;
         private System.Windows.Forms.TabPage tabStockIN;
@@ -2574,14 +2616,6 @@
         private SupplierDataSet supplierDataSet;
         private System.Windows.Forms.BindingSource supplierBindingSource;
         private SupplierDataSetTableAdapters.SupplierTableAdapter supplierTableAdapter;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.TextBox textBox6;
-        private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox txtOrderID;
         private System.Windows.Forms.TextBox txtOrderNumber;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label14;
@@ -2598,5 +2632,23 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn orderPrice;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView dtgInvoiceHistory;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox txtsupDiscount;
+        private System.Windows.Forms.Button btnShowAllItems;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox txtISISupDescription;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.TextBox textBox7;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private SupInvValueDBDataSet supInvValueDBDataSet;
+        private System.Windows.Forms.BindingSource supplierBindingSource1;
+        private SupInvValueDBDataSetTableAdapters.SupplierTableAdapter supplierTableAdapter1;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button btnISIinvoiceClear;
+        private supplierOrderDataSet supplierOrderDataSet;
+        private System.Windows.Forms.BindingSource supplierBindingSource2;
+        private supplierOrderDataSetTableAdapters.SupplierTableAdapter supplierTableAdapter2;
     }
 }
