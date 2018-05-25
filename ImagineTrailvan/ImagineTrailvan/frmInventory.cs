@@ -19,17 +19,17 @@ namespace ImagineTrailvan
     public partial class frmInventory : Form
     {
         #region Public Variables
+        DataAccess datac = new DataAccess();
         public string[] fieldInv = { "InventoryID", "InvCode", "InvItem", "InvDescription", "InvCategory", "InvReorderLevel", "InvMarkup", "InvIsDeleted" };
         public string[] fieldInvAll = { "InventoryID", "InvCode", "InvItem", "InvDescription", "InvSupplierDescription", "InvCategory", "InvReorderLevel", "InvMarkup", "InvIsDeleted" };
-        public string[] fieldSup = { "SupplierID", "SupName", "SupContactPerson", "SupREP", "SupBusinessNr", "SupCellNr", "SupEmail", "SupAddress", "SupCity", "SupProvince", "SupPrefix", "SupReorderTime", "SupPaymentTerm", "SupIsDeleted" };
+        public string[] fieldSup = { "SupplierID", "SupName", "SupContactPerson", "SupREP", "SupBusinessNr", "SupCellNr", "SupEmail", "SupAddress", "SupCity", "SupProvince", "SupPrefix", "SupReorderTime", "SupPaymentTerm", "SupIsDeleted" ,"SupDiscount"};
         public string[] fieldStockOut = { "SubStockOUTID", "InventoryID", "SSOQuantityOut", "SSODateOut", "InvIsAccountedFor" };
         public string[] fieldStockIN = { "SubStockINID", "InventoryID", "SSIQuantityIN", "SSIPrice", "ISIID", "SSIStockLeft" };
         public string[] fieldInvoiceStockIN = { "ISIID", "ISIInvoiceNo", "ISIDateReceived", "SupplierID", "ISIInvoiceTotalIncl" };
         public string[] fieldTotalStock = { "InventoryStockID", "InventoryID", "ISTotalStock" };
         public string[] fieldOrders = { "OrdersID", "OrderNumber", "SupplierID", "OrdersDate", "OrderEstimateTotal" };
-        public string[] fieldSubOrders = { "SubOrdersID", "InventoryID", "SOOrderedQuantity", "SOPrice", "OrdersID", "SOLength" };
-        public int emptySupplier;
-        DataAccess datac = new DataAccess();
+        public string[] fieldSubOrders = { "SubOrdersID", "InventoryID", "SOOrderedQuantity", "SOPrice", "OrdersID", "SOLength" };        
+        public string vatLabel = "15%";
         PdfCreator pdfc = new PdfCreator();
 
         #endregion
@@ -37,10 +37,15 @@ namespace ImagineTrailvan
         public frmInventory()
         {
             InitializeComponent();
+            
         }//end of public frmInventory()
 
         private void frmInventory_Load(object sender, EventArgs e)
         {
+            // TODO: This line of code loads data into the 'supplierOrderDataSet.Supplier' table. You can move, or remove it, as needed.
+            this.supplierTableAdapter2.Fill(this.supplierOrderDataSet.Supplier);
+            // TODO: This line of code loads data into the 'supInvValueDBDataSet.Supplier' table. You can move, or remove it, as needed.
+            this.supplierTableAdapter1.Fill(this.supInvValueDBDataSet.Supplier);
             try
             {
                 // TODO: This line of code loads data into the 'supplierDataSet.Supplier' table. You can move, or remove it, as needed.
@@ -130,7 +135,7 @@ namespace ImagineTrailvan
 
         private void frmInventory_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Form1 obj = new Form1();
+            frmSwitchboard obj = new frmSwitchboard();
             this.Hide();
             obj.ShowDialog();
             Environment.Exit(0);
@@ -222,6 +227,27 @@ namespace ImagineTrailvan
 
         }//end of private void btnClear_Click(object sender, EventArgs e)
 
+        private void fifoDatedPrice()
+        {
+            #region Variables
+            DataTable dtStockIn = new DataTable();
+            Boolean exists = new Boolean();
+            #endregion
+
+            dtStockIn = datac.getTable("SubStockIN");
+            exists = testDTIfExistAddOne(dtStockIn, 1, txtInvID.Text);
+          //  dtStockIn = datac.getFIFODatedPrice(txtInvID.Text);//before i do this, i'll have to run a test exist first
+            if (exists==true)
+            {
+                dtStockIn = datac.getFIFODatedPrice(txtInvID.Text);
+                txtInvPrice.Text = dtStockIn.Rows[0][4].ToString();
+            }//end of if (exists==true)
+            else
+            {
+                MessageBox.Show("No record found ");
+            } //end of else, if (exists==true)
+        }//end of  private void fifoDatedPrice()
+
         private void dtgInventory_Click(object sender, EventArgs e)
         {
             try
@@ -238,9 +264,9 @@ namespace ImagineTrailvan
                 //variables
                 Boolean exists = new Boolean();
                // Boolean flag = new Boolean();
-                double price = 0;
-                double markup = 0;
-                double sellPrice = 0;
+                double price = 0.00;
+                double markup = 0.00;
+                double sellPrice = 0.00;
                 #endregion
 
                 txtInvID.Text = dtgInventory.SelectedRows[0].Cells[0].Value.ToString(); //populte the textboxes from the dtg
@@ -258,7 +284,7 @@ namespace ImagineTrailvan
                 
                 testTotalStock = datac.getTable("InventoryStock");
                 //test if there is any references in the linked tables
-                exists = testDTIfExist(testTotalStock, 1, txtInvID.Text);
+                exists = testDTIfExistAddOne(testTotalStock, 1, txtInvID.Text);
                
                 //here the flag will be tested, doing the actual determining of what should be done when it exists
                 if (exists == true)
@@ -277,21 +303,14 @@ namespace ImagineTrailvan
                     } //end of else      
 
                     //**************Get the oldest date's stock price via the InvoiceStockIN table's date and the InventoryID found in the SubStockIN table*********
-                    dtStockIn = datac.getFIFODatedPrice(txtInvID.Text);//before i do this, i'll have to run a test exist first
-                    if (dtStockIn.Rows[0] != null)
-                    {
-                        txtInvPrice.Text = (double.Parse(dtStockIn.Rows[0][4].ToString())).ToString("C");
-                    }//end of if (dtStockIn.Rows[0] != null)
-                    else
-                    {
-                        MessageBox.Show("No rows in datatable: ");
-                    } //end of else              
+                    fifoDatedPrice();             
 
                     //to calculate the selling price (price + markup excl VAT)***
                     //   txtSellPrice.Text = (double.Parse(txtInvPrice.Text) * ((100 + (int.Parse(cmbInvMarkup.ValueMember))) / 100)).ToString(); //tried but failed
-                    price = double.Parse(dtStockIn.Rows[0][4].ToString()); 
-                    markup = int.Parse(cmbInvMarkup.Text);
+                    price = double.Parse(txtInvPrice.Text); 
+                    markup = double.Parse(cmbInvMarkup.Text);
                     sellPrice = price * ((100 + markup) / 100);
+                    txtInvPrice.Text=price.ToString("C");
                     txtSellPrice.Text = sellPrice.ToString("C");
                 }//end of if (flag == true)
                 else
@@ -420,6 +439,7 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
 
                 dtgInventory.DataSource = datac.getTable("Inventory");
                 dtgInventoryValue.DataSource = datac.getInventoryValue();
+                dtgSupOrderList.DataSource = datac.getLowStock();
                 //to calculate total value of stock based on quantity and price on inventoryValue tab****
                 displayInventoryValue();
             }//end of try
@@ -450,6 +470,7 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 txtISIinvCode.Text = dtgStockIn.SelectedRows[0].Cells[1].Value.ToString();
                 txtISIinvItem.Text = dtgStockIn.SelectedRows[0].Cells[2].Value.ToString().ToUpper();
                 txtISIinvDescription.Text = dtgStockIn.SelectedRows[0].Cells[3].Value.ToString().ToUpper();
+                txtISISupDescription.Text = dtgStockIn.SelectedRows[0].Cells[4].Value.ToString().ToUpper();
                 txtISIinvCategory.Text = dtgStockIn.SelectedRows[0].Cells[5].Value.ToString().ToUpper();
                 txtISIinvReLevel.Text = dtgStockIn.SelectedRows[0].Cells[6].Value.ToString();
                 cmbISIinvMarkup.Text = dtgStockIn.SelectedRows[0].Cells[7].Value.ToString(); //add a string Collection
@@ -458,7 +479,7 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 txtISIstockPrice.Clear();
              //   flag = false;
                 dtStockIN = datac.getTable("InventoryStock");
-                exists = testDTIfExist(dtStockIN, 1, txtISIinvID.Text);
+                exists = testDTIfExistAddOne(dtStockIN, 1, txtISIinvID.Text);
                      //   MessageBox.Show("Exists value: " + flag, "Testing complete");
                 if (exists == true)
                 { //****************Get the stock total quantity from InventoryStock table, relevant to the InventoryID******************
@@ -474,6 +495,7 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 }//end of else, if (flag == true)
                 btnISIsearchItem.Enabled = false;
                 btnISIinvDeleteItem.Enabled = true;
+                btnISIdelItemInvoice.Enabled = true;
             }//end of try
             catch (Exception ex)
             {
@@ -548,6 +570,7 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 txtISIinvCode.Clear();
                 txtISIinvItem.Clear();
                 txtISIinvDescription.Clear();
+                txtISISupDescription.Clear();
                 txtISIinvCategory.Clear();
                 txtISIinvReLevel.Clear();
                 txtISIstockReceived.Clear();
@@ -557,12 +580,12 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 dtgStockIn.DataSource = datac.getTable("Inventory");
                 btnISIinvDeleteItem.Enabled = false;
                 btnISIdelItemInvoice.Enabled = false;
+                btnISIsearchItem.Enabled = true;
             }//end of try
             catch (Exception ex)
             {
                 MessageBox.Show("Error clearing textboxes : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }//end of catch (Exception ex)
-
         }//end of private void btnISIclear_Click(object sender, EventArgs e)
 
         private void btnISInewItem_Click(object sender, EventArgs e)
@@ -589,6 +612,10 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 //variables
                 Boolean exists = new Boolean();
                 Boolean flag = new Boolean();
+                DataTable dtLastStockInvoice = datac.getLastStockInvoice();
+                string arrLastStockInvoice = dtLastStockInvoice.Rows[0][0].ToString();
+                string[] arrayInvoiceNo = arrLastStockInvoice.Split(' ');
+                int stockInvNo = int.Parse(arrayInvoiceNo[1].ToString());
                 #endregion
 
                 if (txtISIinvItem.Text != "")
@@ -597,7 +624,7 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                     values.Add(txtISIinvCode.Text);
                     values.Add(txtISIinvItem.Text.ToUpper());
                     values.Add(txtISIinvDescription.Text.ToUpper());
-                    values.Add("");
+                    values.Add(txtISISupDescription.Text.ToUpper());
                     values.Add(txtISIinvCategory.Text.ToUpper());
                     if (txtISIinvReLevel.Text != "")     //See if user gave value for reorderLevel, and use value
                     {
@@ -610,11 +637,11 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                     if (cmbISIinvMarkup.Text != "")
                     {
                         values.Add(cmbISIinvMarkup.Text);       //if user gave value, use value
-                    }//end of if (cmbInvMarkupi.Text!="")
+                    }//end of if (cmbISIinvMarkup.Text != "")
                     else
                     {
                         values.Add("25");                   //if user gave no value for markup%, then make 25% default
-                    }//end of else, if (cmbInvMarkupi.Text!="")
+                    }//end of else, if (cmbISIinvMarkup.Text != "")
                     values.Add("false");
 
                     flag = false;
@@ -627,7 +654,6 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                     //make reference for a new item to call other tables from
                     if (txtISIstockReceived.Text!="")
                     {//create instance for this new item to have a reference to StockIN and a StockTotal
-
                         if (txtInvoiceNo.Text != "")//this if makes it invoice based, invoice reference made-else is for recirculation
                         {
                             if (dtpInvoiceDate.Text != "")
@@ -642,7 +668,7 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                                             if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())//&& dtAllInvoices.Rows[i][4].ToString() == txtISITotal.Text
                                             {
                                                 exists = true;
-                                            }//end of 
+                                            }//end of  if (dtAllInvoices.Rows[i][1].ToString() == txtInvoiceNo.Text && dtAllInvoices.Rows[i][3].ToString() == cmbISISupplier.SelectedValue.ToString())
                                             else
                                             {
                                                 exists = false;
@@ -678,7 +704,6 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                                         totalStockChanged.Add(txtISIstockReceived.Text);
                                         datac.insertCmd("InventoryStock", fieldTotalStock, totalStockChanged);//create a reference to totalStock with first stock
 
-                                        // dtgStockIn.DataSource = datac.getAllInvoice();
                                         dtgStockIn.DataSource = datac.getTable("Inventory");
                                     }//end of if (flag = true)
                                     else
@@ -722,13 +747,13 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                         else
                         {//since no invoiceNo is given, make it a STOCK invoice
                             invoiceValues.Add(0);
-                            invoiceValues.Add("STOCK " + (emptySupplier+=1));
+                            invoiceValues.Add(arrayInvoiceNo[0].ToString() + " " + (stockInvNo + 1));
                             invoiceValues.Add(dtpInvoiceDate.Text);
                             invoiceValues.Add("1");
                             invoiceValues.Add("0.00");
                             datac.insertCmd("InvoiceStockIN", fieldInvoiceStockIN, invoiceValues);
 
-                            getIDValue.Add(" LIKE 'STOCK " + (emptySupplier += 1)+"'");
+                            getIDValue.Add(" LIKE '" + (arrayInvoiceNo[0].ToString() +" "+ (stockInvNo+1))+"'");
                             getIDValue.Add("= 1");
                             dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, getIDValue);  //save invoice details in this dataTable, to get the precise ISIID
 
@@ -828,7 +853,8 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 //arraylist
                 ArrayList getIDValue = new ArrayList();
                 ArrayList getStockInID = new ArrayList();
-                ArrayList removeTotalStockvalues = new ArrayList(); 
+                ArrayList removeTotalStockvalues = new ArrayList();
+                ArrayList getTotalRecord = new ArrayList();
                 //arrays
                 string[] fieldFilter = { "ISIInvoiceNo", "SupplierID" };
                 string[] fieldsFilter = { "InventoryID", "ISIID" };
@@ -840,24 +866,23 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 btnISIsave.Enabled = false;
 
                 getIDValue.Add(" LIKE '" + txtInvoiceNo.Text+"'");
-              //  getIDValue.Add("=" + dtpInvoiceDate.Text);
                 getIDValue.Add("=" + cmbISISupplier.SelectedValue);
-              //  getIDValue.Add("=" + txtISITotal.Text);
                 dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, getIDValue);  //save invoice details in this dataTable, to get the precise ISIID
 
                 getStockInID.Add("=" + txtISIinvID.Text);
-              //  getStockInID.Add("=" + txtISIstockReceived.Text);
-               // getStockInID.Add("=" + txtISIstockPrice.Text);
                 getStockInID.Add("=" + dtInvoiceIN.Rows[0][0].ToString());
                 dtStockIN = datac.getMathRecord("SubStockIN", fieldsFilter, getStockInID);  //save stock in details in this dataTable, to get the precise SubStockINID
                 datac.removeCmd("SubStockIN", dtStockIN.Rows[0][0].ToString());      //delete the record in the table using the key from the dataTable from getMathRecord
 
-                removeTotalStockvalues.Add("=" + txtISIinvID.Text); //should remember to remove that same item's quantity from the totalStock, Since it wont be added anymore
-                dtTotalStock = datac.getRecord("InventoryStock", getTotalStock, removeTotalStockvalues);
+                getTotalRecord.Add("=" + txtISIinvID.Text); //should remember to remove that same item's quantity from the totalStock, Since it wont be added anymore
+                dtTotalStock = datac.getMathRecord("InventoryStock", getTotalStock, getTotalRecord);
                 removeTotalStockvalues.Add(dtTotalStock.Rows[0][0].ToString());
-                removeTotalStockvalues.Add(dtTotalStock.Rows[0][1].ToString());
-                removeTotalStockvalues.Add((int.Parse(dtTotalStock.Rows[0][1].ToString())-int.Parse(dtStockIN.Rows[0][2].ToString())));
-                datac.updateRecCmd("InventoryStock",fieldTotalStock[0].ToString(),dtTotalStock.Rows[0][0].ToString(),fieldTotalStock,removeTotalStockvalues);//update the item's stock reference to undo the insert of quantity that was now beinig removed
+                removeTotalStockvalues.Add(txtISIinvID.Text);//dtTotalStock.Rows[0][1].ToString());
+
+                removeTotalStockvalues.Add((int.Parse(dtTotalStock.Rows[0][2].ToString()) - int.Parse(dtStockIN.Rows[0][2].ToString())));
+                datac.updateRecCmd("InventoryStock",fieldTotalStock[1],dtTotalStock.Rows[0][0].ToString(),fieldTotalStock,removeTotalStockvalues);//update the item's stock reference to undo the insert of quantity that was now beinig removed
+
+                MessageBox.Show("Record has been deleted from the invoice and stock.", "Record Deleted from Invoice!");
 
                 dtgStockIn.DataSource = datac.getTable("Inventory"); ;//refresh datasource
                 dtgInventoryValue.DataSource = datac.getInventoryValue();
@@ -910,6 +935,7 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 txtISIinvCode.Clear();
                 txtISIinvItem.Clear();
                 txtISIinvDescription.Clear();
+                txtISISupDescription.Clear();
                 txtISIinvCategory.Clear();
                 txtISIinvReLevel.Clear();
                 txtISIstockReceived.Clear();
@@ -925,6 +951,7 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 MessageBox.Show("Error creating New Invoice record: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }//end of catch (Exception ex)
         }//end of private void btnISIrecordNewInvoice_Click(object sender, EventArgs e)
+     
         #region tabStockIn_Save Controls
         private string getInventoryID()
         {
@@ -1037,32 +1064,36 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
             arGetInvoice.Add("=" + cmbISISupplier.SelectedValue);
             dtInvoiceIN = datac.getMathRecord("InvoiceStockIN", fieldFilter, arGetInvoice);  //save invoice details in this dataTable, to get the precise ISIID
 
-            arStockIn.Add(0);
-            arStockIn.Add(getItemID);
-            //  arStockIn.Add(txtISIstockReceived.Text);
-            if (txtISIstockReceived.Text != "")
+            if (txtISIstockPrice.Text!=""&&txtISIstockReceived.Text!="")
             {
+                arStockIn.Add(0);
+                arStockIn.Add(getItemID);
+                if (txtISIstockReceived.Text != "")
+                {
+                    arStockIn.Add(txtISIstockReceived.Text);
+                }//end of if (txtISIstockReceived.Text!="")
+                else
+                {
+                    MessageBox.Show("Please enter a Quantity Received value in the <Quantity Received> field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }//end of else, if (txtISIstockReceived.Text!="")
+                //arStockIn.Add(txtISIstockPrice.Text);
+                if (txtISIstockPrice.Text != "")
+                {
+                    arStockIn.Add(txtISIstockPrice.Text);
+                }//end of if (xtISIstockPrice.Text!="")
+                else
+                {
+                    MessageBox.Show("Please enter a Price/Unit value in the <Price/ Unit excl VAT> field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }//end of else, if (xtISIstockPrice.Text!="")
+                arStockIn.Add(dtInvoiceIN.Rows[0][0].ToString());//use dtInvoiceIN for the reference to the invoice received
                 arStockIn.Add(txtISIstockReceived.Text);
-            }//end of if (txtISIstockReceived.Text!="")
+                datac.insertCmd("SubStockIN", fieldStockIN, arStockIn);// a new transaction with a reference to an invoice is created and inserted
+            }//end of if (txtISIstockPrice.Text!=""&&txtISIstockReceived.Text!="")
             else
             {
-                MessageBox.Show("Please enter a Quantity Received value in the <Quantity Received> field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                arStockIn.Add(txtISIstockReceived.Text);
-            }//end of else, if (txtISIstockReceived.Text!="")
-            //arStockIn.Add(txtISIstockPrice.Text);
-            if (txtISIstockPrice.Text != "")
-            {
-                arStockIn.Add(txtISIstockPrice.Text);
-            }//end of if (xtISIstockPrice.Text!="")
-            else
-            {
-                MessageBox.Show("Please enter a Price/Unit value in the <Price/ Unit excl VAT> field", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                arStockIn.Add(txtISIstockPrice.Text);
-            }//end of else, if (xtISIstockPrice.Text!="")
-            arStockIn.Add(dtInvoiceIN.Rows[0][0].ToString());//use dtInvoiceIN for the reference to the invoice received
-            arStockIn.Add(txtISIstockReceived.Text);
-            datac.insertCmd("SubStockIN", fieldStockIN, arStockIn);// a new transaction with a reference to an invoice is created and inserted
-            // dtgStockIn.DataSource = datac.getTable("Inventory");
+                MessageBox.Show(@"Please enter a Price/Unit value and Quantity Received value in the corresponding fields.
+                A reference to the Invoice has been created.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }//end of else, if (txtISIstockPrice.Text!=""&&txtISIstockReceived.Text!="")
         }//end of private void insertRECEIVEDIntoStockIn()
         private void insertRECEIVEDIntoInvoiceIn()
         {
@@ -1081,40 +1112,51 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
         private void insertRECEIVEDIntoInventory()
         {
             ArrayList arInventory = new ArrayList();
-            arInventory.Add("0");          //store textBox / comboBox value in the ArrayList
-            arInventory.Add(txtISIinvCode.Text);
-            arInventory.Add(txtISIinvItem.Text.ToUpper());
-            arInventory.Add(txtISIinvDescription.Text.ToUpper());
-            arInventory.Add("");//supplierDescription
-            arInventory.Add(txtISIinvCategory.Text.ToUpper());
-            if (txtISIinvReLevel.Text != "")     //See if user gave value for reorderLevel, and use value
+            if (txtISIinvItem.Text!="")
             {
-                arInventory.Add(txtISIinvReLevel.Text);
-            }//end of if (txtInvReLeveli.Text!="")
+                arInventory.Add("0");          //store textBox / comboBox value in the ArrayList
+                arInventory.Add(txtISIinvCode.Text);
+                arInventory.Add(txtISIinvItem.Text.ToUpper());
+                arInventory.Add(txtISIinvDescription.Text.ToUpper());
+                arInventory.Add(txtISISupDescription.Text.ToUpper());//supplierDescription
+                arInventory.Add(txtISIinvCategory.Text.ToUpper());
+                if (txtISIinvReLevel.Text != "")     //See if user gave value for reorderLevel, and use value
+                {
+                    arInventory.Add(txtISIinvReLevel.Text);
+                }//end of if (txtInvReLeveli.Text!="")
+                else
+                {
+                    arInventory.Add("0");            //if user gave no value, make default 0: for prototyping purposes
+                }//end of else, if (txtInvReLeveli.Text!="")
+                if (cmbISIinvMarkup.Text != "")
+                {
+                    arInventory.Add(cmbISIinvMarkup.Text);       //if user gave value, use value
+                }//end of if (cmbInvMarkupi.Text!="")
+                else
+                {
+                    arInventory.Add("25");                   //if user gave no value for markup%, then make 25% default
+                }//end of else, if (cmbInvMarkupi.Text!="")
+                arInventory.Add("false");
+                datac.insertCmd("Inventory", fieldInvAll, arInventory);       ////Send values in fieldInv string format through insertCmd query to database table
+            }//end of if (txtISIinvItem.Text!="")
             else
             {
-                arInventory.Add("0");            //if user gave no value, make default 0: for prototyping purposes
-            }//end of else, if (txtInvReLeveli.Text!="")
-            if (cmbISIinvMarkup.Text != "")
-            {
-                arInventory.Add(cmbISIinvMarkup.Text);       //if user gave value, use value
-            }//end of if (cmbInvMarkupi.Text!="")
-            else
-            {
-                arInventory.Add("25");                   //if user gave no value for markup%, then make 25% default
-            }//end of else, if (cmbInvMarkupi.Text!="")
-            arInventory.Add("false");
-            datac.insertCmd("Inventory", fieldInvAll, arInventory);       ////Send values in fieldInv string format through insertCmd query to database table
+                MessageBox.Show(@"Please enter an Item value and the Quantity Received in the corresponding fields.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }//end of else, if (txtISIinvItem.Text!="")
         }//end of private void insertRECEIVEDIntoInventory()
         private void insertRECEIVEDIntoInvoiceIn_Stock()
         {
             ArrayList arInvoiceIn = new ArrayList();
             ArrayList arGetInvoiceID = new ArrayList();
+            DataTable dtLastStockInvoice = datac.getLastStockInvoice();
             string[] fieldFilter = { "ISIInvoiceNo", "SupplierID" };//cant work with this guy "ISIInvoiceTotalIncl"
 
-            emptySupplier += 1;
+            string arrLastStockInvoice = dtLastStockInvoice.Rows[0][0].ToString();
+            string[] arrayInvoiceNo = arrLastStockInvoice.Split(' ');
+            int stockInvNo = int.Parse(arrayInvoiceNo[1].ToString());
+
             arInvoiceIn.Add(0);
-            arInvoiceIn.Add("STOCK " + (emptySupplier));
+            arInvoiceIn.Add(arrayInvoiceNo[0].ToString() + " " + (stockInvNo + 1));
             arInvoiceIn.Add(dtpInvoiceDate.Text);
             arInvoiceIn.Add(cmbISISupplier.SelectedValue);
             if (txtISITotal.Text != "")
@@ -1125,18 +1167,26 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
             {
                 arInvoiceIn.Add("0.00");
             }//end of else, if (txtISITotal.Text!="")
-            arInvoiceIn.Add(txtISITotal.Text);
+          //  arInvoiceIn.Add(txtISITotal.Text);
             datac.insertCmd("InvoiceStockIN", fieldInvoiceStockIN, arInvoiceIn);
 
-            txtInvoiceNo.Text = "STOCK " + emptySupplier;
+            txtInvoiceNo.Text = arrayInvoiceNo[0].ToString() + " " + (stockInvNo + 1);
         }//end of private void insertRECEIVEDIntoInvoiceIn_Stock()
         private void updateRECEIVEDInventoryStock()
         {
             ArrayList arTotalStock = new ArrayList();
-            arTotalStock.Add(0);
-            arTotalStock.Add(txtISIinvID.Text);
-            arTotalStock.Add((int.Parse(txtISIstockReceived.Text) + int.Parse(txtISIstockTotal.Text)));
-            datac.updateRecCmd("InventoryStock", fieldTotalStock[1].ToString(), txtISIinvID.Text, fieldTotalStock, arTotalStock);//changing totalStock
+            if (txtISIstockReceived.Text!="")
+            {
+                arTotalStock.Add(0);
+                arTotalStock.Add(txtISIinvID.Text);
+                arTotalStock.Add((int.Parse(txtISIstockReceived.Text) + int.Parse(txtISIstockTotal.Text)));
+                datac.updateRecCmd("InventoryStock", fieldTotalStock[1].ToString(), txtISIinvID.Text, fieldTotalStock, arTotalStock);//changing totalStock
+            }//end of if (txtISIstockReceived.Text!="")
+            else
+            {
+                MessageBox.Show(@"Please enter a Quantity Received value in the corresponding field.
+The Quantity has been set to the default value of 0.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }//end of else, if (txtISIstockReceived.Text!="")
         }//end of private void updateRECEIVEDInventoryStock()
         private void updateRECEIVEDStockIn()
         {
@@ -1150,7 +1200,7 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
             arStockIn.Add(dtFIFOInvoice.Rows[0][3].ToString());
             arStockIn.Add(dtFIFOInvoice.Rows[0][4].ToString());
             arStockIn.Add(dtFIFOInvoice.Rows[0][5].ToString());
-            arStockIn.Add(int.Parse(dtFIFOInvoice.Rows[0][6].ToString()) + 1);
+            arStockIn.Add(int.Parse(dtFIFOInvoice.Rows[0][6].ToString()) + +int.Parse(txtISIstockReceived.Text));
             datac.updateRecCmd("SubStockIN", fieldStockIN[0], dtFIFOInvoice.Rows[0][0].ToString(), fieldStockIN, arStockIn);//update existing record
         }//end of private void updateRECEIVEDStockIn()
         private void updateRECEIVEDInventory()
@@ -1160,29 +1210,27 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
             arInvValues.Add(txtISIinvCode.Text);
             arInvValues.Add(txtISIinvItem.Text.ToUpper());
             arInvValues.Add(txtISIinvDescription.Text.ToUpper());
+            arInvValues.Add(txtISISupDescription.Text.ToUpper());
             arInvValues.Add(txtISIinvCategory.Text.ToUpper());
             arInvValues.Add(txtISIinvReLevel.Text);
             arInvValues.Add(cmbISIinvMarkup.Text);
             arInvValues.Add("false");
 
-            datac.updateRecCmd("Inventory", fieldInv[0], txtISIinvID.Text, fieldInv, arInvValues);        //Send values in fieldInv string format from textBox/ comboBox through updateCmd query to database table using InvID as key            
+            datac.updateRecCmd("Inventory", fieldInv[0], txtISIinvID.Text, fieldInvAll, arInvValues);        //Send values in fieldInv string format from textBox/ comboBox through updateCmd query to database table using InvID as key            
             //  dtgStockIn.DataSource = datac.getTable("Inventory");
         }//end of private void updateRECEIVEDInventory()
         private void invoiceExist_IDexists()
         {
-            DataTable dtGetStock = new DataTable();
-            Boolean stockIDExists = false;
-            dtGetStock = datac.getTable("InventoryStock");
-            stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
-            if (stockIDExists == true)
-            {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
-                updateRECEIVEDInventoryStock();
-            }//end of if (stockIDExists == true)
+            if (txtISIstockPrice.Text != "" && txtISIstockReceived.Text != "")
+            {
+                insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+                test_Update_Insert_InventoryStock();
+            }//end of if (txtISIstockPrice.Text!="" &&txtISIstockReceived.Text!="")
             else
-            {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
-                insertRECEIVEDIntoInventoryStock();
-            }//end of else if (stockIDExists == true)
-            insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+            {
+                MessageBox.Show(@"Please enter a Price/Unit value and Quantity Received value in the corresponding fields.
+                A reference to the Invoice has been created.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }//end of else, if (txtISIstockPrice.Text!="" &&txtISIstockReceived.Text!="")
         }//end of private void invoiceExist_IDexists()
         private void invoiceExist_LookupID()
         {
@@ -1195,11 +1243,11 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
             dtGetInventory = datac.getTable("Inventory");
             dtGetStock = datac.getTable("InventoryStock");
 
-            invIDExists = testDTIfExist(dtGetInventory, 2, txtISIinvItem.Text);//see if the item is present
+            invIDExists = testDTIfExistAddOne(dtGetInventory, 2, txtISIinvItem.Text);//see if the item is present
             if (invIDExists == true)
             {//when item exists but ID is wrong, get correct ID
                 getInvID = getInventoryID();
-                stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
+                stockIDExists = testDTIfExistAddOne(dtGetStock, 1, txtISIinvID.Text);
                 if (stockIDExists == true)
                 {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
                     updateRECEIVEDInventoryStock();
@@ -1208,7 +1256,15 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
                     insertRECEIVEDIntoInventoryStock();
                 }//end of else if (stockIDExists == true)
-                insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+                if (txtISIstockPrice.Text != "" && txtISIstockReceived.Text != "")
+                {
+                    insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+                }//end of if (txtISIstockPrice.Text!="" &&txtISIstockReceived.Text!="")
+                else
+                {
+                    MessageBox.Show(@"Please enter a Price/Unit value and Quantity Received value in the corresponding fields.
+                A reference to the Invoice has been created.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }//end of else, if (txtISIstockPrice.Text!="" &&txtISIstockReceived.Text!="")
             }//end of if (invIDExists == true)
             else
             {
@@ -1218,7 +1274,7 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
         private void invoiceExist_IDnotExist()
         {
             Boolean invIDExists = false;
-            Boolean stockIDExists = false;
+            //Boolean stockIDExists = false;
             string getInvID = "";
             DataTable dtGetInventory = new DataTable();
             DataTable dtGetStock = new DataTable();
@@ -1228,43 +1284,59 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
             invIDExists = testNewItemExist();
             if (invIDExists == true)
             {//if the item was found, get the correct ID
-                getInvID = getInventoryID();
-                stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
-                if (stockIDExists == true)
-                {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
-                    updateRECEIVEDInventoryStock();
-                }//end of if (stockIDExists == true)
+
+                if (txtISIstockPrice.Text != "" && txtISIstockReceived.Text != "")
+                {
+                    insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+                    test_Update_Insert_InventoryStock();
+                }//end of if (txtISIstockPrice.Text!="" &&txtISIstockReceived.Text!="")
                 else
-                {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
-                    insertRECEIVEDIntoInventoryStock();
-                }//end of else if (stockIDExists == true)
-                insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+                {
+                    MessageBox.Show(@"Please enter a Price/Unit value and Quantity Received value in the corresponding fields.
+                A reference to the Invoice has been created.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }//end of else, if (txtISIstockPrice.Text!="" &&txtISIstockReceived.Text!="")
             }//end of if (invIDExists == true)
             else
             {//no id found for this item
-                MessageBox.Show("ID could not found. Creating new");
-                insertRECEIVEDIntoInventory();
-                getInvID = getInventoryID();
-                insertRECEIVEDIntoInventoryStock();
-                insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+                if (txtISIinvItem.Text!="")
+                {
+                    if (txtISIstockPrice.Text != "" && txtISIstockReceived.Text != "")
+                    {
+                        MessageBox.Show("ID could not found. Creating new");
+                        insertRECEIVEDIntoInventory();
+                        getInvID = getInventoryID();
+                        insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+                        test_Update_Insert_InventoryStock();
+                    }//end of if (txtISIstockPrice.Text!="" &&txtISIstockReceived.Text!="")
+                    else
+                    {
+                        MessageBox.Show(@"Please enter a Price/Unit value and Quantity Received value in the corresponding fields.
+A reference to the Invoice has been created.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }//end of else, if (txtISIstockPrice.Text!="" &&txtISIstockReceived.Text!="")
+                }//end of if (txtISIinvItem.Text!="")
+                else
+                {
+                    MessageBox.Show(" No Item Found... Please provide an item.");
+                }//end of else, if (txtISIinvItem.Text!="")
             }//end of else if (invIDExists == true)
         }//end of  private void invoiceExist_IDnotExist()
         private void invoiceNOTexist_IDexist()
         {
-            Boolean stockIDExists = false;
-            DataTable dtGetStock = new DataTable();
-            dtGetStock = datac.getTable("InventoryStock");
-            stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
-            if (stockIDExists == true)
-            {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
-                updateRECEIVEDInventoryStock();
-            }//end of if (stockIDExists == true)
-            else
-            {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
-                insertRECEIVEDIntoInventoryStock();
-            }//end of else if (stockIDExists == true)
-            insertRECEIVEDIntoInvoiceIn();
-            insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+            //Boolean stockIDExists = false;
+            //DataTable dtGetStock = new DataTable();
+            //dtGetStock = datac.getTable("InventoryStock");
+            //stockIDExists = testDTIfExistAddOne(dtGetStock, 1, txtISIinvID.Text);
+            //if (stockIDExists == true)
+            //{//if the relevant inventory ID is found in the inventoryStock table (only update that record)
+            //    updateRECEIVEDInventoryStock();
+            //}//end of if (stockIDExists == true)
+            //else
+            //{//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
+            //    insertRECEIVEDIntoInventoryStock();
+            //}//end of else if (stockIDExists == true)
+            doInsertIntoInvoiceAndStock();
+            //insertRECEIVEDIntoInvoiceIn();
+            //insertRECEIVEDIntoStockIn(txtISIinvID.Text);
         }//end of private void invoiceNOTexist_IDexist()
         private void invoiceNOTexist_LookupID()
         {
@@ -1277,21 +1349,22 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
             dtGetInventory = datac.getTable("Inventory");
             dtGetStock = datac.getTable("InventoryStock");
 
-            invIDExists = testDTIfExist(dtGetInventory, 2, txtISIinvItem.Text);//see if the item is present
+            invIDExists = testDTIfExistAddOne(dtGetInventory, 2, txtISIinvItem.Text);//see if the item is present
             if (invIDExists == true)
             {//when item exists but ID is wrong, get correct ID
                 getInvID = getInventoryID();
-                stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
-                if (stockIDExists == true)
-                {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
-                    updateRECEIVEDInventoryStock();
-                }//end of if (stockIDExists == true)
-                else
-                {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
-                    insertRECEIVEDIntoInventoryStock();
-                }//end of else if (stockIDExists == true)
-                insertRECEIVEDIntoInvoiceIn();
-                insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+                stockIDExists = testDTIfExistAddOne(dtGetStock, 1, txtISIinvID.Text);
+                //if (stockIDExists == true)
+                //{//if the relevant inventory ID is found in the inventoryStock table (only update that record)
+                //    updateRECEIVEDInventoryStock();
+                //}//end of if (stockIDExists == true)
+                //else
+                //{//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
+                //    insertRECEIVEDIntoInventoryStock();
+                //}//end of else if (stockIDExists == true)
+                doInsertIntoInvoiceAndStock();
+                //insertRECEIVEDIntoInvoiceIn();
+                //insertRECEIVEDIntoStockIn(txtISIinvID.Text);
             }//end of if (invIDExists == true)
             else
             {
@@ -1313,121 +1386,200 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
             {//when item exists but ID is wrong, get correct ID
                 getInvID = getInventoryID();
                 stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
-                if (stockIDExists == true)
-                {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
-                    updateRECEIVEDInventoryStock();
-                }//end of if (stockIDExists == true)
-                else
-                {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
-                    insertRECEIVEDIntoInventoryStock();
-                }//end of else if (stockIDExists == true)
-                insertRECEIVEDIntoInvoiceIn();
-                insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+                //if (stockIDExists == true)
+                //{//if the relevant inventory ID is found in the inventoryStock table (only update that record)
+                //    updateRECEIVEDInventoryStock();
+                //}//end of if (stockIDExists == true)
+                //else
+                //{//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
+                //    insertRECEIVEDIntoInventoryStock();
+                //}//end of else if (stockIDExists == true)
+
+                doInsertIntoInvoiceAndStock();
+                //insertRECEIVEDIntoInvoiceIn();
+                //insertRECEIVEDIntoStockIn(txtISIinvID.Text);
             }//end of if (invIDExists == true)
             else
             {
-                MessageBox.Show("Making new item.");
-                //item is new
-                insertRECEIVEDIntoInventory();
-                getInvID = getInventoryID();
-                insertRECEIVEDIntoInventoryStock();
-                insertRECEIVEDIntoInvoiceIn();
-                insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+             //   IDnotExistCreateNewItem();
+                if (txtISIinvItem.Text!="")
+                {
+                    MessageBox.Show("Making new item.");
+                    //item is new
+                    if (txtISIstockPrice.Text != "" && txtISIstockReceived.Text != "")
+                    {
+
+                        insertRECEIVEDIntoInventory();
+                        getInvID = getInventoryID();
+                        // insertRECEIVEDIntoInventoryStock();
+                        doInsertIntoInvoiceAndStock();
+                        //insertRECEIVEDIntoInvoiceIn();
+                        //insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+                    }//end of if (txtISIstockPrice.Text != "" && txtISIstockReceived.Text != "")
+                    else
+                    {
+                        MessageBox.Show(@"Please enter a Price/Unit value and Quantity Received value in the corresponding fields for this new item.", "New Item Save Unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }//end of else, if (txtISIstockPrice.Text != "" && txtISIstockReceived.Text != "")
+                }//end of if (txtISIinvItem.Text!="")
+                else
+                {
+                    MessageBox.Show(" No Item Found... Please provide an item.");
+                }//end of else, if (txtISIinvItem.Text!="")
             }//end of else if (invIDExists == true)
         }//end of  private void invoiceNOTexist_IDnotExist()
         private void invoiceEmpty_IDexist()
         {
-            Boolean stockIDExists = false;
             DataTable dtGetInventory = new DataTable();
             DataTable dtGetStock = new DataTable();
             //do stuff
             dtGetInventory = datac.getTable("Inventory");
-            dtGetStock = datac.getTable("InventoryStock");
-            stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
-            if (stockIDExists == true)
-            {
-                updateRECEIVEDInventoryStock();
-            }//end of if (stockIDExists == true)
-            else
-            {
-                insertRECEIVEDIntoInventoryStock();
-            }//end of else if (stockIDExists == true)
-            insertRECEIVEDIntoStockIn(txtISIinvID.Text);
-            insertRECEIVEDIntoInvoiceIn_Stock();
-            insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+          //  test_Update_Insert_InventoryStock();
+            invoiceEmpty_IDExist_recirculate();
         }//end of private void invoiceEmpty_IDexist()
         private void invoiceEmpty_LookupID()
         {
             Boolean invIDExists = false;
-            Boolean stockIDExists = false;
-            string getInvID = "";
             DataTable dtGetInventory = new DataTable();
-            DataTable dtGetStock = new DataTable();
             //do stuff
             dtGetInventory = datac.getTable("Inventory");
-            dtGetStock = datac.getTable("InventoryStock");
-            invIDExists = testDTIfExist(dtGetInventory, 2, txtISIinvItem.Text);
-            if (invIDExists == true)
+            invIDExists = testDTIfExistAddOne(dtGetInventory, 2, txtISIinvItem.Text);
+            if (invIDExists == true)//check if name exists in the Inventory table
             {//if id exist for item, give correct id
-                if (stockIDExists == true)
-                {//see if the inventory ID was found in the inventoryStock table                                 
-                    stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
-                    if (stockIDExists == true)
-                    {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
-                        updateRECEIVEDInventoryStock();
-                    }//end of if (stockIDExists == true)
-                    else
-                    {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
-                        insertRECEIVEDIntoInventoryStock();
-                    }//end of else if (stockIDExists == true)
-                    insertRECEIVEDIntoInvoiceIn();
-                    insertRECEIVEDIntoStockIn(txtISIinvID.Text);
-                }//end of if (stockIDExists == true)
-                else
-                {//this is where the ID is found as non existant, but consider that the ID is only wrong and item might exist
-                    invIDExists = testDTIfExist(dtGetInventory, 2, txtISIinvItem.Text);//see if the item is present
-                    if (invIDExists == true)
-                    {//when item exists but ID is wrong, get correct ID
-                        getInvID = getInventoryID();
-                        stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
-                        if (stockIDExists == true)
-                        {//if the relevant inventory ID is found in the inventoryStock table (only update that record)
-                            updateRECEIVEDInventoryStock();
-                        }//end of if (stockIDExists == true)
-                        else
-                        {//if the relevant inventory ID was NOT found in the inventoryStock table (do an insert to create a reference)
-                            insertRECEIVEDIntoInventoryStock();
-                        }//end of else if (stockIDExists == true)
-                        insertRECEIVEDIntoInvoiceIn();
-                        insertRECEIVEDIntoStockIn(txtISIinvID.Text);
-                    }//end of if (invIDExists == true)
-                    else
-                    {
-                        MessageBox.Show("ID could not be found.");
-                    }//end of else if (invIDExists == true)
-                }//end of else if (stockIDExists == true)
+                txtISIinvID.Text = getInventoryID();
+               // test_Update_Insert_InventoryStock();
+                invoiceEmpty_IDExist_recirculate();
             }//end of  if (invIDExists == true)
             else
             {//error
                 MessageBox.Show("ID could not be found.");
+                //consider calling insert method instead
+                invoiceEmpty_IDnotExist();
             }//end of else  if (invIDExists == true)
         }//end of  private void invoiceEmpty_LookupID()
         private void invoiceEmpty_IDnotExist()
         {//item is new
             string getInvID = "";
+            if (txtISIinvItem.Text!="")
+            {
+                if (txtISIstockPrice.Text != "" && txtISIstockReceived.Text != "")
+                {
+                    insertRECEIVEDIntoInventory();
+                    getInvID = getInventoryID();
+                    // insertRECEIVEDIntoInventoryStock();
+                    doInsertIntoInvoiceAndStock();
+                }//end of if (txtInvoiceNo.Text!="" && txtISIstockPrice.Text!="" && txtISIstockReceived.Text!="")
+                else
+                {
+                    MessageBox.Show(@"Please ensure all necessary fields are filled out.
 
-            insertRECEIVEDIntoInventory();
-            getInvID = getInventoryID();
-            insertRECEIVEDIntoInventoryStock();
-            insertRECEIVEDIntoInvoiceIn_Stock();
-            insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+Fields that may cause this record not to save: Quantity received and Price.
+
+Record was not saved.
+
+Please revise and try again.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }//end of else, if (txtInvoiceNo.Text!="" && txtISIstockPrice.Text!="" && txtISIstockReceived.Text!="")
+            }//end of if (txtISIinvItem.Text!="")
+            else
+            {
+                MessageBox.Show(@"Please ensure all necessary fields are filled out.
+
+Fields that may cause this record not to save: Item Name.
+
+Record was not saved.
+
+Please revise and try again.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }//end of else, //end of if (txtISIinvItem.Text!="")
         }//end of  private void invoiceEmpty_IDnotExist()
-        private void btnISIDUMMY_Click(object sender, EventArgs e)
+
+        private void test_Update_Insert_InventoryStock()
+        {
+            Boolean stockIDExists = false;
+            DataTable dtGetStock = new DataTable();
+            dtGetStock = datac.getTable("InventoryStock");
+            stockIDExists = testDTIfExist(dtGetStock, 1, txtISIinvID.Text);
+            if (txtISIstockReceived.Text!="")
+            {
+                if (stockIDExists == true)
+                {
+                    updateRECEIVEDInventoryStock();
+                }//end of if (stockIDExists == true)
+                else
+                {
+                    insertRECEIVEDIntoInventoryStock();
+                }//end of else if (stockIDExists == true)  
+            }//end of if (txtISIstockReceived.Text!="")
+            else
+            {
+                MessageBox.Show(@"Please enter a Quantity Received value in the corresponding field.
+                A reference to the Invoice has been created.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }//end of else if (txtISIstockReceived.Text!="")
+           
+        }//end of private void test_Update_Insert_InventoryStock()
+
+        private void invoiceEmpty_IDExist_recirculate()
+        {
+            DataTable dtFifoDatedRec = new DataTable();
+            DataTable dtAllStockIn=new DataTable();
+            string[] StockInCol = { "SubStockINID", "InventoryID", "SSIStockLeft" };
+            ArrayList updateStockValues = new ArrayList();
+            Boolean exist = false;
+
+            dtAllStockIn=datac.getTable("SubStockIn");
+            exist = testDTIfExist(dtAllStockIn, 1, txtISIinvID.Text);
+            if (exist==true)
+            {//get oldest dated record that has a >0 value, then do update to add stock to it from stock received
+                if (txtISIstockReceived.Text!="")
+                {
+                    updateRECEIVEDStockIn(); //this method already gets the fifo record and updates the QUANTITY
+                    test_Update_Insert_InventoryStock();
+                }//end of if (txtISIstockReceived.Text!="")
+                else
+                {
+                    MessageBox.Show(@"Please enter a Quantity Received value in the corresponding field.
+                A reference to the Invoice has been created.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }//end of else, if (txtISIstockReceived.Text!="")
+            }//end of if (exist==true)
+            else
+            {//there is no previous record to recirculate to.
+                MessageBox.Show(@"No history of this item was found.
+
+Therefore a 'STOCK' invoice will be created, since this is saved as stock recirculated,
+and not as an invoice received from a supplier.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //do stock -invoice create here
+                doInsertIntoInvoiceAndStock();
+            }//end of else, if (exist==true)
+        }//end of private void invoiceEmpty_IDExist_recirculate()
+
+        private void doInsertIntoInvoiceAndStock()
+        {
+            if (txtISIinvID.Text!="")
+            {
+                if (txtISIstockPrice.Text != "" && txtISIstockReceived.Text != "")
+                {
+                    if (txtInvoiceNo.Text=="")
+                    {
+                        insertRECEIVEDIntoInvoiceIn_Stock();
+                    }//end of if (txtInvoiceNo.Text=="")
+                    else
+                    {
+                        insertRECEIVEDIntoInvoiceIn();
+                    }//end of else, if (txtInvoiceNo.Text=="")
+                    insertRECEIVEDIntoStockIn(txtISIinvID.Text);
+                    test_Update_Insert_InventoryStock();
+                }//end of if (txtISIstockPrice.Text!="" &&txtISIstockReceived.Text!="")
+                else
+                {
+                    MessageBox.Show(@"Please enter a Price/Unit value and Quantity Received value in the corresponding fields.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }//end of else, if (txtISIstockPrice.Text!="" &&txtISIstockReceived.Text!="")  
+            }//end of if (txtISIinvID.Text!="")
+        }//end of private void doInsertIntoInvoiceAndStock()
+
+        private void btnISISave_Click(object sender, EventArgs e)
         {
             //variables
             Boolean invoiceExists = false;
             Boolean invIDExists = false;
-            Boolean stockIDExists = false;
+         //   Boolean stockIDExists = false;
             DataTable dtGetInventory = new DataTable();
             //do stuff
             dtGetInventory = datac.getTable("Inventory");
@@ -1441,7 +1593,7 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                     {//clicked yes to use this invoice and add to it
                         if (txtISIinvID.Text != "")
                         {//the inventory ID is NOT empty
-                            invIDExists = testDTIfExist(dtGetInventory, 0, txtISIinvID.Text);
+                            invIDExists = testDTIfExistAddOne(dtGetInventory, 0, txtISIinvID.Text);
                             if (invIDExists == true)
                             {//see if the inventory ID was found in the inventoryStock table
                                 invoiceExist_IDexists();
@@ -1468,13 +1620,13 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 {//invoice not exist
                     if (txtISIinvID.Text != "")
                     {//the inventory ID is NOT empty
-                        invIDExists = testDTIfExist(dtGetInventory, 0, txtISIinvID.Text);
-                        if (stockIDExists == true)
+                        invIDExists = testDTIfExistAddOne(dtGetInventory, 0, txtISIinvID.Text);
+                        if (invIDExists == true)
                         {//see if the inventory ID was found in the inventoryStock table
                             invoiceNOTexist_IDexist();
                         }//end of if (stockIDExists == true)
                         else
-                        {//this is where the ID is found as non existant, but consider that the ID is only wrong and item might exist
+                        {//this is where the ID is not empty, but is found as non existant, so consider that the ID is only wrong and item might exist
                             invoiceNOTexist_LookupID();
                         }//end of else if (stockIDExists == true)
                     }//end of  if (txtISIinvID.Text != "")
@@ -1486,12 +1638,13 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
             }//end of if (txtInvoiceNo.Text != "")
             else
             {//empty invoice
-                DialogResult resultStock = MessageBox.Show("Make stock?", "Empty invoice", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult resultStock = MessageBox.Show(@"Invoice Number field is empty.
+                    Reciculate the stock?", "Empty invoice", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (resultStock == DialogResult.Yes)
                 {
                     if (txtISIinvID.Text != "")
                     {
-                        invIDExists = testDTIfExist(dtGetInventory, 0, txtISIinvID.Text);
+                        invIDExists = testDTIfExistAddOne(dtGetInventory, 0, txtISIinvID.Text);
                         if (invIDExists == true)
                         {
                             invoiceEmpty_IDexist();
@@ -1512,7 +1665,24 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 }//end of else if (resultStock == DialogResult.Yes)
             }//end of else if (txtInvoiceNo.Text != "")
             dtgStockIn.DataSource = datac.getTable("Inventory");//to do a datasource update after any modifications made to inventory
+            btnISIpreviewCurrent.Enabled = true;
+            btnISIrecordNewInvoice.Enabled = true;
+            btnISIdelItemInvoice.Enabled = true;
         }//end of  private void btnISIDUMMY_Click(object sender, EventArgs e)
+                
+        private void btnISIinvoiceClear_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                txtInvoiceNo.Clear();
+                txtISITotal.Text = "0.00";
+                dtpInvoiceDate.Value = DateTime.Now;
+            }//end of try
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error clearing data from Invoice textBoxes : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }//end of catch
+        }//end of private void btnISIinvoiceClear_Click(object sender, EventArgs e)
         #endregion
         #endregion
 
@@ -1552,6 +1722,7 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                     txtSCity.Clear();
                     txtSProv.Clear();
                     txtSupReTime.Clear();
+                    txtsupDiscount.Clear();
                 }//end of else if (txtSName.Text != "")
             }//end of try
             catch (Exception ex)
@@ -1584,6 +1755,7 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 txtSCity.Clear();
                 txtSProv.Clear();
                 txtSupReTime.Clear();
+                txtsupDiscount.Clear();
             }//end of try
             catch (Exception ex)
             {
@@ -1615,13 +1787,13 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 txtSupPrefix.Text = dtgSuppliers.SelectedRows[0].Cells[10].Value.ToString();
                 txtSupReTime.Text = dtgSuppliers.SelectedRows[0].Cells[11].Value.ToString();
                 cmbSupPayTerm.Text = dtgSuppliers.SelectedRows[0].Cells[12].Value.ToString();
+                txtsupDiscount.Text = dtgSuppliers.SelectedRows[0].Cells[14].Value.ToString();
             }//end of try
             catch (Exception ex)
             {
                 MessageBox.Show("Error loading data from datagrid to textBoxes : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 //throw;
             }//end of catch (Exception ex)
-
         }//end of private void dtgSuppliers_Click(object sender, EventArgs e)
 
         private void btnSupUPDATE_Click(object sender, EventArgs e)
@@ -1652,6 +1824,15 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 values.Add(txtSupReTime.Text);
                 values.Add(cmbSupPayTerm.Text);//.DisplayMember);
                 values.Add("false");
+                if (txtsupDiscount.Text!="")
+                {
+                    values.Add(txtsupDiscount.Text);
+                }//end of if (txtsupDiscount.Text!="")
+                else
+                {
+                    values.Add(txtsupDiscount.Text);
+                }//end of else, if (txtsupDiscount.Text!="")
+
                 datac.updateRecCmd("Supplier", fieldID, txtSID.Text, fieldSup, values);        //Send values in fieldSup string format from textBox/ comboBox through updateCmd query to database table using InvID as key
                 dtgSuppliers.DataSource = datac.getTable("Supplier");//get the entire table as datasource to dtg
             }//end of try
@@ -1688,6 +1869,14 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 values.Add(txtSupReTime.Text);
                 values.Add(cmbSupPayTerm.DisplayMember);
                 values.Add("0");
+                if (txtsupDiscount.Text != "")
+                {
+                    values.Add(txtsupDiscount.Text);
+                }//end of if (txtsupDiscount.Text!="")
+                else
+                {
+                    values.Add(txtsupDiscount.Text);
+                }//end of else, if (txtsupDiscount.Text!="")
            
                 datac.insertCmd("Supplier", fieldSup, values);       ////Send values in fieldSup string format through insertCmd query to database table
                 dtgSuppliers.DataSource = datac.getTable("Supplier");//refresh the datasource to display the newly inserted
@@ -1726,7 +1915,8 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
                 values.Add(txtSupReTime.Text);
                 values.Add(cmbSupPayTerm.DisplayMember);
                 values.Add("1");
-                
+                values.Add(txtsupDiscount.Text);
+          
                 datac.updateRecCmd("Supplier", fieldID, txtSID.Text, fieldSup, values);        //Send values in fieldSup string format from textBox/ comboBox through updateCmd query to database table using InvID as key and only update isDeleted column
                 txtSID.Clear();
                 txtSName.Clear();
@@ -1752,7 +1942,7 @@ It will still show in the grid, because there may be references to this record."
         }//end of private void btnDeleteSup_Click(object sender, EventArgs e)
         #endregion
 
-        #region tabStockCheck Controls             
+        #region tabStockCheck Controls
         private void btnSearchSCinv_Click(object sender, EventArgs e)
         {
             try
@@ -1840,7 +2030,7 @@ It will still show in the grid, because there may be references to this record."
 
                 //****************Get the stock total quantity from InventoryStock table, relevant to the InventoryID******************
                 testTotalStock = datac.getTable("InventoryStock");
-                exists = testDTIfExist(testTotalStock, 1, txtSCinvID.Text);
+                exists = testDTIfExistAddOne(testTotalStock, 1, txtSCinvID.Text);
 
                 // for (int i = 0; i < testTotalStock.Rows.Count+1; i++)
                 //{
@@ -1993,7 +2183,7 @@ It will still show in the grid, because there may be references to this record."
                 } //end of else 
                 dtgCheckStock.DataSource = datac.getTable("Inventory");
                 dtgInventoryValue.DataSource = datac.getInventoryValue();
-                dtgInvOrderHistory.DataSource = datac.getLowStock();
+                dtgSupOrderList.DataSource = datac.getLowStock();
 
                 //to calculate total value of stock based on quantity and price on inventoryValue tab****
                 displayInventoryValue();
@@ -2020,7 +2210,7 @@ It will still show in the grid, because there may be references to this record."
                 dtgCheckStock.DataSource = datac.getInventoryValue();
                 dtgInventoryValue.DataSource = datac.getInventoryValue();
                 displayInventoryValue();
-                dtgInvOrderHistory.DataSource = datac.getLowStock();
+                dtgSupOrderList.DataSource = datac.getLowStock();
             }//end of try
             catch (Exception ex)
             {
@@ -2059,28 +2249,6 @@ It will still show in the grid, because there may be references to this record."
                 ordersTable = datac.getTable("Orders");
                 exists = testDTIfExist(ordersTable, 2, cbxOrderSup.SelectedValue.ToString());              
                 ////run through all the orders
-                //for (int i = 0; i < ordersTable.Rows.Count; i++)
-                //{
-                //    //test if there is a supplierID that matches
-                //    if (exists == false)
-                //    {
-                //        if (ordersTable.Rows[i][2].ToString() == cbxOrderSup.SelectedValue.ToString())
-                //        {
-                //            //this means there is a previous order made
-                //            exists = true;
-                //        }//end of if (ordersTable.Rows[i][2].ToString()==cbxOrderSup.SelectedValue.ToString())
-                //        else
-                //        {
-                //            //this means there is no order history for this supplier
-                //            exists = false;
-                //        }//end of else of if (ordersTable.Rows[i][2].ToString()==cbxOrderSup.SelectedValue.ToString())
-                //    }//end of if (exists == false)
-                //    else
-                //    {
-                //        //this will be my flag to signal if it exists, since the first part of exist will only test each row and then move on, thus not stopping if it exists
-                //        flag = true;
-                //    }//end of else of if (exists == false)
-               // }//end of for (int i = 0; i < ordersTable.Rows.Count; i++)
 
                 //do something if there is a history
                 if (exists == true)
@@ -2139,29 +2307,7 @@ It will still show in the grid, because there may be references to this record."
                 ordersTable = datac.getTable("Orders");
                 exists = testDTIfExist(ordersTable, 2, cbxOrderSup.SelectedValue.ToString());              
 
-                //run through all the orders
-                //for (int i = 0; i < ordersTable.Rows.Count; i++)
-                //{
-                //    //test if there is a supplierID that matches
-                //    if (exists == false)
-                //    {
-                //        if (ordersTable.Rows[i][2].ToString() == cbxOrderSup.SelectedValue.ToString())
-                //        {
-                //            //this means there is a previous order made
-                //            exists = true;
-                //        }//end of if (ordersTable.Rows[i][2].ToString()==cbxOrderSup.SelectedValue.ToString())
-                //        else
-                //        {
-                //            //this means there is no order history for this supplier
-                //            exists = false;
-                //        }//end of else of if (ordersTable.Rows[i][2].ToString()==cbxOrderSup.SelectedValue.ToString())
-                //    }//end of if (exists == false)
-                //    else
-                //    {
-                //        //this will be my flag to signal if it exists, since the first part of exist will only test each row and then move on, thus not stopping if it exists
-                //        flag = true;
-                //    }//end of else of if (exists == false)
-                //}//end of for (int i = 0; i < ordersTable.Rows.Count; i++)
+
 
                 //do something if there is a history
                 if (exists == true)
@@ -2205,7 +2351,6 @@ It will still show in the grid, because there may be references to this record."
                 DataTable maxPrice = new DataTable();//use datatable to save the maxDatedPrice query results in, to fetch latest price on item dragged to current dtg.
                 //variables
                 Boolean exists = new Boolean();
-                Boolean flag = new Boolean();
                 //other
                 DataGridViewRow row = e.Data.GetData(typeof(DataGridViewRow))
                 as DataGridViewRow;
@@ -2220,39 +2365,23 @@ It will still show in the grid, because there may be references to this record."
                         newrow.Cells[i].Value = row.Cells[i].Value;
                     }//end of for (int i = 0; i < newrow.Cells.Count; i++)
                     //this part is to change the price column to latest price on system, first testing if there is an invoice to reference it to.
-                    maxPrice = datac.getMaxDatedPrice(newrow.Cells[0].Value.ToString());//the price is on space 4
-                    for (int i = 0; i < maxPrice.Rows.Count + 1; i++)
-                    {
-                        if (exists == false)
-                        {
-                            if (maxPrice.Rows[i][1].ToString() == newrow.Cells[0].Value.ToString())
-                            {
-                                exists = true;
-                            }//end of if (testTotalStock.Rows[i][1].ToString() == txtInvID.Text)
-                            else
-                            {
-                                exists = false;
-                            }//end of else of if (testTotalStock.Rows[i][1].ToString() == txtInvID.Text) 
-                        }//end of if (exists == false)
-                        else
-                        {
-                            flag = true;
-                        }//end of else of if (exists == false)
-                    }//end of for (int i = 0; i < maxPrice.Rows.Count + 1; i++)
-                    if (flag == true)
+                    maxPrice = datac.getTable("SubStockIN");
+                    //  maxPrice = datac.getMaxDatedPrice(newrow.Cells[0].Value.ToString());//the price is on space 4
+                    exists = testDTIfExistAddOne(maxPrice, 1, newrow.Cells[0].Value.ToString());
+                    if (exists == true)
                     {//if the flag is true, meaning the record already exists, will then get references
+                        maxPrice = datac.getMaxDatedPrice(newrow.Cells[0].Value.ToString());//the price is on space 4
                         newrow.Cells[7].Value = maxPrice.Rows[0][4].ToString();//this line updates the price column to the last recorded invoice price received
-                        this.dtgOrderInvList.Rows.Add(newrow);//assuming this actually puts the row in the dtg
+                        dtgOrderInvList.Rows.Add(newrow);//assuming this actually puts the row in the dtg
                     }//end of if (flag == true)
                     else
                     {
                         MessageBox.Show(@"No previous invoices were found to update the prices with, therefor the previous order from which this was taken will be used for the price.
 Please ensure prices are updated regularly.", "Price Update Reminder", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         //with no invoice reference, use the drag destination price
-                        this.dtgOrderInvList.Rows.Add(newrow);//assuming this actually puts the row in the dtg
+                        dtgOrderInvList.Rows.Add(newrow);//assuming this actually puts the row in the dtg
                     }//end of else of if (flag == true)
                 }//end of  if (row != null)
-
                 //This part below is to calculate the running total for this order in the current dtg
                 calculateOrderTotal();
                 btnOrderSavePDF.Enabled = true;
@@ -2291,14 +2420,16 @@ Please ensure prices are updated regularly.", "Price Update Reminder", MessageBo
             }//end of catch (Exception ex)
         }//end of void dtgSupOrderList_MouseMove(object sender, MouseEventArgs e)
         //end drag and drop methods
+
         private void btnAddAll_Click(object sender, EventArgs e)
         {
             try
             {//this adds the entire dtg1 to dtg2 as is and recalculates the dtg
                 #region Variables
                 DataGridViewRow row = new DataGridViewRow();
+                DataTable maxPrice = new DataTable();//use datatable to save the maxDatedPrice query results in, to fetch latest price on item dragged to current dtg.
+                Boolean exists = new Boolean();
                 #endregion
-
                     for (int iCnt = 0; iCnt < dtgSupOrderList.Rows.Count; iCnt++) 
                     {
                         row = (DataGridViewRow)dtgSupOrderList.Rows[iCnt].Clone();
@@ -2308,9 +2439,24 @@ Please ensure prices are updated regularly.", "Price Update Reminder", MessageBo
                             row.Cells[iColIndex].Value = cell.Value;
                             iColIndex += 1;
                         }//end of foreach (DataGridViewCell cell in dtgSupOrderList.Rows[iCnt].Cells)
-                        dtgOrderInvList.Rows.Add(row);
+                      //  dtgOrderInvList.Rows.Add(row);
+                        //this part will make it get the newest price for each item
+                        maxPrice = datac.getTable("SubStockIN");
+                        //  maxPrice = datac.getMaxDatedPrice(newrow.Cells[0].Value.ToString());//the price is on space 4
+                        exists = testDTIfExistAddOne(maxPrice, 1, dtgSupOrderList.Rows[iCnt].Cells[0].Value.ToString());
+                         if (exists == true)
+                         {//if the flag is true, meaning the record already exists, will then get references
+                             maxPrice = datac.getMaxDatedPrice(dtgSupOrderList.Rows[iCnt].Cells[0].Value.ToString());//the price is on space 4
+                             row.Cells[7].Value = maxPrice.Rows[0][4].ToString();//this line updates the price column to the last recorded invoice price received
+                             dtgOrderInvList.Rows.Add(row);//assuming this actually puts the row in the dtg
+                         }//end of if (flag == true)
+                         else
+                         {
+                             MessageBox.Show(@"No previous invoices were found to update the prices with, therefor the previous order from which this was taken will be used for the price.
+Please ensure prices are updated regularly.", "Price Update Reminder", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                             //with no invoice reference, use the drag destination price
+                         }//end of else of if (flag == true)
                     }//end of for (int iCnt = 0; iCnt < dtgSupOrderList.Rows.Count; iCnt++) 
-
                     //This part below is to calculate the running total for this order in the current dtg
                     calculateOrderTotal();
                     btnOrderSavePDF.Enabled = true;
@@ -2327,7 +2473,6 @@ Please ensure prices are updated regularly.", "Price Update Reminder", MessageBo
             {//this clears the entire dtg and recalculates the dtg as values with 0.00
                 dtgOrderInvList.Rows.Clear();
                 btnOrderSavePDF.Enabled = false;
-
                 //This part below is to calculate the running total for this order in the current dtg
                 calculateOrderTotal();
             }//end of try 
@@ -2356,6 +2501,7 @@ Please ensure prices are updated regularly.", "Price Update Reminder", MessageBo
             {//this is so that the total can still be calculated even after an edit or manual row inserted, since nothing else has to happen on click to this dtg
                 #region Variables
                 double orderTotal = 0.00;
+                double vat = datac.getVATrate();
                 #endregion
 
                 for (int i = 0; i < dtgOrderInvList.Rows.Count - 1; i++)
@@ -2366,21 +2512,21 @@ Please ensure prices are updated regularly.", "Price Update Reminder", MessageBo
                     }//end of if (dtgOrderInvList.Rows[i].Cells[7].Value!=null)
                 }//end of for (int i = 0; i < dtgOrderInvList.Rows.Count - 1; i++)
                 txtOrderTotalExcl.Text = double.Parse(orderTotal.ToString()).ToString("C");
-                txtOrderVAT.Text = (double.Parse(orderTotal.ToString()) * 0.14).ToString("C");
-                txtOrderTotalIncl.Text = (double.Parse(orderTotal.ToString()) * 1.14).ToString("C");
+                txtOrderVAT.Text = (double.Parse(orderTotal.ToString()) * vat).ToString("C");
+                txtOrderTotalIncl.Text = (double.Parse(orderTotal.ToString()) * (1+vat)).ToString("C");
                 btnOrderSavePDF.Enabled = true;
             }//end of try
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }//end of catch catch (Exception ex)
-
         }//end of private void dtgOrderInvList_Click(object sender, EventArgs e)
       
         private void calculateOrderTotal()
         {
             #region Variables
             double orderTotal = 0.00;
+            double vat = datac.getVATrate();
             #endregion
 
             //This part below is to calculate the running total for this order in the current dtg
@@ -2389,10 +2535,12 @@ Please ensure prices are updated regularly.", "Price Update Reminder", MessageBo
                 orderTotal += (int.Parse(dtgOrderInvList.Rows[i].Cells[6].Value.ToString()) * double.Parse(dtgOrderInvList.Rows[i].Cells[7].Value.ToString()));
             }//end of for (int i = 0; i < dtgOrderInvList.Rows.Count - 1; i++)
             txtOrderTotalExcl.Text = double.Parse(orderTotal.ToString()).ToString("C");
-            txtOrderVAT.Text = (double.Parse(orderTotal.ToString()) * 0.14).ToString("C");
-            txtOrderTotalIncl.Text = (double.Parse(orderTotal.ToString()) * 1.14).ToString("C");
+            txtOrderVAT.Text = (double.Parse(orderTotal.ToString()) * vat).ToString("C");
+            txtOrderTotalIncl.Text = (double.Parse(orderTotal.ToString()) * (1+vat)).ToString("C");
         }//end of private void calculateOrderTotal()
-       
+        #endregion
+
+        #region PDF Controls
         private void btnPDForder_Click(object sender, EventArgs e)
         {
             try
@@ -2432,251 +2580,247 @@ Please ensure prices are updated regularly.", "Price Update Reminder", MessageBo
                 string supPrefix = arrayOrderNo[2].ToString();//here is the supplier prefix
                 int orderNoDigit = int.Parse(arrayOrderNo[3].ToString());//here is the order number digits
                 double orderTotal = 0.00;
+                double vat = datac.getVATrate();
                 #endregion
                 // dtInvValues = (DataTable)dtgSupOrderList.DataSource;
                 // dtInvValues = datac.getStockInInvoice(getID);
 
-                 DialogResult result = MessageBox.Show("Do you wish to save this order?", "Save Order", MessageBoxButtons.YesNo,
-               MessageBoxIcon.Question);
-                            
-                 if (result == DialogResult.Yes)
-                 {
-                     foreach (DataGridViewColumn header in dtgOrderInvList.Columns)
-                     {
-                         dtInvValues.Columns.Add(header.Name);
-                     }//end of foreach (DataGridViewColumn header in dtgOrderInvList.Columns)
-                     foreach (DataGridViewRow row in dtgOrderInvList.Rows)
-                     {
-                         if (row.IsNewRow)
-                             continue;
-                         DataRow dtRow = dtInvValues.NewRow();
-                         for (int i1 = 0; i1 < dtgOrderInvList.Columns.Count; i1++)
-                             dtRow[i1] = (row.Cells[i1].Value == null ? DBNull.Value : row.Cells[i1].Value);
-                         dtInvValues.Rows.Add(dtRow);
-                     }//end of foreach (DataGridViewRow row in dtgOrderInvList.Rows)
+                DialogResult result = MessageBox.Show("Do you wish to save this order?", "Save Order", MessageBoxButtons.YesNo,
+              MessageBoxIcon.Question);
 
-                     //get the applicable supplier details
-                     val.Add(getID);
-                     dtSupValues = datac.getRecord("Supplier", field, val);
+                if (result == DialogResult.Yes)
+                {
+                    foreach (DataGridViewColumn header in dtgOrderInvList.Columns)
+                    {
+                        dtInvValues.Columns.Add(header.Name);
+                    }//end of foreach (DataGridViewColumn header in dtgOrderInvList.Columns)
+                    foreach (DataGridViewRow row in dtgOrderInvList.Rows)
+                    {
+                        if (row.IsNewRow)
+                            continue;
+                        DataRow dtRow = dtInvValues.NewRow();
+                        for (int i1 = 0; i1 < dtgOrderInvList.Columns.Count; i1++)
+                            dtRow[i1] = (row.Cells[i1].Value == null ? DBNull.Value : row.Cells[i1].Value);
+                        dtInvValues.Rows.Add(dtRow);
+                    }//end of foreach (DataGridViewRow row in dtgOrderInvList.Rows)
 
-                     if (dtInvValues != null)
-                     {
-                         getSupPrefix.Add(supPrefix);
-                         dtSupplierList = datac.getRecord("Supplier", searchField, getSupPrefix);//here we have the supplier filtered by prefix
+                    //get the applicable supplier details
+                    val.Add(getID);
+                    dtSupValues = datac.getRecord("Supplier", field, val);
 
-                         for (int i = 0; i < dtgOrderInvList.Rows.Count - 1; i++)
-                         {//this gets the estimate cost for this order
-                             orderTotal += (int.Parse(dtgOrderInvList.Rows[i].Cells[6].Value.ToString()) * double.Parse(dtgOrderInvList.Rows[i].Cells[7].Value.ToString()));
-                         }//end of for (int i = 0; i < dtgOrderInvList.Rows.Count - 1; i++)
-                         orderTotal = orderTotal * 1.14;
+                    if (dtInvValues != null)
+                    {
+                        getSupPrefix.Add(supPrefix);
+                        dtSupplierList = datac.getRecord("Supplier", searchField, getSupPrefix);//here we have the supplier filtered by prefix
 
-                         ordersValues.Add(0);
-                         ordersValues.Add(orderNoDigit);
-                         ordersValues.Add(dtSupplierList.Rows[0][0].ToString());
-                         ordersValues.Add(DateTime.Now);
-                         ordersValues.Add(orderTotal);
-                         datac.insertCmd("Orders", fieldOrders, ordersValues);       //do the first insert: into orders
+                        for (int i = 0; i < dtgOrderInvList.Rows.Count - 1; i++)
+                        {//this gets the estimate cost for this order
+                            orderTotal += (int.Parse(dtgOrderInvList.Rows[i].Cells[6].Value.ToString()) * double.Parse(dtgOrderInvList.Rows[i].Cells[7].Value.ToString()));
+                        }//end of for (int i = 0; i < dtgOrderInvList.Rows.Count - 1; i++)
+                        orderTotal = orderTotal * (1+vat);
 
-                         orderRefValues.Add(" =" + orderNoDigit);
-                         orderRefValues.Add(" =" + dtSupplierList.Rows[0][0].ToString());
-                         getOrderRef = datac.getMathRecord("Orders", searchOrderRef, orderRefValues);//get the ID reference for the order just created
+                        ordersValues.Add(0);
+                        ordersValues.Add(orderNoDigit);
+                        ordersValues.Add(dtSupplierList.Rows[0][0].ToString());
+                        ordersValues.Add(DateTime.Now);
+                        ordersValues.Add(orderTotal);
+                        datac.insertCmd("Orders", fieldOrders, ordersValues);       //do the first insert: into orders
 
-                         foreach (DataRow dtRow in dtInvValues.Rows)
-                         {
-                             if (dtRow["invID"].ToString() != "")
-                             {
-                                 invOrdered.Add(0);
-                                 invOrdered.Add(dtRow["invID"].ToString());
-                                 if (dtRow["orderQuantity"].ToString() != "")
-                                 {
-                                     invOrdered.Add(dtRow["orderQuantity"].ToString());
-                                 }// end of if (dtRow["orderQuantity"].ToString()!="")
-                                 else
-                                 {
-                                     MessageBox.Show("Please enter a quantity to be ordered.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                 }//end of else, if (dtRow["orderQuantity"].ToString()!="")
-                                 if (dtRow["orderPrice"].ToString() != "")
-                                 {
-                                     invOrdered.Add(dtRow["orderPrice"].ToString());
-                                 }// end of if (dtRow["orderPrice"].ToString()!="")
-                                 else
-                                 {
-                                     invOrdered.Add(0.00);
-                                 }//end of else, if (dtRow["orderPrice"].ToString()!="")
-                                 invOrdered.Add(getOrderRef.Rows[0][0].ToString());//get the order reference that was created.
-                                 if (dtRow["invLength"].ToString() != "")
-                                 {
-                                     invOrdered.Add(dtRow["invLength"].ToString());
-                                 }// end of if (dtRow["invLength"].ToString()!="")
-                                 else
-                                 {
-                                     invOrdered.Add(0.00);
-                                 }//end of else, if (dtRow["invLength"].ToString()!="")
+                        orderRefValues.Add(" =" + orderNoDigit);
+                        orderRefValues.Add(" =" + dtSupplierList.Rows[0][0].ToString());
+                        getOrderRef = datac.getMathRecord("Orders", searchOrderRef, orderRefValues);//get the ID reference for the order just created
 
-                                 datac.insertCmd("SubOrders", fieldSubOrders, invOrdered);//insert this item in the created order
-                                 invOrdered = new ArrayList();//clear the arraylist for the next item
-                             }//end of if (dtRow["ID"].ToString() !="")
-                             else
-                             {
-                                 //create a new reference ID in the inventory table, by first inserting new item into table
-                                 //then insert into the StockTotal table with new ID
-                                 //then do final insert into subOrder
-                                 //since there is nothing being received at all yet, no need to insert into substock- stock and price (invoiced price) will be entered when the invoice is received
-                                 newInvItem.Add(0);
-                                 if (dtRow["invCode"].ToString() != "")
-                                 {
-                                     newInvItem.Add(dtRow["invCode"].ToString());
-                                 }// end of if (dtRow["invCode"].ToString()!="")
-                                 else
-                                 {
-                                     newInvItem.Add("");
-                                 }//end of else, if (dtRow["invCode"].ToString()!="")
-                                 if (dtRow["invItem"].ToString() != "")
-                                 {
-                                     newInvItem.Add(dtRow["invItem"].ToString());
-                                 }// end of if (dtRow["invItem"].ToString()!="")
-                                 else
-                                 {
-                                     MessageBox.Show("Please enter a name for the item being ordered.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                 }//end of else, if (dtRow["invItem"].ToString()!="")
-                                 if (dtRow["invDescription"].ToString() != "")
-                                 {
-                                     newInvItem.Add(dtRow["invDescription"].ToString());
-                                 }// end of if (dtRow["invDescription"].ToString()!="")
-                                 else
-                                 {
-                                     newInvItem.Add("");
-                                 }//end of else, if (dtRow["invDescription"].ToString()!="")
-                                 if (dtRow["invSupDescription"].ToString() != "")
-                                 {
-                                     newInvItem.Add(dtRow["invSupDescription"].ToString());
-                                 }// end of if (dtRow["invSupDescription"].ToString()!="")
-                                 else
-                                 {
-                                     newInvItem.Add("");
-                                 }//end of else, if (dtRow["invSupDescription"].ToString()!="")
-                                 newInvItem.Add("");
-                                 newInvItem.Add(1);
-                                 newInvItem.Add(25);
-                                 newInvItem.Add("false");
+                        foreach (DataRow dtRow in dtInvValues.Rows)
+                        {
+                            if (dtRow["invID"].ToString() != "")
+                            {
+                                invOrdered.Add(0);
+                                invOrdered.Add(dtRow["invID"].ToString());
+                                if (dtRow["orderQuantity"].ToString() != "")
+                                {
+                                    invOrdered.Add(dtRow["orderQuantity"].ToString());
+                                }// end of if (dtRow["orderQuantity"].ToString()!="")
+                                else
+                                {
+                                    MessageBox.Show("Please enter a quantity to be ordered.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                }//end of else, if (dtRow["orderQuantity"].ToString()!="")
+                                if (dtRow["orderPrice"].ToString() != "")
+                                {
+                                    invOrdered.Add(dtRow["orderPrice"].ToString());
+                                }// end of if (dtRow["orderPrice"].ToString()!="")
+                                else
+                                {
+                                    invOrdered.Add(0.00);
+                                }//end of else, if (dtRow["orderPrice"].ToString()!="")
+                                invOrdered.Add(getOrderRef.Rows[0][0].ToString());//get the order reference that was created.
+                                if (dtRow["invLength"].ToString() != "")
+                                {
+                                    invOrdered.Add(dtRow["invLength"].ToString());
+                                }// end of if (dtRow["invLength"].ToString()!="")
+                                else
+                                {
+                                    invOrdered.Add(0.00);
+                                }//end of else, if (dtRow["invLength"].ToString()!="")
 
-                                 datac.insertCmd("Inventory", fieldInvAll, newInvItem);//create an ID (reference) in the inventory table for this new item
-                                 newInvItem = new ArrayList();//clear the arraylist for the next item
+                                datac.insertCmd("SubOrders", fieldSubOrders, invOrdered);//insert this item in the created order
+                                invOrdered = new ArrayList();//clear the arraylist for the next item
+                            }//end of if (dtRow["ID"].ToString() !="")
+                            else
+                            {
+                                //create a new reference ID in the inventory table, by first inserting new item into table
+                                //then insert into the StockTotal table with new ID
+                                //then do final insert into subOrder
+                                //since there is nothing being received at all yet, no need to insert into substock- stock and price (invoiced price) will be entered when the invoice is received
+                                newInvItem.Add(0);
+                                if (dtRow["invCode"].ToString() != "")
+                                {
+                                    newInvItem.Add(dtRow["invCode"].ToString());
+                                }// end of if (dtRow["invCode"].ToString()!="")
+                                else
+                                {
+                                    newInvItem.Add("");
+                                }//end of else, if (dtRow["invCode"].ToString()!="")
+                                if (dtRow["invItem"].ToString() != "")
+                                {
+                                    newInvItem.Add(dtRow["invItem"].ToString());
+                                }// end of if (dtRow["invItem"].ToString()!="")
+                                else
+                                {
+                                    MessageBox.Show("Please enter a name for the item being ordered.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                }//end of else, if (dtRow["invItem"].ToString()!="")
+                                if (dtRow["invDescription"].ToString() != "")
+                                {
+                                    newInvItem.Add(dtRow["invDescription"].ToString());
+                                }// end of if (dtRow["invDescription"].ToString()!="")
+                                else
+                                {
+                                    newInvItem.Add("");
+                                }//end of else, if (dtRow["invDescription"].ToString()!="")
+                                if (dtRow["invSupDescription"].ToString() != "")
+                                {
+                                    newInvItem.Add(dtRow["invSupDescription"].ToString());
+                                }// end of if (dtRow["invSupDescription"].ToString()!="")
+                                else
+                                {
+                                    newInvItem.Add("");
+                                }//end of else, if (dtRow["invSupDescription"].ToString()!="")
+                                newInvItem.Add("");
+                                newInvItem.Add(1);
+                                newInvItem.Add(25);
+                                newInvItem.Add("false");
 
-                                 if (dtRow["invCode"].ToString() != "")
-                                 {
-                                     searchNewID.Add(dtRow["invCode"].ToString());
-                                 }// end of if (dtRow["invCode"].ToString()!="")
-                                 else
-                                 {
-                                     searchNewID.Add("");
-                                 }//end of else, if (dtRow["invCode"].ToString()!="")
-                                 searchNewID.Add(dtRow["invItem"].ToString());
-                                 if (dtRow["invDescription"].ToString() != "")
-                                 {
-                                     searchNewID.Add(dtRow["invDescription"].ToString());
-                                 }// end of if (dtRow["invDescription"].ToString()!="")
-                                 else
-                                 {
-                                     searchNewID.Add("");
-                                 }//end of else, if (dtRow["invDescription"].ToString()!="")
-                                 if (dtRow["invSupDescription"].ToString() != "")
-                                 {
-                                     searchNewID.Add(dtRow["invSupDescription"].ToString());
-                                 }// end of if (dtRow["invSupDescription"].ToString()!="")
-                                 else
-                                 {
-                                     searchNewID.Add("");
-                                 }//end of else, if (dtRow["invSupDescription"].ToString()!="")
+                                datac.insertCmd("Inventory", fieldInvAll, newInvItem);//create an ID (reference) in the inventory table for this new item
+                                newInvItem = new ArrayList();//clear the arraylist for the next item
 
-                                 getInvID = datac.getRecord("Inventory", searchNewInv, searchNewID);//get the record's ID that was just created
-                                 searchNewID = new ArrayList();//clear arraylist for next item
+                                if (dtRow["invCode"].ToString() != "")
+                                {
+                                    searchNewID.Add(dtRow["invCode"].ToString());
+                                }// end of if (dtRow["invCode"].ToString()!="")
+                                else
+                                {
+                                    searchNewID.Add("");
+                                }//end of else, if (dtRow["invCode"].ToString()!="")
+                                searchNewID.Add(dtRow["invItem"].ToString());
+                                if (dtRow["invDescription"].ToString() != "")
+                                {
+                                    searchNewID.Add(dtRow["invDescription"].ToString());
+                                }// end of if (dtRow["invDescription"].ToString()!="")
+                                else
+                                {
+                                    searchNewID.Add("");
+                                }//end of else, if (dtRow["invDescription"].ToString()!="")
+                                if (dtRow["invSupDescription"].ToString() != "")
+                                {
+                                    searchNewID.Add(dtRow["invSupDescription"].ToString());
+                                }// end of if (dtRow["invSupDescription"].ToString()!="")
+                                else
+                                {
+                                    searchNewID.Add("");
+                                }//end of else, if (dtRow["invSupDescription"].ToString()!="")
 
-                                 newStockItem.Add(0);
-                                 newStockItem.Add(getInvID.Rows[0][0].ToString());
-                                 newStockItem.Add(0);
+                                getInvID = datac.getRecord("Inventory", searchNewInv, searchNewID);//get the record's ID that was just created
+                                searchNewID = new ArrayList();//clear arraylist for next item
 
-                                 datac.insertCmd("InventoryStock", fieldTotalStock, newStockItem);//insert newly created item in the stock with a 0 stock count
-                                 newStockItem = new ArrayList();//clear arraylist for next item
+                                newStockItem.Add(0);
+                                newStockItem.Add(getInvID.Rows[0][0].ToString());
+                                newStockItem.Add(0);
 
-                                 invOrdered.Add(0);
-                                 invOrdered.Add(getInvID.Rows[0][0].ToString());
-                                 if (dtRow["orderQuantity"].ToString() != "")
-                                 {
-                                     invOrdered.Add(dtRow["orderQuantity"].ToString());
-                                 }// end of if (dtRow["orderQuantity"].ToString()!="")
-                                 else
-                                 {
-                                     MessageBox.Show("Please enter a quantity to be ordered.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                 }//end of else, if (dtRow["orderQuantity"].ToString()!="")
-                                 if (dtRow["orderPrice"].ToString() != "")
-                                 {
-                                     invOrdered.Add(dtRow["orderPrice"].ToString());
-                                 }// end of if (dtRow["orderPrice"].ToString()!="")
-                                 else
-                                 {
-                                     invOrdered.Add(0.00);
-                                 }//end of else, if (dtRow["orderPrice"].ToString()!="")
-                                 invOrdered.Add(getOrderRef.Rows[0][0].ToString());//get the order reference that was created.
-                                 if (dtRow["invLength"].ToString() != "")
-                                 {
-                                     invOrdered.Add(dtRow["invLength"].ToString());
-                                 }// end of if (dtRow["invLength"].ToString()!="")
-                                 else
-                                 {
-                                     invOrdered.Add(0.00);
-                                 }//end of else, if (dtRow["invLength"].ToString()!="")
+                                datac.insertCmd("InventoryStock", fieldTotalStock, newStockItem);//insert newly created item in the stock with a 0 stock count
+                                newStockItem = new ArrayList();//clear arraylist for next item
 
-                                 datac.insertCmd("SubOrders", fieldSubOrders, invOrdered); //insert this new item in the order created
-                                 invOrdered = new ArrayList();//clear arraylist for next item
-                             }//end of else, if (dtRow["ID"].ToString() !="")
-                         }//end of foreach (DataRow dtRow in dtInvValues)
+                                invOrdered.Add(0);
+                                invOrdered.Add(getInvID.Rows[0][0].ToString());
+                                if (dtRow["orderQuantity"].ToString() != "")
+                                {
+                                    invOrdered.Add(dtRow["orderQuantity"].ToString());
+                                }// end of if (dtRow["orderQuantity"].ToString()!="")
+                                else
+                                {
+                                    MessageBox.Show("Please enter a quantity to be ordered.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                }//end of else, if (dtRow["orderQuantity"].ToString()!="")
+                                if (dtRow["orderPrice"].ToString() != "")
+                                {
+                                    invOrdered.Add(dtRow["orderPrice"].ToString());
+                                }// end of if (dtRow["orderPrice"].ToString()!="")
+                                else
+                                {
+                                    invOrdered.Add(0.00);
+                                }//end of else, if (dtRow["orderPrice"].ToString()!="")
+                                invOrdered.Add(getOrderRef.Rows[0][0].ToString());//get the order reference that was created.
+                                if (dtRow["invLength"].ToString() != "")
+                                {
+                                    invOrdered.Add(dtRow["invLength"].ToString());
+                                }// end of if (dtRow["invLength"].ToString()!="")
+                                else
+                                {
+                                    invOrdered.Add(0.00);
+                                }//end of else, if (dtRow["invLength"].ToString()!="")
 
-                         string targetpath = savePDFfileDialog(fileName);
-                         pdfc.CreateOrderPDF(dtInvValues, dtSupValues, fileName, targetpath);//simply send a datatable for supplier, a datatable for the items, and a string for the filename- it will do the rest
+                                datac.insertCmd("SubOrders", fieldSubOrders, invOrdered); //insert this new item in the order created
+                                invOrdered = new ArrayList();//clear arraylist for next item
+                            }//end of else, if (dtRow["ID"].ToString() !="")
+                        }//end of foreach (DataRow dtRow in dtInvValues)
+                        string targetpath = savePDFfileDialog(fileName);
+                        pdfc.CreateOrderPDF(dtInvValues, dtSupValues, fileName, targetpath);//simply send a datatable for supplier, a datatable for the items, and a string for the filename- it will do the rest
+                    }//end of if (dtInvValues!=null)
+                    else
+                    {
+                        MessageBox.Show("No values were entered. Please enter values to insert into the order form.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }//end of else, if (dtInvValues!=null)
+                }//end of  if (result == DialogResult.Yes)
+                else if (result == DialogResult.No)
+                {
+                    foreach (DataGridViewColumn header in dtgOrderInvList.Columns)
+                    {
+                        dtInvValues.Columns.Add(header.Name);
+                    }//end of foreach (DataGridViewColumn header in dtgOrderInvList.Columns)
+                    foreach (DataGridViewRow row in dtgOrderInvList.Rows)
+                    {
+                        if (row.IsNewRow)
+                            continue;
+                        DataRow dtRow = dtInvValues.NewRow();
+                        for (int i1 = 0; i1 < dtgOrderInvList.Columns.Count; i1++)
+                            dtRow[i1] = (row.Cells[i1].Value == null ? DBNull.Value : row.Cells[i1].Value);
+                        dtInvValues.Rows.Add(dtRow);
+                    }//end of foreach (DataGridViewRow row in dtgOrderInvList.Rows)
 
-                     }//end of if (dtInvValues!=null)
-                     else
-                     {
-                         MessageBox.Show("No values were entered. Please enter values to insert into the order form.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                     }//end of else, if (dtInvValues!=null)
+                    //get the applicable supplier details
+                    val.Add(getID);
+                    dtSupValues = datac.getRecord("Supplier", field, val);
 
-                   
-                 }//end of  if (result == DialogResult.Yes)
-                 else if (result == DialogResult.No)
-                 {
-                     foreach (DataGridViewColumn header in dtgOrderInvList.Columns)
-                     {
-                         dtInvValues.Columns.Add(header.Name);
-                     }//end of foreach (DataGridViewColumn header in dtgOrderInvList.Columns)
-                     foreach (DataGridViewRow row in dtgOrderInvList.Rows)
-                     {
-                         if (row.IsNewRow)
-                             continue;
-                         DataRow dtRow = dtInvValues.NewRow();
-                         for (int i1 = 0; i1 < dtgOrderInvList.Columns.Count; i1++)
-                             dtRow[i1] = (row.Cells[i1].Value == null ? DBNull.Value : row.Cells[i1].Value);
-                         dtInvValues.Rows.Add(dtRow);
-                     }//end of foreach (DataGridViewRow row in dtgOrderInvList.Rows)
+                    if (dtInvValues != null)
+                    {
+                        string targetpath = savePDFfileDialog(fileName);
+                        pdfc.CreateOrderPDF(dtInvValues, dtSupValues, fileName, targetpath);//simply send a datatable for supplier, a datatable for the items, and a string for the filename- it will do the rest
 
-                     //get the applicable supplier details
-                     val.Add(getID);
-                     dtSupValues = datac.getRecord("Supplier", field, val);
+                    }//end of if (dtInvValues!=null)
+                    else
+                    {
+                        MessageBox.Show("No values were entered. Please enter values to insert into the order form.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }//end of else, if (dtInvValues!=null)
+                }//end of else else if (result == DialogResult.No)
 
-                     if (dtInvValues != null)
-                     {
-
-                         string targetpath = savePDFfileDialog(fileName);
-                         pdfc.CreateOrderPDF(dtInvValues, dtSupValues, fileName, targetpath);//simply send a datatable for supplier, a datatable for the items, and a string for the filename- it will do the rest
-
-                     }//end of if (dtInvValues!=null)
-                     else
-                     {
-                         MessageBox.Show("No values were entered. Please enter values to insert into the order form.", "Save unsuccessful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                     }//end of else, if (dtInvValues!=null)
-                 }//end of else else if (result == DialogResult.No)
-
-                 txtOrderNumber.Clear();
+                txtOrderNumber.Clear();
                 dtgSupOrderHistory.DataSource = datac.getAllOrderHistory();//refresh the datagridview
                 dtgOrderInvList.Rows.Clear();//clear the ordering List to enable new order to be made.
             }//end of try
@@ -2685,9 +2829,7 @@ Please ensure prices are updated regularly.", "Price Update Reminder", MessageBo
                 MessageBox.Show(ex.ToString());
             }//end of catch (Exception ex)            
         }//end of private void btnPDForder_Click(object sender, EventArgs e)
-        #endregion
 
-        #region PDF Controls
         private string savePDFfileDialog(string fileName)
         {
             string filepath = "";
@@ -2734,15 +2876,42 @@ Please ensure prices are updated regularly.", "Price Update Reminder", MessageBo
             txtStockValue.Text = double.Parse(totalStockValue.ToString()).ToString("C");
         }//end of private void displayInventoryValue()
 
+        private Boolean testDTIfExistAddOne(DataTable testDatatable, int colIndexnumber, string findText)
+        { //my dynamic way to see if the record (or the reference thereof) exists within the table within the database
+            #region Variables
+            Boolean exists = false;
+            Boolean flag = false;
+            #endregion
+                for (int i = 0; i < testDatatable.Rows.Count + 1; i++)
+                {
+                    if (exists == false)
+                    {
+                        if (testDatatable.Rows[i][colIndexnumber].ToString() == findText)
+                        {
+                            exists = true;
+                            flag = true;
+                        }//end of if (testDatatable.Rows[i][colIndexnumber].ToString() == findText)
+                        else
+                        {
+                            exists = false;
+                        }//end of else of if (testDatatable.Rows[i][1].ToString() == findText)
+                    }//end of if (exists == false)
+                    else
+                    {
+                        flag = true;
+                    }//end of else of if (exists == false)
+                }//end of  for (int i = 0; i < testDatatable.Rows.Count + 1; i++)  
+            return flag;
+        }//end of private Boolean testIfExist(DataTable testDatatable)
+
         private Boolean testDTIfExist(DataTable testDatatable, int colIndexnumber, string findText)
-        {
-            //my dynamic way to see if the record (or the reference thereof) exists within the table within the database
+        { //my dynamic way to see if the record (or the reference thereof) exists within the table within the database
             #region Variables
             Boolean exists = false;
             Boolean flag = false;
             #endregion
 
-            for (int i = 0; i < testDatatable.Rows.Count+1; i++)
+            for (int i = 0; i < testDatatable.Rows.Count; i++)
             {
                 if (exists == false)
                 {
@@ -2763,6 +2932,13 @@ Please ensure prices are updated regularly.", "Price Update Reminder", MessageBo
             }//end of  for (int i = 0; i < testDatatable.Rows.Count + 1; i++)
             return flag;
         }//end of private Boolean testIfExist(DataTable testDatatable)
+
+        private void btnShowAllItems_Click(object sender, EventArgs e)
+        {
+
+        }//end of private void btnShowAllItems_Click(object sender, EventArgs e)
+
+
     }//end of public partial class frmInventory : Form
 }//end of namespace ImagineTrailvan
 
