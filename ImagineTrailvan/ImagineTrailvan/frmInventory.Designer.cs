@@ -279,6 +279,7 @@
             // 
             // tConInventory
             // 
+            this.tConInventory.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
             this.tConInventory.Controls.Add(this.tabStockOUT);
             this.tConInventory.Controls.Add(this.tabStockIN);
             this.tConInventory.Controls.Add(this.tabStockCheck);
@@ -295,16 +296,17 @@
             // 
             // tabStockOUT
             // 
+            this.tabStockOUT.AutoScroll = true;
             this.tabStockOUT.Controls.Add(this.dtpDateStockOUT);
             this.tabStockOUT.Controls.Add(this.gboxPrice);
             this.tabStockOUT.Controls.Add(this.gboxStock);
             this.tabStockOUT.Controls.Add(this.btnStockUpdate);
             this.tabStockOUT.Controls.Add(this.grbInventory);
             this.tabStockOUT.Controls.Add(this.dtgInventory);
-            this.tabStockOUT.Location = new System.Drawing.Point(4, 22);
+            this.tabStockOUT.Location = new System.Drawing.Point(4, 25);
             this.tabStockOUT.Name = "tabStockOUT";
             this.tabStockOUT.Padding = new System.Windows.Forms.Padding(3);
-            this.tabStockOUT.Size = new System.Drawing.Size(1036, 525);
+            this.tabStockOUT.Size = new System.Drawing.Size(1036, 522);
             this.tabStockOUT.TabIndex = 0;
             this.tabStockOUT.Text = "STOCK OUT";
             this.tabStockOUT.UseVisualStyleBackColor = true;
@@ -616,12 +618,13 @@
             this.dtgInventory.Name = "dtgInventory";
             this.dtgInventory.ReadOnly = true;
             this.dtgInventory.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtgInventory.Size = new System.Drawing.Size(1024, 293);
+            this.dtgInventory.Size = new System.Drawing.Size(1024, 290);
             this.dtgInventory.TabIndex = 0;
             this.dtgInventory.Click += new System.EventHandler(this.dtgInventory_Click);
             // 
             // tabStockIN
             // 
+            this.tabStockIN.AutoScroll = true;
             this.tabStockIN.Controls.Add(this.btnISIinvoiceClear);
             this.tabStockIN.Controls.Add(this.label1);
             this.tabStockIN.Controls.Add(this.dtgInvoiceHistory);
@@ -633,17 +636,16 @@
             this.tabStockIN.Controls.Add(this.btnISIpreviewCurrent);
             this.tabStockIN.Controls.Add(this.groupBox6);
             this.tabStockIN.Controls.Add(this.dtgStockIn);
-            this.tabStockIN.Location = new System.Drawing.Point(4, 22);
+            this.tabStockIN.Location = new System.Drawing.Point(4, 25);
             this.tabStockIN.Name = "tabStockIN";
             this.tabStockIN.Padding = new System.Windows.Forms.Padding(3);
-            this.tabStockIN.Size = new System.Drawing.Size(1036, 525);
+            this.tabStockIN.Size = new System.Drawing.Size(1036, 522);
             this.tabStockIN.TabIndex = 8;
             this.tabStockIN.Text = "STOCK IN";
             this.tabStockIN.UseVisualStyleBackColor = true;
             // 
             // btnISIinvoiceClear
             // 
-            this.btnISIinvoiceClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnISIinvoiceClear.Location = new System.Drawing.Point(439, 118);
             this.btnISIinvoiceClear.Name = "btnISIinvoiceClear";
             this.btnISIinvoiceClear.Size = new System.Drawing.Size(75, 23);
@@ -654,7 +656,6 @@
             // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(517, 11);
             this.label1.Name = "label1";
@@ -664,11 +665,13 @@
             // 
             // dtgInvoiceHistory
             // 
-            this.dtgInvoiceHistory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.dtgInvoiceHistory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dtgInvoiceHistory.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dtgInvoiceHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dtgInvoiceHistory.Location = new System.Drawing.Point(520, 27);
             this.dtgInvoiceHistory.Name = "dtgInvoiceHistory";
+            this.dtgInvoiceHistory.ReadOnly = true;
             this.dtgInvoiceHistory.Size = new System.Drawing.Size(512, 119);
             this.dtgInvoiceHistory.TabIndex = 61;
             // 
@@ -696,8 +699,6 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.label40);
             this.groupBox1.Controls.Add(this.cmbISISupplier);
             this.groupBox1.Location = new System.Drawing.Point(4, 107);
@@ -709,6 +710,8 @@
             // 
             // label40
             // 
+            this.label40.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label40.AutoSize = true;
             this.label40.Location = new System.Drawing.Point(21, 16);
             this.label40.Name = "label40";
@@ -729,6 +732,7 @@
             this.cmbISISupplier.Size = new System.Drawing.Size(314, 21);
             this.cmbISISupplier.TabIndex = 5;
             this.cmbISISupplier.ValueMember = "SupplierID";
+            this.cmbISISupplier.SelectedValueChanged += new System.EventHandler(this.cmbISISupplier_SelectedValueChanged);
             // 
             // supplierBindingSource
             // 
@@ -742,8 +746,7 @@
             // 
             // groupBox4
             // 
-            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupBox4.Controls.Add(this.label41);
             this.groupBox4.Controls.Add(this.label42);
             this.groupBox4.Controls.Add(this.label43);
@@ -752,13 +755,15 @@
             this.groupBox4.Controls.Add(this.txtInvoiceNo);
             this.groupBox4.Location = new System.Drawing.Point(4, 11);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(507, 90);
+            this.groupBox4.Size = new System.Drawing.Size(429, 90);
             this.groupBox4.TabIndex = 58;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Invoice Details";
             // 
             // label41
             // 
+            this.label41.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label41.AutoSize = true;
             this.label41.Location = new System.Drawing.Point(8, 67);
             this.label41.Name = "label41";
@@ -768,6 +773,8 @@
             // 
             // label42
             // 
+            this.label42.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label42.AutoSize = true;
             this.label42.Location = new System.Drawing.Point(8, 46);
             this.label42.Name = "label42";
@@ -777,6 +784,8 @@
             // 
             // label43
             // 
+            this.label43.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label43.AutoSize = true;
             this.label43.Location = new System.Drawing.Point(8, 19);
             this.label43.Name = "label43";
@@ -792,7 +801,7 @@
             this.dtpInvoiceDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtpInvoiceDate.Location = new System.Drawing.Point(160, 40);
             this.dtpInvoiceDate.Name = "dtpInvoiceDate";
-            this.dtpInvoiceDate.Size = new System.Drawing.Size(331, 20);
+            this.dtpInvoiceDate.Size = new System.Drawing.Size(253, 20);
             this.dtpInvoiceDate.TabIndex = 4;
             this.dtpInvoiceDate.Value = new System.DateTime(2017, 10, 16, 15, 24, 7, 0);
             // 
@@ -802,7 +811,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtISITotal.Location = new System.Drawing.Point(287, 64);
             this.txtISITotal.Name = "txtISITotal";
-            this.txtISITotal.Size = new System.Drawing.Size(204, 20);
+            this.txtISITotal.Size = new System.Drawing.Size(126, 20);
             this.txtISITotal.TabIndex = 1;
             this.txtISITotal.Text = "0.00";
             // 
@@ -812,13 +821,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtInvoiceNo.Location = new System.Drawing.Point(160, 16);
             this.txtInvoiceNo.Name = "txtInvoiceNo";
-            this.txtInvoiceNo.Size = new System.Drawing.Size(331, 20);
+            this.txtInvoiceNo.Size = new System.Drawing.Size(253, 20);
             this.txtInvoiceNo.TabIndex = 0;
             // 
             // groupBox5
             // 
-            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox5.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupBox5.Controls.Add(this.cmbISIinvMarkup);
             this.groupBox5.Controls.Add(this.label44);
             this.groupBox5.Controls.Add(this.txtISIinvReLevel);
@@ -829,9 +837,9 @@
             this.groupBox5.Controls.Add(this.label48);
             this.groupBox5.Controls.Add(this.txtISIstockReceived);
             this.groupBox5.Controls.Add(this.txtISIstockPrice);
-            this.groupBox5.Location = new System.Drawing.Point(781, 152);
+            this.groupBox5.Location = new System.Drawing.Point(762, 152);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(251, 120);
+            this.groupBox5.Size = new System.Drawing.Size(270, 120);
             this.groupBox5.TabIndex = 57;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Stock";
@@ -871,8 +879,6 @@
             // 
             // label45
             // 
-            this.label45.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.label45.AutoSize = true;
             this.label45.Location = new System.Drawing.Point(8, 48);
             this.label45.Name = "label45";
@@ -910,8 +916,6 @@
             // 
             // label48
             // 
-            this.label48.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.label48.AutoSize = true;
             this.label48.Location = new System.Drawing.Point(124, 47);
             this.label48.Name = "label48";
@@ -945,6 +949,7 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupBox6.Controls.Add(this.label5);
             this.groupBox6.Controls.Add(this.txtISISupDescription);
             this.groupBox6.Controls.Add(this.btnISIinvDeleteItem);
@@ -970,6 +975,8 @@
             // 
             // label5
             // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(124, 75);
             this.label5.Name = "label5";
@@ -979,6 +986,8 @@
             // 
             // txtISISupDescription
             // 
+            this.txtISISupDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtISISupDescription.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txtISISupDescription.Location = new System.Drawing.Point(231, 72);
             this.txtISISupDescription.Name = "txtISISupDescription";
@@ -987,6 +996,8 @@
             // 
             // btnISIinvDeleteItem
             // 
+            this.btnISIinvDeleteItem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.btnISIinvDeleteItem.Location = new System.Drawing.Point(630, 93);
             this.btnISIinvDeleteItem.Name = "btnISIinvDeleteItem";
             this.btnISIinvDeleteItem.Size = new System.Drawing.Size(114, 23);
@@ -997,6 +1008,8 @@
             // 
             // btnISIclear
             // 
+            this.btnISIclear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.btnISIclear.Location = new System.Drawing.Point(655, 53);
             this.btnISIclear.Name = "btnISIclear";
             this.btnISIclear.Size = new System.Drawing.Size(89, 23);
@@ -1007,6 +1020,8 @@
             // 
             // label49
             // 
+            this.label49.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label49.AutoSize = true;
             this.label49.Location = new System.Drawing.Point(176, 96);
             this.label49.Name = "label49";
@@ -1016,6 +1031,8 @@
             // 
             // btnISIdelItemInvoice
             // 
+            this.btnISIdelItemInvoice.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.btnISIdelItemInvoice.Location = new System.Drawing.Point(451, 93);
             this.btnISIdelItemInvoice.Name = "btnISIdelItemInvoice";
             this.btnISIdelItemInvoice.Size = new System.Drawing.Size(173, 23);
@@ -1026,6 +1043,8 @@
             // 
             // btnISIsearchItem
             // 
+            this.btnISIsearchItem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.btnISIsearchItem.Location = new System.Drawing.Point(655, 27);
             this.btnISIsearchItem.Name = "btnISIsearchItem";
             this.btnISIsearchItem.Size = new System.Drawing.Size(89, 23);
@@ -1036,6 +1055,8 @@
             // 
             // label50
             // 
+            this.label50.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label50.AutoSize = true;
             this.label50.Location = new System.Drawing.Point(136, 54);
             this.label50.Name = "label50";
@@ -1045,6 +1066,8 @@
             // 
             // label51
             // 
+            this.label51.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label51.AutoSize = true;
             this.label51.Location = new System.Drawing.Point(228, 12);
             this.label51.Name = "label51";
@@ -1054,6 +1077,8 @@
             // 
             // label52
             // 
+            this.label52.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label52.AutoSize = true;
             this.label52.Location = new System.Drawing.Point(73, 15);
             this.label52.Name = "label52";
@@ -1063,6 +1088,8 @@
             // 
             // label53
             // 
+            this.label53.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label53.AutoSize = true;
             this.label53.Location = new System.Drawing.Point(8, 15);
             this.label53.Name = "label53";
@@ -1072,6 +1099,8 @@
             // 
             // txtISIinvCategory
             // 
+            this.txtISIinvCategory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtISIinvCategory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txtISIinvCategory.Location = new System.Drawing.Point(231, 93);
             this.txtISIinvCategory.Name = "txtISIinvCategory";
@@ -1080,6 +1109,8 @@
             // 
             // txtISIinvDescription
             // 
+            this.txtISIinvDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtISIinvDescription.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txtISIinvDescription.Location = new System.Drawing.Point(231, 51);
             this.txtISIinvDescription.Name = "txtISIinvDescription";
@@ -1088,6 +1119,8 @@
             // 
             // txtISIinvItem
             // 
+            this.txtISIinvItem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtISIinvItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txtISIinvItem.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtISIinvItem.Location = new System.Drawing.Point(231, 30);
@@ -1097,6 +1130,8 @@
             // 
             // txtISIinvCode
             // 
+            this.txtISIinvCode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtISIinvCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txtISIinvCode.Location = new System.Drawing.Point(73, 31);
             this.txtISIinvCode.Name = "txtISIinvCode";
@@ -1105,6 +1140,8 @@
             // 
             // txtISIinvID
             // 
+            this.txtISIinvID.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtISIinvID.Location = new System.Drawing.Point(6, 31);
             this.txtISIinvID.Name = "txtISIinvID";
             this.txtISIinvID.ReadOnly = true;
@@ -1122,20 +1159,21 @@
             this.dtgStockIn.Location = new System.Drawing.Point(4, 305);
             this.dtgStockIn.Name = "dtgStockIn";
             this.dtgStockIn.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtgStockIn.Size = new System.Drawing.Size(1028, 209);
+            this.dtgStockIn.Size = new System.Drawing.Size(1028, 206);
             this.dtgStockIn.TabIndex = 54;
             this.dtgStockIn.Click += new System.EventHandler(this.dtgStockIn_Click);
             // 
             // tabStockCheck
             // 
+            this.tabStockCheck.AutoScroll = true;
             this.tabStockCheck.Controls.Add(this.groupBox2);
             this.tabStockCheck.Controls.Add(this.btnSCsave);
             this.tabStockCheck.Controls.Add(this.groupBox3);
             this.tabStockCheck.Controls.Add(this.dtgCheckStock);
-            this.tabStockCheck.Location = new System.Drawing.Point(4, 22);
+            this.tabStockCheck.Location = new System.Drawing.Point(4, 25);
             this.tabStockCheck.Name = "tabStockCheck";
             this.tabStockCheck.Padding = new System.Windows.Forms.Padding(3);
-            this.tabStockCheck.Size = new System.Drawing.Size(1036, 525);
+            this.tabStockCheck.Size = new System.Drawing.Size(1036, 522);
             this.tabStockCheck.TabIndex = 7;
             this.tabStockCheck.Text = "STOCK CHECK";
             this.tabStockCheck.UseVisualStyleBackColor = true;
@@ -1221,8 +1259,6 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this.btnClearSCinv);
             this.groupBox3.Controls.Add(this.label19);
             this.groupBox3.Controls.Add(this.btnSearchSCinv);
@@ -1359,12 +1395,13 @@
             this.dtgCheckStock.Location = new System.Drawing.Point(6, 183);
             this.dtgCheckStock.Name = "dtgCheckStock";
             this.dtgCheckStock.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtgCheckStock.Size = new System.Drawing.Size(1024, 293);
+            this.dtgCheckStock.Size = new System.Drawing.Size(1024, 290);
             this.dtgCheckStock.TabIndex = 0;
             this.dtgCheckStock.Click += new System.EventHandler(this.dtgCheckStock_Click);
             // 
             // tabSuppliers
             // 
+            this.tabSuppliers.AutoScroll = true;
             this.tabSuppliers.Controls.Add(this.label4);
             this.tabSuppliers.Controls.Add(this.txtsupDiscount);
             this.tabSuppliers.Controls.Add(this.label39);
@@ -1384,10 +1421,10 @@
             this.tabSuppliers.Controls.Add(this.txtSName);
             this.tabSuppliers.Controls.Add(this.txtSID);
             this.tabSuppliers.Controls.Add(this.dtgSuppliers);
-            this.tabSuppliers.Location = new System.Drawing.Point(4, 22);
+            this.tabSuppliers.Location = new System.Drawing.Point(4, 25);
             this.tabSuppliers.Name = "tabSuppliers";
             this.tabSuppliers.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSuppliers.Size = new System.Drawing.Size(1036, 525);
+            this.tabSuppliers.Size = new System.Drawing.Size(1036, 522);
             this.tabSuppliers.TabIndex = 1;
             this.tabSuppliers.Text = "SUPPLIERS";
             this.tabSuppliers.UseVisualStyleBackColor = true;
@@ -1683,12 +1720,13 @@
             this.dtgSuppliers.Location = new System.Drawing.Point(6, 241);
             this.dtgSuppliers.Name = "dtgSuppliers";
             this.dtgSuppliers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtgSuppliers.Size = new System.Drawing.Size(1024, 245);
+            this.dtgSuppliers.Size = new System.Drawing.Size(1024, 242);
             this.dtgSuppliers.TabIndex = 0;
             this.dtgSuppliers.Click += new System.EventHandler(this.dtgSuppliers_Click);
             // 
             // tabInventoryValue
             // 
+            this.tabInventoryValue.AutoScroll = true;
             this.tabInventoryValue.Controls.Add(this.label24);
             this.tabInventoryValue.Controls.Add(this.label7);
             this.tabInventoryValue.Controls.Add(this.label6);
@@ -1699,10 +1737,10 @@
             this.tabInventoryValue.Controls.Add(this.lblInventoryValue);
             this.tabInventoryValue.Controls.Add(this.txtStockValue);
             this.tabInventoryValue.Controls.Add(this.dtgInventoryValue);
-            this.tabInventoryValue.Location = new System.Drawing.Point(4, 22);
+            this.tabInventoryValue.Location = new System.Drawing.Point(4, 25);
             this.tabInventoryValue.Name = "tabInventoryValue";
             this.tabInventoryValue.Padding = new System.Windows.Forms.Padding(3);
-            this.tabInventoryValue.Size = new System.Drawing.Size(1036, 525);
+            this.tabInventoryValue.Size = new System.Drawing.Size(1036, 522);
             this.tabInventoryValue.TabIndex = 2;
             this.tabInventoryValue.Text = "INVENTORY VALUE";
             this.tabInventoryValue.UseVisualStyleBackColor = true;
@@ -1737,13 +1775,14 @@
             // 
             // dataGridView1
             // 
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(573, 109);
+            this.dataGridView1.Location = new System.Drawing.Point(530, 109);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(455, 413);
+            this.dataGridView1.Size = new System.Drawing.Size(498, 413);
             this.dataGridView1.TabIndex = 6;
             // 
             // textBox7
@@ -1765,6 +1804,7 @@
             this.comboBox1.Size = new System.Drawing.Size(218, 21);
             this.comboBox1.TabIndex = 4;
             this.comboBox1.ValueMember = "SupplierID";
+            this.comboBox1.SelectedValueChanged += new System.EventHandler(this.comboBox1_SelectedValueChanged);
             // 
             // supplierBindingSource1
             // 
@@ -1805,16 +1845,19 @@
             // 
             // dtgInventoryValue
             // 
+            this.dtgInventoryValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.dtgInventoryValue.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dtgInventoryValue.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dtgInventoryValue.Location = new System.Drawing.Point(3, 109);
             this.dtgInventoryValue.Name = "dtgInventoryValue";
             this.dtgInventoryValue.ReadOnly = true;
-            this.dtgInventoryValue.Size = new System.Drawing.Size(455, 413);
+            this.dtgInventoryValue.Size = new System.Drawing.Size(508, 413);
             this.dtgInventoryValue.TabIndex = 0;
             // 
             // tabOrderStock
             // 
+            this.tabOrderStock.AutoScroll = true;
             this.tabOrderStock.Controls.Add(this.btnShowAllItems);
             this.tabOrderStock.Controls.Add(this.cbxOrderSup);
             this.tabOrderStock.Controls.Add(this.btnOrderSupGO);
@@ -1839,10 +1882,10 @@
             this.tabOrderStock.Controls.Add(this.btnAddAll);
             this.tabOrderStock.Controls.Add(this.dtgOrderInvList);
             this.tabOrderStock.Controls.Add(this.dtgSupOrderList);
-            this.tabOrderStock.Location = new System.Drawing.Point(4, 22);
+            this.tabOrderStock.Location = new System.Drawing.Point(4, 25);
             this.tabOrderStock.Name = "tabOrderStock";
             this.tabOrderStock.Padding = new System.Windows.Forms.Padding(3);
-            this.tabOrderStock.Size = new System.Drawing.Size(1036, 525);
+            this.tabOrderStock.Size = new System.Drawing.Size(1036, 522);
             this.tabOrderStock.TabIndex = 4;
             this.tabOrderStock.Tag = "";
             this.tabOrderStock.Text = "ORDER STOCK";
@@ -1869,6 +1912,7 @@
             this.cbxOrderSup.Size = new System.Drawing.Size(366, 21);
             this.cbxOrderSup.TabIndex = 70;
             this.cbxOrderSup.ValueMember = "SupplierID";
+            this.cbxOrderSup.SelectedValueChanged += new System.EventHandler(this.cbxOrderSup_SelectedValueChanged);
             // 
             // supplierBindingSource2
             // 
@@ -1905,7 +1949,7 @@
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(287, 455);
+            this.label3.Location = new System.Drawing.Point(287, 452);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(89, 13);
             this.label3.TabIndex = 67;
@@ -1924,7 +1968,7 @@
             // txtOrderNumber
             // 
             this.txtOrderNumber.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtOrderNumber.Location = new System.Drawing.Point(395, 452);
+            this.txtOrderNumber.Location = new System.Drawing.Point(395, 449);
             this.txtOrderNumber.Name = "txtOrderNumber";
             this.txtOrderNumber.Size = new System.Drawing.Size(274, 20);
             this.txtOrderNumber.TabIndex = 62;
@@ -1970,7 +2014,7 @@
             // 
             this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(807, 493);
+            this.label10.Location = new System.Drawing.Point(807, 490);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(113, 13);
             this.label10.TabIndex = 56;
@@ -1980,7 +2024,7 @@
             // 
             this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(875, 463);
+            this.label9.Location = new System.Drawing.Point(875, 460);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(45, 13);
             this.label9.TabIndex = 55;
@@ -1990,7 +2034,7 @@
             // 
             this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(861, 437);
+            this.label8.Location = new System.Drawing.Point(861, 434);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(59, 13);
             this.label8.TabIndex = 54;
@@ -2000,7 +2044,7 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(293, 455);
+            this.label2.Location = new System.Drawing.Point(293, 452);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(0, 13);
             this.label2.TabIndex = 52;
@@ -2010,7 +2054,7 @@
             this.txtOrderTotalIncl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtOrderTotalIncl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txtOrderTotalIncl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtOrderTotalIncl.Location = new System.Drawing.Point(926, 486);
+            this.txtOrderTotalIncl.Location = new System.Drawing.Point(926, 483);
             this.txtOrderTotalIncl.Name = "txtOrderTotalIncl";
             this.txtOrderTotalIncl.Size = new System.Drawing.Size(100, 20);
             this.txtOrderTotalIncl.TabIndex = 50;
@@ -2020,7 +2064,7 @@
             this.txtOrderVAT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtOrderVAT.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txtOrderVAT.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtOrderVAT.Location = new System.Drawing.Point(926, 460);
+            this.txtOrderVAT.Location = new System.Drawing.Point(926, 457);
             this.txtOrderVAT.Name = "txtOrderVAT";
             this.txtOrderVAT.Size = new System.Drawing.Size(100, 20);
             this.txtOrderVAT.TabIndex = 49;
@@ -2030,7 +2074,7 @@
             this.txtOrderTotalExcl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtOrderTotalExcl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.txtOrderTotalExcl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtOrderTotalExcl.Location = new System.Drawing.Point(926, 434);
+            this.txtOrderTotalExcl.Location = new System.Drawing.Point(926, 431);
             this.txtOrderTotalExcl.Name = "txtOrderTotalExcl";
             this.txtOrderTotalExcl.Size = new System.Drawing.Size(100, 20);
             this.txtOrderTotalExcl.TabIndex = 48;
@@ -2038,7 +2082,7 @@
             // btnOrderSavePDF
             // 
             this.btnOrderSavePDF.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnOrderSavePDF.Location = new System.Drawing.Point(463, 483);
+            this.btnOrderSavePDF.Location = new System.Drawing.Point(463, 480);
             this.btnOrderSavePDF.Name = "btnOrderSavePDF";
             this.btnOrderSavePDF.Size = new System.Drawing.Size(131, 23);
             this.btnOrderSavePDF.TabIndex = 46;
@@ -2102,7 +2146,7 @@
             this.dtgOrderInvList.Location = new System.Drawing.Point(571, 184);
             this.dtgOrderInvList.Name = "dtgOrderInvList";
             this.dtgOrderInvList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtgOrderInvList.Size = new System.Drawing.Size(455, 231);
+            this.dtgOrderInvList.Size = new System.Drawing.Size(455, 228);
             this.dtgOrderInvList.TabIndex = 1;
             this.dtgOrderInvList.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dtgOrderInvList_RowsRemoved);
             this.dtgOrderInvList.Click += new System.EventHandler(this.dtgOrderInvList_Click);
@@ -2183,7 +2227,7 @@
             this.dtgSupOrderList.ReadOnly = true;
             this.dtgSupOrderList.RowTemplate.ReadOnly = true;
             this.dtgSupOrderList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtgSupOrderList.Size = new System.Drawing.Size(455, 231);
+            this.dtgSupOrderList.Size = new System.Drawing.Size(455, 228);
             this.dtgSupOrderList.TabIndex = 0;
             // 
             // tabSupplierSummary
@@ -2206,10 +2250,10 @@
             this.tabSupplierSummary.Controls.Add(this.lblSearchSup);
             this.tabSupplierSummary.Controls.Add(this.txtSearchSupplier);
             this.tabSupplierSummary.Controls.Add(this.dtgSupplierSearch);
-            this.tabSupplierSummary.Location = new System.Drawing.Point(4, 22);
+            this.tabSupplierSummary.Location = new System.Drawing.Point(4, 25);
             this.tabSupplierSummary.Name = "tabSupplierSummary";
             this.tabSupplierSummary.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSupplierSummary.Size = new System.Drawing.Size(1036, 525);
+            this.tabSupplierSummary.Size = new System.Drawing.Size(1036, 522);
             this.tabSupplierSummary.TabIndex = 3;
             this.tabSupplierSummary.Text = "Supplier Summary";
             this.tabSupplierSummary.UseVisualStyleBackColor = true;
@@ -2237,7 +2281,7 @@
             this.lblValueSummary.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblValueSummary.AutoSize = true;
             this.lblValueSummary.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblValueSummary.Location = new System.Drawing.Point(838, 500);
+            this.lblValueSummary.Location = new System.Drawing.Point(838, 497);
             this.lblValueSummary.Name = "lblValueSummary";
             this.lblValueSummary.Size = new System.Drawing.Size(43, 13);
             this.lblValueSummary.TabIndex = 15;
@@ -2246,7 +2290,7 @@
             // txtSupSummaryValue
             // 
             this.txtSupSummaryValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSupSummaryValue.Location = new System.Drawing.Point(881, 497);
+            this.txtSupSummaryValue.Location = new System.Drawing.Point(881, 494);
             this.txtSupSummaryValue.Name = "txtSupSummaryValue";
             this.txtSupSummaryValue.Size = new System.Drawing.Size(147, 20);
             this.txtSupSummaryValue.TabIndex = 14;
@@ -2261,7 +2305,7 @@
             this.dtgInventorySummary.Location = new System.Drawing.Point(10, 259);
             this.dtgInventorySummary.Name = "dtgInventorySummary";
             this.dtgInventorySummary.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtgInventorySummary.Size = new System.Drawing.Size(1020, 232);
+            this.dtgInventorySummary.Size = new System.Drawing.Size(1020, 229);
             this.dtgInventorySummary.TabIndex = 13;
             // 
             // txtSearchSCell
