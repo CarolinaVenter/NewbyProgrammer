@@ -1,4 +1,5 @@
-﻿using System;
+﻿//GOD SHALL BLESS THIS APPLICATION AND ALL WHO USES IT, IMAGINE SHALL PROSPER BY THE GRACE OF GOD AND THE BLESSINGS GOD POURS IN, SO THAT WE CAN BLESS OUR CLIENTS. AMEN
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;

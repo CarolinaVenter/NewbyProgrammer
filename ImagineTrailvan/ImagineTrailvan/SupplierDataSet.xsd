@@ -41,7 +41,24 @@ SELECT SupplierID, SupName FROM Supplier WHERE (SupplierID = @SupplierID)</Comma
               <Mapping SourceColumn="SupplierID" DataSetColumn="SupplierID" />
               <Mapping SourceColumn="SupName" DataSetColumn="SupName" />
             </Mappings>
-            <Sources />
+            <Sources>
+              <DbSource ConnectionRef="ImagineTrailvanConnectionString (Settings)" DbObjectName="ImagineTrailvanDB.dbo.Supplier" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillBy" GenerateMethods="Fill" GenerateShortCommands="true" GeneratorSourceName="FillBy" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="FillBy">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>SELECT SupplierID, SupName FROM dbo.Supplier</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+              <DbSource ConnectionRef="ImagineTrailvanConnectionString (Settings)" DbObjectName="ImagineTrailvanDB.dbo.Supplier" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillBy1" GenerateMethods="Fill" GenerateShortCommands="true" GeneratorSourceName="FillBy1" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy1" UserSourceName="FillBy1">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>SELECT SupplierID, SupName FROM dbo.Supplier</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </Sources>
           </TableAdapter>
         </Tables>
         <Sources />
@@ -51,7 +68,7 @@ SELECT SupplierID, SupName FROM Supplier WHERE (SupplierID = @SupplierID)</Comma
   <xs:element name="SupplierDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="True" msprop:Generator_DataSetName="SupplierDataSet" msprop:Generator_UserDSName="SupplierDataSet">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="Supplier" msprop:Generator_TableClassName="SupplierDataTable" msprop:Generator_TableVarName="tableSupplier" msprop:Generator_TablePropName="Supplier" msprop:Generator_RowDeletingName="SupplierRowDeleting" msprop:Generator_RowChangingName="SupplierRowChanging" msprop:Generator_RowEvHandlerName="SupplierRowChangeEventHandler" msprop:Generator_RowDeletedName="SupplierRowDeleted" msprop:Generator_UserTableName="Supplier" msprop:Generator_RowChangedName="SupplierRowChanged" msprop:Generator_RowEvArgName="SupplierRowChangeEvent" msprop:Generator_RowClassName="SupplierRow">
+        <xs:element name="Supplier" msprop:Generator_TableClassName="SupplierDataTable" msprop:Generator_TableVarName="tableSupplier" msprop:Generator_RowChangedName="SupplierRowChanged" msprop:Generator_TablePropName="Supplier" msprop:Generator_RowDeletingName="SupplierRowDeleting" msprop:Generator_RowChangingName="SupplierRowChanging" msprop:Generator_RowEvHandlerName="SupplierRowChangeEventHandler" msprop:Generator_RowDeletedName="SupplierRowDeleted" msprop:Generator_RowClassName="SupplierRow" msprop:Generator_UserTableName="Supplier" msprop:Generator_RowEvArgName="SupplierRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="SupplierID" msdata:ReadOnly="true" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="-1" msdata:AutoIncrementStep="-1" msprop:Generator_ColumnVarNameInTable="columnSupplierID" msprop:Generator_ColumnPropNameInRow="SupplierID" msprop:Generator_ColumnPropNameInTable="SupplierIDColumn" msprop:Generator_UserColumnName="SupplierID" type="xs:int" />

@@ -284,7 +284,7 @@ namespace ImagineTrailvan
              {
                  DataTable result = new DataTable();
                  // "SubStockINID", "InventoryID", "SSIQuantityIN", "SSIPrice", "ISIID", "SSIStockLeft"
-                 cmd = new SqlCommand("SELECT inv.InventoryID, inv.InvCode, inv.InvItem,inv.InvDescription,inv.InvSupplierDescription, inv.InvCategory,  ssi.SSIQuantityIN, inv.InvReorderLevel, ssi.SSIPrice,inv.InvMarkup, ssi.SubStockINID, isi.ISIID FROM InvoiceStockIN isi, SubStockIN ssi, Inventory inv  WHERE ssi.ISIID='" + isiID + "' AND isi.ISIID='" + isiID + "' AND ssi.InventoryID=inv.InventoryID", conn);
+                 cmd = new SqlCommand("SELECT inv.InventoryID, inv.InvCode, inv.InvItem,inv.InvDescription,inv.InvSupplierDescription, inv.InvCategory, inv.InvReorderLevel,inv.InvMarkup,ssi.SSIQuantityIN, ssi.SSIPrice, ssi.SubStockINID, isi.ISIID FROM InvoiceStockIN isi, SubStockIN ssi, Inventory inv  WHERE ssi.ISIID='" + isiID + "' AND isi.ISIID='" + isiID + "' AND ssi.InventoryID=inv.InventoryID", conn);
                  adapter = new SqlDataAdapter(cmd);
                  SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
                  conn.Open();
@@ -325,6 +325,22 @@ namespace ImagineTrailvan
                  return result;
              }//end of using (SqlConnection conn = new SqlConnection(connString))
          }//end of public DataTable getLowStock()
+
+         public DataTable getAllStockWithPrice()
+         {
+             using (SqlConnection conn = new SqlConnection(connString))
+             {
+                 DataTable result = new DataTable();
+                 //  DataSet getds;
+                 cmd = new SqlCommand("SELECT inv.InventoryID,inv.InvCode,inv.InvItem,inv.InvSupplierDescription,inv.InvDescription,inv.InvReorderLevel, tot.ISTotalStock,inv.InvMarkup FROM Inventory inv, InventoryStock tot WHERE inv.InventoryID= tot.InventoryID", conn);
+                 adapter = new SqlDataAdapter(cmd);
+                 SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                 conn.Open();
+                 adapter.Fill(result);
+                 conn.Close();
+                 return result;
+             }//end of using (SqlConnection conn = new SqlConnection(connString))
+         }//end of public DataTable getAllStockWithPrice()
 
          public DataTable getAllOrderHistory()
          {
@@ -409,7 +425,6 @@ namespace ImagineTrailvan
              }//end of using (SqlConnection conn = new SqlConnection(connString))
          }//end of public double getVATrate()
 
-
          public DataTable getSPLogin(string username, string password)
          {
              using (SqlConnection conn = new SqlConnection(connString))
@@ -471,6 +486,5 @@ namespace ImagineTrailvan
                  return result;
              }//end of using (SqlConnection conn = new SqlConnection(connString))
          }//end of public DataTable getLastStockInvoice()
-
     }//end of public class DataAccess
  }//end of namespace ImagineTrailvan
