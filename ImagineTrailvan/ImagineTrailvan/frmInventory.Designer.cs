@@ -172,8 +172,8 @@
             this.label24 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.textBox7 = new System.Windows.Forms.TextBox();
+            this.dtgInvValSup = new System.Windows.Forms.DataGridView();
+            this.txtSupInvValue = new System.Windows.Forms.TextBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.supplierBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.supInvValueDBDataSet = new ImagineTrailvan.SupInvValueDBDataSet();
@@ -262,7 +262,7 @@
             this.grbSAddress.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtgSuppliers)).BeginInit();
             this.tabInventoryValue.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dtgInvValSup)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.supplierBindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.supInvValueDBDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgInventoryValue)).BeginInit();
@@ -1730,8 +1730,8 @@
             this.tabInventoryValue.Controls.Add(this.label24);
             this.tabInventoryValue.Controls.Add(this.label7);
             this.tabInventoryValue.Controls.Add(this.label6);
-            this.tabInventoryValue.Controls.Add(this.dataGridView1);
-            this.tabInventoryValue.Controls.Add(this.textBox7);
+            this.tabInventoryValue.Controls.Add(this.dtgInvValSup);
+            this.tabInventoryValue.Controls.Add(this.txtSupInvValue);
             this.tabInventoryValue.Controls.Add(this.comboBox1);
             this.tabInventoryValue.Controls.Add(this.label12);
             this.tabInventoryValue.Controls.Add(this.lblInventoryValue);
@@ -1773,25 +1773,25 @@
             this.label6.TabIndex = 7;
             this.label6.Text = "Total Value of Stock From Supplier:";
             // 
-            // dataGridView1
+            // dtgInvValSup
             // 
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.dtgInvValSup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(530, 109);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(498, 413);
-            this.dataGridView1.TabIndex = 6;
+            this.dtgInvValSup.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dtgInvValSup.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dtgInvValSup.Location = new System.Drawing.Point(530, 109);
+            this.dtgInvValSup.Name = "dtgInvValSup";
+            this.dtgInvValSup.ReadOnly = true;
+            this.dtgInvValSup.Size = new System.Drawing.Size(498, 413);
+            this.dtgInvValSup.TabIndex = 6;
             // 
-            // textBox7
+            // txtSupInvValue
             // 
-            this.textBox7.Location = new System.Drawing.Point(810, 46);
-            this.textBox7.Name = "textBox7";
-            this.textBox7.ReadOnly = true;
-            this.textBox7.Size = new System.Drawing.Size(218, 20);
-            this.textBox7.TabIndex = 5;
+            this.txtSupInvValue.Location = new System.Drawing.Point(810, 46);
+            this.txtSupInvValue.Name = "txtSupInvValue";
+            this.txtSupInvValue.ReadOnly = true;
+            this.txtSupInvValue.Size = new System.Drawing.Size(218, 20);
+            this.txtSupInvValue.TabIndex = 5;
             // 
             // comboBox1
             // 
@@ -2467,7 +2467,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dtgSuppliers)).EndInit();
             this.tabInventoryValue.ResumeLayout(false);
             this.tabInventoryValue.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dtgInvValSup)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.supplierBindingSource1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.supInvValueDBDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgInventoryValue)).EndInit();
@@ -2681,8 +2681,8 @@
         private System.Windows.Forms.Button btnShowAllItems;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtISISupDescription;
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.TextBox textBox7;
+        private System.Windows.Forms.DataGridView dtgInvValSup;
+        private System.Windows.Forms.TextBox txtSupInvValue;
         private System.Windows.Forms.ComboBox comboBox1;
         private SupInvValueDBDataSet supInvValueDBDataSet;
         private System.Windows.Forms.BindingSource supplierBindingSource1;

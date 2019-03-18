@@ -34,7 +34,7 @@ namespace ImagineTrailvan
         }//end of public PdfCreator()
         private void DrawHeader(PdfPage pdfpage, XGraphics graph)
         {//this draws the entire header.
-
+            #region variables
             XPen pen = new XPen(Color.Black, 0.8);
             XPen boldpen = new XPen(Color.Black, 1.0);
             XImage image = XImage.FromFile(@"C:\Users\Carolien\Documents\GitHub\NewbyProgrammer\ImagineTrailvan\Imagine Logo.png");
@@ -46,6 +46,7 @@ namespace ImagineTrailvan
             Rectangle recDate = new Rectangle(375, 80, 185, 14);
             Rectangle recFileName = new Rectangle(375, 108, 185, 14);
             Rectangle recBorder = new Rectangle(25, 25, 545, 792);
+            #endregion
 
             graph.DrawRectangle(pen, recDate);
             graph.DrawRectangle(pen, recFileName);
@@ -68,10 +69,11 @@ namespace ImagineTrailvan
         }//end of public void DrawHeader(PdfPage pdfpage, XGraphics graph, string title)
         private void DrawDelivery(PdfPage pdfpage, XGraphics graph)
         {
+            #region variables
             XPen pen = new XPen(Color.Black, 0.8);
             XFont fontHead = new XFont("Sans-serif", 6, XFontStyle.Regular);
-
             Rectangle recDelivery = new Rectangle(375, 135, 185, 58);
+            #endregion
             graph.DrawRectangle(pen, recDelivery);
 
             graph.DrawString("DELIVERY INSTRUCTIONS", fontHead, XBrushes.Black, new XRect(380, 138, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
@@ -85,10 +87,13 @@ namespace ImagineTrailvan
         }//end of private void DrawDelivery(PdfPage pdfpage, XGraphics graph)
         private void DrawTotal(PdfPage pdfpage, XGraphics graph, double total, int discount)
         {
+            #region variables
             double discountAmount = 0.00;
             double vat = datac.getVATrate();
             //this method makes it possible to draw the total multiple times for when more than one page is used- dynamic
             XFont fontFoot = new XFont("Sans-serif", 8, XFontStyle.Regular);
+            #endregion
+            
             graph.DrawString((total).ToString("C"), fontFoot, XBrushes.Black, new XRect(508, 667, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             graph.DrawString(((total * discount)/100).ToString("C"), fontFoot, XBrushes.Black, new XRect(508, 677, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             discountAmount = (total * discount) / 100;
@@ -133,12 +138,13 @@ namespace ImagineTrailvan
         {
             //this will have to work as the main-umbrella-method for the calling of methods
             //create a pdf file
-            PdfDocument pdf = new PdfDocument();
+            #region variables
+             PdfDocument pdf = new PdfDocument();
             pdf.Info.Title = fileName;
             PdfPage pdfpage = pdf.AddPage();
 
             XGraphics graph = XGraphics.FromPdfPage(pdfpage);
-
+            #endregion
             #region Fonts
             XFont font = new XFont("Arial", 8, XFontStyle.Regular);
             XFont fontHead = new XFont("Sans-serif", 6, XFontStyle.Regular);
@@ -195,6 +201,7 @@ namespace ImagineTrailvan
         private void DrawStockOrderDetails(PdfDocument pdf, PdfPage pdfpage, XGraphics graph, DataTable dtInvValues, DataTable dtSupValues, string fileName)
         {
             //this gets and orders the details gotten for the order: the items
+            #region variables
             int ypoint = 0;
             int itemCount = 1;
             double total = 0.00;
@@ -204,7 +211,8 @@ namespace ImagineTrailvan
             XFont font = new XFont("Arial", 8, XFontStyle.Regular);
             XFont fontHead = new XFont("Sans-serif", 6, XFontStyle.Regular);
             XFont fontFoot = new XFont("Sans-serif", 8, XFontStyle.Regular);
-
+            #endregion
+            
             #region TableValues
             supDiscount = int.Parse(dtSupValues.Rows[0][14].ToString());
             ypoint = 230;
@@ -283,6 +291,7 @@ namespace ImagineTrailvan
         }//end of private void DrawStockOrderDetails(PdfPage pdfpage, XGraphics graph, DataTable dtInvValues)
         private void DrawOrderFooter(PdfPage pdfpage, XGraphics graph)
         {//this draws the entire footer.
+            #region variables
             XFont fontFoot = new XFont("Sans-serif", 8, XFontStyle.Regular);
             XPen pen = new XPen(Color.Black, 0.8);
             XPen dashpen = new XPen(Color.Black, 0.8);
@@ -290,6 +299,8 @@ namespace ImagineTrailvan
            
             Rectangle recTotal = new Rectangle(500, 665, 63, 43);
             Rectangle recPayment = new Rectangle(35, 665, 463, 43);
+            #endregion
+            
 
             graph.DrawRectangle(pen, recTotal);
             recTotal.Inflate(-1, -1);                       //inflating the rectangle and drawing it once again, creates the double line border effect
@@ -342,12 +353,13 @@ namespace ImagineTrailvan
         public void CreateFibreOrderPDF_NoVAT(DataTable dtFibreValues, DataTable dtSupValues, string fileName, string targetpath)
         {
             //this will have to work as the main class for the calling of methods
-
+            #region variables
             PdfDocument pdf = new PdfDocument();
             pdf.Info.Title = fileName;
             PdfPage pdfpage = pdf.AddPage();
 
             XGraphics graph = XGraphics.FromPdfPage(pdfpage);
+            #endregion
 
             #region Fonts
             XFont font = new XFont("Arial", 8, XFontStyle.Regular);
@@ -362,7 +374,7 @@ namespace ImagineTrailvan
 
             //get header
             DrawHeader(pdfpage, graph);
-
+            
             //get supplier details
             DrawSupDetails(pdfpage, graph, dtSupValues);
 
@@ -372,18 +384,19 @@ namespace ImagineTrailvan
             //Draw the table headings
             DrawFibreTableHead(pdfpage, graph);
 
-
             //save the pdf....
             //these lines now create the path, and adds the extention to the file
             fileName = fileName + ".pdf";
             string tagetpath = targetpath;// Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);//Desktop);
-            // string filePath = Path.Combine(tagetpath, fileName);
-            //   fileName = @"C:\Users\Carolien\Desktop\" + fileName + ".pdf"; //create the pdf's name, and adding the pdf extention-otherwise program doesn't know how to open it.
+            //string filePath = Path.Combine(tagetpath, fileName);
+            //fileName = @"C:\Users\Carolien\Desktop\" + fileName + ".pdf"; //create the pdf's name, and adding the pdf extention-otherwise program doesn't know how to open it.
             pdf.Save(tagetpath);
             Process.Start(tagetpath);
         }//end of public void CreateFibreOrderPDF(DataTable dtFibreValues, DataTable dtSupValues, string fileName, string title)
+        
         private void DrawFibreFooter_NoVAT(PdfPage pdfpage, XGraphics graph)
-        { //this draws the entire footer.
+        { 
+            //this draws the entire footer.
             XFont fontFoot = new XFont("Sans-serif", 8, XFontStyle.Regular);
             XPen pen = new XPen(Color.Black, 0.8);
             XPen dashpen = new XPen(Color.Black, 0.8);
@@ -410,7 +423,6 @@ namespace ImagineTrailvan
 
             graph.DrawString("Authorized signature ", fontFoot, XBrushes.Black, new XRect(415, 775, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
             graph.DrawString("Received by ", fontFoot, XBrushes.Black, new XRect(45, 775, pdfpage.Width.Point, pdfpage.Height.Point), XStringFormats.TopLeft);
-
         }//end of private void DrawFibreFooter(PdfPage pdfpage, XGraphics graph)
 
         public void CreateFibreOrderPDF_VAT(DataTable dtFibreValues, DataTable dtSupValues, string fileName, string targetpath)

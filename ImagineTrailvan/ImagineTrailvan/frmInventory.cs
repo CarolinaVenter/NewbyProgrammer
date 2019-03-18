@@ -32,7 +32,6 @@ namespace ImagineTrailvan
         public string[] fieldOrders = { "OrdersID", "OrderNumber", "SupplierID", "OrdersDate", "OrderEstimateTotal" };
         public string[] fieldSubOrders = { "SubOrdersID", "InventoryID", "SOOrderedQuantity", "SOPrice", "OrdersID", "SOLength" };        
         public string vatLabel = "15%";
-
         #endregion
        
         public frmInventory()
@@ -153,9 +152,13 @@ namespace ImagineTrailvan
             try
             {
                 tabInventoryValue.Controls.Add(dtgInventoryValue);
-                dtgInventoryValue.DataSource = datac.getInventoryValue();
+                dtgInventoryValue.DataSource = datac.getInventoryValueSorted();//**********
+                //*************************************************************************
+                tabInventoryValue.Controls.Add(dtgInvValSup);
+                dtgInvValSup.DataSource = datac.getInventoryValueSupplier(5);//**********
                 //to calculate total value of stock based on quantity and price on inventoryValue tab****
                 displayInventoryValue();
+                displayInventorySupValue();
             }//end of try
             catch (Exception ex)
             {
@@ -245,7 +248,7 @@ namespace ImagineTrailvan
             }//end of try
             catch (Exception ex)
             {
-                MessageBox.Show("Search Clear Error occurred in btnClear_Click method: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Clear Error occurred in btnClear_Click method: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }//end of catch (Exception ex)            
         }//end of private void btnClear_Click(object sender, EventArgs e)
         private void ClearStockOutTextboxes()
@@ -308,7 +311,7 @@ namespace ImagineTrailvan
                 //here the flag will be tested, doing the actual determining of what should be done when it exists
                 if (exists == true)
                 {//if the flag is true, meaning the record already exists, will then get references
-                    //****************Get the stock total quantity from InventoryStock table, relevant to the InventoryID******************
+                 //****************Get the stock total quantity from InventoryStock table, relevant to the InventoryID******************
                     getIDValue.Add("=" + txtInvID.Text);
 
                     dtTotalStock = datac.getMathRecord("InventoryStock", fieldTotal, getIDValue);
@@ -401,7 +404,7 @@ namespace ImagineTrailvan
         #endregion
 
         #region btnInvUpdate_Click_Load
-                private void btnInvUpdate_Click(object sender, EventArgs e)
+        private void btnInvUpdate_Click(object sender, EventArgs e)
         {
             try
             {
@@ -419,7 +422,7 @@ namespace ImagineTrailvan
                         //*********SEND update TO TOTALSTOCK TABLE**************
                         totalStockOutUpdate();
                         //*******Minus quantity-out from First stock in LEFT from table SubStockIN, while using oldest date in InvoiceStockIN********    
-                        // #1) lookup oldest date in the InvoiceStockIN table, with get query.
+                        //#1) lookup oldest date in the InvoiceStockIN table, with get query.
                         //#2) minus left until counter (stockOUT quantity is used for counter) is 0
                         //#3) if left is smaller than counter (thus make if statement), jump to next date and left
                         //#4) keep minussing until counter is 0 and then update to SubStockIN
@@ -508,8 +511,8 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
         {
             try
             {
-                #region Variables
-                 DataTable dtSubStockIN = new DataTable();
+                #region Variables 
+                DataTable dtSubStockIN = new DataTable();
                 ArrayList subStockIN = new ArrayList();
                 #endregion
                 dtSubStockIN = datac.getFIFODatedPrice(txtInvID.Text);
@@ -558,8 +561,9 @@ Please be adviced to place an order for this item as soon as possible.", "Stock 
         {
             try
             {
+                #region Variables
                 DataTable dtStockIn = new DataTable();
-
+                #endregion
                 dtStockIn = datac.getFIFODatedPrice(txtInvID.Text);
                 if (dtStockIn.Rows[0] != null)
                 {
@@ -2460,6 +2464,7 @@ It will still show in the grid, because there may be references to this record."
                 MessageBox.Show("Error loading data from datagrid to textBoxes from Check Stock using dtgCheckStock_Click_getTotalStockExist() method: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }//end of catch (Exception ex)
         }//end of private void dtgCheckStock_Click_getTotalStockExist()
+        //
         #endregion
 
         #region StockCheck btnSCsave methods
@@ -3643,7 +3648,7 @@ Please ensure prices are updated regularly.", "Price Update Reminder", MessageBo
                 
                 for (int i = 0; i < dtgInventoryValue.Rows.Count - 1; i++)
                 {
-                    totalStockValue += (int.Parse(dtgInventoryValue.Rows[i].Cells[4].Value.ToString()) * double.Parse(dtgInventoryValue.Rows[i].Cells[5].Value.ToString()));
+                    totalStockValue += double.Parse(dtgInventoryValue.Rows[i].Cells[2].Value.ToString());
                 }//end of for (int i = 0; i < dtgInventoryValue.Rows.Count - 1; i++)
                 txtStockValue.Text = double.Parse(totalStockValue.ToString()).ToString("C");
             }//end of try
@@ -3653,6 +3658,28 @@ Please ensure prices are updated regularly.", "Price Update Reminder", MessageBo
             }//end of catch (Exception ex)
         }//end of private void displayInventoryValue()
 
+        private void displayInventorySupValue()
+        {
+            try
+            {
+                #region Variables
+                double totalStockValue = 0.00;
+                #endregion
+                if (dtgInvValSup.RowCount!=0)
+                {
+                    for (int i = 0; i < dtgInvValSup.Rows.Count - 1; i++)
+                    {
+                        totalStockValue += double.Parse(dtgInvValSup.Rows[i].Cells[3].Value.ToString());
+                    }//end of for (int i = 0; i < dtgInventoryValue.Rows.Count - 1; i++)
+                    txtSupInvValue.Text = double.Parse(totalStockValue.ToString()).ToString("C");
+                }//end of if (dtgInvValSup.RowCount!=0)
+            }//end of try
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading Inventory Value using displayInventorySupValue() method: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }//end of catch (Exception ex)
+        }//end of private void displayInventorySupValue()
+        
         #region Test Existance in DataTable
         private Boolean testDTIfExistAddOne(DataTable testDatatable, int colIndexnumber, string findText)
         { //my dynamic way to see if the record (or the reference thereof) exists within the table within the database
@@ -3734,7 +3761,6 @@ Please ensure prices are updated regularly.", "Price Update Reminder", MessageBo
         {
             this.tabOrderStock.Focus();
         }//end of private void cbxOrderSup_SelectedValueChanged(object sender, EventArgs e)
-       //end of private void cmbISISupplier_SelectedValueChanged(object sender, EventArgs e)
     }//end of public partial class frmInventory : Form
 }//end of namespace ImagineTrailvan
 

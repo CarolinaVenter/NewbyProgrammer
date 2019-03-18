@@ -429,27 +429,32 @@ namespace ImagineTrailvan
          {
              using (SqlConnection conn = new SqlConnection(connString))
              {
-                DataTable result = new DataTable();
-               //  DataSet getds;
-               //  cmd = new SqlCommand("Select * from " + tblName, conn);
-               //  adapter = new SqlDataAdapter(cmd);
-               //  SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
-               //  conn.Open();
-               //  getds = new DataSet();
-               //  adapter.Fill(getds, tblName);
-               //  conn.Close();
-               //  result = getds.Tables[0];
-                 return result;
+                 using (var command = new SqlCommand("dbo.spInvValBySup", conn) { CommandType = CommandType.StoredProcedure })
+                 {
+                     DataTable result = new DataTable();
+                    // Boolean result = new Boolean();
 
+                     //  DataSet getds;
+                     //cmd = new SqlCommand("dbo.spInvValTotals", conn);
+                     //SqlParameter param = new SqlParameter("@username", SqlDbType.VarChar, 50);
+                     command.Parameters.Add("@username", SqlDbType.VarChar, 50).Value = username;
+                     command.Parameters.Add("@password", SqlDbType.VarChar, 50).Value = password;
 
-               ////  connection.Open();
-               //  cmd = new SqlCommand("spLoginCheck", conn);
-               //  cmd.CommandType = CommandType.StoredProcedure;
-               //  cmd.Parameters.AddWithValue("@username", username);
-               //  cmd.Parameters.AddWithValue("@@password", password);
-               //  cmd.ExecuteNonQuery();
-               //  conn.Close();
+                     //
+                     //SqlParameter sqlParam = new SqlParameter("@Result", DbType.Boolean);
+                     //sqlParam.Direction = ParameterDirection.Output;
+                     //Cmd.Parameters.Add(sqlParam);
+                     //Cmd.ExecuteNonQuery();
+                     //con.Close();
+                     //Response.Write(Cmd.Parameters["@Result"].Value);
 
+                     adapter = new SqlDataAdapter(command);
+                     SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                     //conn.Open();
+                     //adapter.Fill(result);
+                     //conn.Close();
+                     return result;
+                 }// using (var command = new SqlCommand("dbo.spInvValTotals", conn) { CommandType = CommandType.StoredProcedure })
              }//end of using (SqlConnection conn = new SqlConnection(connString))
          }//end of public DataTable getSPLogin(string tblName)
 
@@ -486,5 +491,49 @@ namespace ImagineTrailvan
                  return result;
              }//end of using (SqlConnection conn = new SqlConnection(connString))
          }//end of public DataTable getLastStockInvoice()
+
+         public DataTable getInventoryValueSorted()
+         {
+             using (SqlConnection conn = new SqlConnection(connString))
+             {
+                 using (var command = new SqlCommand("dbo.spInvValTotals", conn) { CommandType = CommandType.StoredProcedure })
+                 {
+                     DataTable result = new DataTable();
+                     //  DataSet getds;
+                     //cmd = new SqlCommand("dbo.spInvValTotals", conn);
+                     adapter = new SqlDataAdapter(command);
+                     SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                     conn.Open();
+                     adapter.Fill(result);
+                     conn.Close();
+                     return result;
+                 }// using (var command = new SqlCommand("dbo.spInvValTotals", conn) { CommandType = CommandType.StoredProcedure })
+             }//end of using (SqlConnection conn = new SqlConnection(connString))
+         }//end of public DataTable getInventoryValueSorted()
+
+         public DataTable getInventoryValueSupplier(int supplierID)
+         {
+             using (SqlConnection conn = new SqlConnection(connString))
+             {
+                 using (var command = new SqlCommand("dbo.spInvValBySup", conn) { CommandType = CommandType.StoredProcedure })
+                 {
+                     DataTable result = new DataTable();
+                     //  DataSet getds;
+                     //cmd = new SqlCommand("dbo.spInvValTotals", conn);
+                     SqlParameter param = new SqlParameter("@supplierID", supplierID);
+                     param.Direction = ParameterDirection.Input;
+                     param.DbType = DbType.Int32;
+                     command.Parameters.Add(param);
+
+                     adapter = new SqlDataAdapter(command);
+                     SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                     conn.Open();
+                     adapter.Fill(result);
+                     conn.Close();
+                     return result;
+                 }// using (var command = new SqlCommand("dbo.spInvValTotals", conn) { CommandType = CommandType.StoredProcedure })
+             }//end of using (SqlConnection conn = new SqlConnection(connString))
+         }//end of public DataTable getInventoryValueSupplier()
+
     }//end of public class DataAccess
  }//end of namespace ImagineTrailvan
